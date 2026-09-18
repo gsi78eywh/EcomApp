@@ -1,0 +1,78 @@
+@{
+    ViewData["Title"] = "Contact Our Roastery";
+}
+
+<div class="container py-5">
+    <div class="row g-5">
+        <div class="col-lg-5">
+            <span class="badge bg-warning text-dark px-3 py-2 text-uppercase fw-bold mb-3 rounded-pill">
+                Get in Touch
+            </span>
+            <h1 class="brand-font fw-bold mb-4">Visit Us or Say Hello</h1>
+            <p class="text-muted mb-4">
+                Have questions about our brewing recommendations, bulk bean orders, or subscription deliveries? Drop by our brew bar or send us a message.
+            </p>
+
+            <div class="d-flex align-items-start gap-3 mb-4">
+                <div class="bg-warning bg-opacity-25 text-dark rounded-circle p-3 fs-5">
+                    <i class="bi bi-geo-alt-fill text-warning"></i>
+                </div>
+                <div>
+                    <h6 class="fw-bold mb-1">Roastery & Espresso Bar</h6>
+                    <p class="text-muted small mb-0">104 Artisanal Way, Specialty Coffee District</p>
+                </div>
+            </div>
+
+            <div class="d-flex align-items-start gap-3 mb-4">
+                <div class="bg-warning bg-opacity-25 text-dark rounded-circle p-3 fs-5">
+                    <i class="bi bi-envelope-fill text-warning"></i>
+                </div>
+                <div>
+                    <h6 class="fw-bold mb-1">Email Support</h6>
+                    <p class="text-muted small mb-0">hello@lusitrackcoffee.com</p>
+                </div>
+            </div>
+
+            <div class="d-flex align-items-start gap-3">
+                <div class="bg-warning bg-opacity-25 text-dark rounded-circle p-3 fs-5">
+                    <i class="bi bi-clock-fill text-warning"></i>
+                </div>
+                <div>
+                    <h6 class="fw-bold mb-1">Brewing Hours</h6>
+                    <p class="text-muted small mb-0">Mon – Fri: 6:30am – 7:00pm<br />Weekends: 7:30am – 6:00pm</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-7">
+            <div class="card p-4 p-md-5 rounded-4 shadow-sm border-0 bg-white">
+                <h4 class="brand-font fw-bold mb-3">Send Us a Message</h4>
+                <form onsubmit="event.preventDefault(); alert('Thank you! Your message has been received.');">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label small fw-semibold">Your Name</label>
+                            <input type="text" class="form-control" placeholder="John Doe" required />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label small fw-semibold">Your Email</label>
+                            <input type="email" class="form-control" placeholder="john@example.com" required />
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label small fw-semibold">Subject</label>
+                            <input type="text" class="form-control" placeholder="Inquiry about whole beans / orders" required />
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label small fw-semibold">Message</label>
+                            <textarea class="form-control" rows="4" placeholder="How can we help your coffee experience?" required></textarea>
+                        </div>
+                        <div class="col-12">
+                            <button type="submit" class="btn btn-warning fw-bold text-dark px-4 py-2 rounded-pill">
+                                Send Message <i class="bi bi-send-fill ms-1"></i>
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

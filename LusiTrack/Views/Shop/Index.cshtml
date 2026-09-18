@@ -1,0 +1,94 @@
+@model IEnumerable<CoffeeProduct>
+@{
+    ViewData["Title"] = "Coffee & Bakery Menu";
+    var categories = ViewBag.Categories as IEnumerable<string> ?? Enumerable.Empty<string>();
+    var selectedCategory = ViewBag.SelectedCategory as string ?? "All";
+}
+
+<div class="container py-4">
+    <!-- Header -->
+    <div class="text-center mb-5">
+        <span class="badge bg-warning text-dark px-3 py-2 text-uppercase fw-bold mb-2 rounded-pill">
+            Specialty Roasts & Drinks
+        </span>
+        <h1 class="brand-font display-5 fw-bold">Our Handcrafted Menu</h1>
+        <p class="text-muted max-w-600 mx-auto">
+            From single-origin pour-overs and silky nitro brews to locally baked morning pastries.
+        </p>
+    </div>
+
+    <!-- Category Filters -->
+    <div class="d-flex flex-wrap justify-content-center gap-2 mb-5">
+        <a asp-action="Index" asp-route-category="All" 
+           class="btn rounded-pill px-4 py-2 fw-semibold @(selectedCategory == "All" ? "btn-dark" : "btn-outline-secondary")">
+            All Items
+        </a>
+        @foreach (var cat in categories)
+        {
+            <a asp-action="Index" asp-route-category="@cat" 
+               class="btn rounded-pill px-4 py-2 fw-semibold @(selectedCategory == cat ? "btn-dark" : "btn-outline-secondary")">
+                @cat
+            </a>
+        }
+    </div>
+
+    <!-- Product Grid -->
+    <div class="row g-4">
+        @if (!Model.Any())
+        {
+            <div class="col-12 text-center py-5">
+                <i class="bi bi-cup text-muted display-4 d-block mb-3"></i>
+                <h4 class="text-muted">No products found in this category.</h4>
+                <a asp-action="Index" asp-route-category="All" class="btn btn-warning rounded-pill mt-3">View All Products</a>
+            </div>
+        }
+        else
+        {
+            @foreach (var item in Model)
+            {
+                <div class="col-md-6 col-lg-4 col-xl-3">
+                    <div class="card card-coffee h-100 d-flex flex-column">
+                        <div class="position-relative">
+                            <img src="@item.ImageUrl" class="card-img-top" alt="@item.Name" style="height: 220px; object-fit: cover;" />
+                            <span class="position-absolute top-0 end-0 m-2 badge bg-dark bg-opacity-75 badge-roast text-warning">
+                                @item.Category
+                            </span>
+                            @if (item.RoastLevel != "N/A")
+                            {
+                                <span class="position-absolute top-0 start-0 m-2 badge bg-light text-dark shadow-sm">
+                                    @item.RoastLevel Roast
+                                </span>
+                            }
+                        </div>
+                        <div class="card-body d-flex flex-column p-3">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span class="fw-bold fs-5 text-success">@item.Price.ToString("C")</span>
+                            </div>
+                            <h5 class="card-title brand-font fs-6 fw-bold mb-2">
+                                <a asp-action="Details" asp-route-id="@item.Id" class="text-dark text-decoration-none">
+                                    @item.Name
+                                </a>
+                            </h5>
+                            <p class="card-text small text-muted flex-grow-1" style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
+                                @item.Description
+                            </p>
+                            <div class="d-flex gap-2 mt-3 pt-2 border-top">
+                                <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-outline-secondary btn-sm flex-fill">
+                                    Details
+                                </a>
+                                <form asp-controller="Cart" asp-action="AddToCart" method="post" class="flex-fill">
+                                    <input type="hidden" name="productId" value="@item.Id" />
+                                    <input type="hidden" name="quantity" value="1" />
+                                    <input type="hidden" name="returnUrl" value="@Context.Request.Path@Context.Request.QueryString" />
+                                    <button type="submit" class="btn btn-warning btn-sm w-100 fw-semibold text-dark">
+                                        <i class="bi bi-plus-lg"></i> Add
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+    </div>
+</div>

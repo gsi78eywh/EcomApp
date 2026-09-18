@@ -1,0 +1,168 @@
+@model OrderModel
+@{
+    ViewData["Title"] = "Checkout";
+    var cart = ViewBag.Cart as CartViewModel;
+}
+
+<div class="container py-4">
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb small">
+            <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Home</a></li>
+            <li class="breadcrumb-item"><a asp-controller="Cart" asp-action="Index">Cart</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Checkout</li>
+        </ol>
+    </nav>
+
+    <h1 class="brand-font fw-bold mb-4">Complete Your Coffee Order</h1>
+
+    <div class="row g-5">
+        <!-- Customer & Delivery Form -->
+        <div class="col-lg-7">
+            <div class="card border-0 shadow-sm rounded-4 p-4 p-md-5 bg-white">
+                <h4 class="brand-font fw-bold mb-4">Shipping & Delivery Information</h4>
+
+                <form asp-action="PlaceOrder" method="post">
+                    @Html.AntiForgeryToken()
+                    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                    <div class="row g-3">
+                        <div class="col-12">
+                            <label asp-for="CustomerName" class="form-label small fw-semibold"></label>
+                            <input asp-for="CustomerName" class="form-control" placeholder="Jane Doe" />
+                            <span asp-validation-for="CustomerName" class="text-danger small"></span>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label asp-for="Email" class="form-label small fw-semibold"></label>
+                            <input asp-for="Email" type="email" class="form-control" placeholder="jane@example.com" />
+                            <span asp-validation-for="Email" class="text-danger small"></span>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label asp-for="Phone" class="form-label small fw-semibold"></label>
+                            <input asp-for="Phone" class="form-control" placeholder="+1 (555) 019-2834" />
+                            <span asp-validation-for="Phone" class="text-danger small"></span>
+                        </div>
+
+                        <div class="col-12">
+                            <label asp-for="Address" class="form-label small fw-semibold"></label>
+                            <input asp-for="Address" class="form-control" placeholder="123 Coffee Lane, Apt 4B" />
+                            <span asp-validation-for="Address" class="text-danger small"></span>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label asp-for="City" class="form-label small fw-semibold"></label>
+                            <input asp-for="City" class="form-control" placeholder="Seattle" />
+                            <span asp-validation-for="City" class="text-danger small"></span>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label asp-for="PostalCode" class="form-label small fw-semibold"></label>
+                            <input asp-for="PostalCode" class="form-control" placeholder="98101" />
+                            <span asp-validation-for="PostalCode" class="text-danger small"></span>
+                        </div>
+
+                        <div class="col-12 mt-4">
+                            <h5 class="brand-font fw-bold mb-3">Payment Method</h5>
+                            <div class="border rounded-3 p-3 mb-2">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" asp-for="PaymentMethod" value="CreditCard" id="payCC" checked />
+                                    <label class="form-check-label fw-semibold" for="payCC">
+                                        <i class="bi bi-credit-card-2-front text-primary me-2"></i> Credit or Debit Card
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="border rounded-3 p-3 mb-2">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" asp-for="PaymentMethod" value="DigitalWallet" id="payWallet" />
+                                    <label class="form-check-label fw-semibold" for="payWallet">
+                                        <i class="bi bi-apple text-dark me-1"></i> Apple Pay / Google Pay
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="border rounded-3 p-3">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" asp-for="PaymentMethod" value="CashOnPickup" id="payCash" />
+                                    <label class="form-check-label fw-semibold" for="payCash">
+                                        <i class="bi bi-shop text-success me-2"></i> Pay on Pickup at Roastery Bar
+                                    </label>
+                                </div>
+                            </div>
+                            <span asp-validation-for="PaymentMethod" class="text-danger small"></span>
+                        </div>
+
+                        <div class="col-12 mt-3">
+                            <label asp-for="OrderNotes" class="form-label small fw-semibold">Special Instructions (Optional)</label>
+                            <textarea asp-for="OrderNotes" class="form-control" rows="2" placeholder="e.g. Leave package on the front porch or grind for espresso"></textarea>
+                        </div>
+
+                        <div class="col-12 mt-4">
+                            <button type="submit" class="btn btn-warning btn-lg w-100 fw-bold text-dark rounded-pill py-3 shadow-sm">
+                                <i class="bi bi-lock-fill me-1"></i> Place Order & Pay
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Order Summary Column -->
+        <div class="col-lg-5">
+            <div class="card border-0 shadow-sm rounded-4 p-4 bg-white sticky-top" style="top: 90px;">
+                <h5 class="brand-font fw-bold mb-3">Order Items</h5>
+
+                @if (cart != null)
+                {
+                    <div class="mb-3" style="max-height: 280px; overflow-y: auto;">
+                        @foreach (var item in cart.Items)
+                        {
+                            <div class="d-flex align-items-center justify-content-between py-2 border-bottom">
+                                <div class="d-flex align-items-center gap-2">
+                                    <img src="@item.ImageUrl" alt="@item.ProductName" class="rounded-2" style="width: 46px; height: 46px; object-fit: cover;" />
+                                    <div>
+                                        <div class="fw-semibold small">@item.ProductName</div>
+                                        <div class="text-muted small">Qty: @item.Quantity &times; @item.Price.ToString("C")</div>
+                                    </div>
+                                </div>
+                                <div class="fw-bold text-success small">
+                                    @item.TotalPrice.ToString("C")
+                                </div>
+                            </div>
+                        }
+                    </div>
+
+                    <div class="d-flex justify-content-between mb-2 small">
+                        <span class="text-muted">Subtotal</span>
+                        <span class="fw-semibold">@cart.Subtotal.ToString("C")</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2 small">
+                        <span class="text-muted">Tax</span>
+                        <span class="fw-semibold">@cart.EstimatedTax.ToString("C")</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-3 small">
+                        <span class="text-muted">Delivery</span>
+                        @if (cart.ShippingFee == 0)
+                        {
+                            <span class="text-success fw-bold">FREE</span>
+                        }
+                        else
+                        {
+                            <span class="fw-semibold">@cart.ShippingFee.ToString("C")</span>
+                        }
+                    </div>
+                    <hr />
+                    <div class="d-flex justify-content-between fs-5 mb-3">
+                        <span class="fw-bold">Total Due</span>
+                        <span class="fw-bold text-success">@cart.GrandTotal.ToString("C")</span>
+                    </div>
+                }
+
+                <div class="p-3 bg-light rounded-3 small text-muted">
+                    <i class="bi bi-clock-history me-1 text-warning"></i>
+                    Your coffee beans will be packaged and prepared fresh today!
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
