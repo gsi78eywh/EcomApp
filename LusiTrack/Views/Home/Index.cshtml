@@ -36,6 +36,28 @@
                     </a>
                 </div>
 
+                <!-- Hero Quick Search Bar -->
+                <form asp-controller="Shop" asp-action="Index" method="get" class="mt-4" style="max-width: 540px;">
+                    <div class="hero-search-bar">
+                        <i class="bi bi-search text-warning me-2 fs-5"></i>
+                        <input type="text" name="search" class="hero-search-input" placeholder="Search coffees, origins, roasts, pastries..." autocomplete="off" />
+                        <button type="submit" class="btn-hero-search">
+                            <span>Search Menu</span>
+                            <i class="bi bi-arrow-right"></i>
+                        </button>
+                    </div>
+                    <div class="d-flex align-items-center gap-2 mt-2 pt-1 text-white-50" style="font-size: 0.78rem;">
+                        <span class="text-warning">Try:</span>
+                        <a asp-controller="Shop" asp-action="Index" asp-route-search="Ethiopian" class="text-white-50 text-decoration-underline">Ethiopian</a>
+                        <span>•</span>
+                        <a asp-controller="Shop" asp-action="Index" asp-route-search="Nitro" class="text-white-50 text-decoration-underline">Nitro Cold Brew</a>
+                        <span>•</span>
+                        <a asp-controller="Shop" asp-action="Index" asp-route-search="Geisha" class="text-white-50 text-decoration-underline">Geisha</a>
+                        <span>•</span>
+                        <a asp-controller="Shop" asp-action="Index" asp-route-search="Croissant" class="text-white-50 text-decoration-underline">Croissant</a>
+                    </div>
+                </form>
+
                 <!-- Quick highlights underneath buttons -->
                 <div class="d-flex align-items-center gap-4 mt-5 pt-3 border-top border-secondary border-opacity-25 text-white-50 small">
                     <div class="d-flex align-items-center gap-2">
@@ -139,14 +161,6 @@
                                 </div>
                             </div>
                         </div>
-
-                        <!-- Prev / Next Interactive Arrow Buttons -->
-                        <button type="button" class="hero-slider-nav-btn prev" id="heroPrevBtn" aria-label="Previous Harvest">
-                            <i class="bi bi-chevron-left"></i>
-                        </button>
-                        <button type="button" class="hero-slider-nav-btn next" id="heroNextBtn" aria-label="Next Harvest">
-                            <i class="bi bi-chevron-right"></i>
-                        </button>
                     </div>
                 </div>
             </div>
@@ -537,15 +551,13 @@
     document.addEventListener('DOMContentLoaded', function () {
         const slides = document.querySelectorAll('.hero-coffee-slide');
         const dots = document.querySelectorAll('.slider-dot');
-        const prevBtn = document.getElementById('heroPrevBtn');
-        const nextBtn = document.getElementById('heroNextBtn');
         const sliderWrap = document.querySelector('.hero-slider-wrap');
         
         if (!slides.length) return;
 
         let currentIndex = 0;
         let slideTimer = null;
-        const intervalTime = 4500; // 4.5s per slide
+        const intervalTime = 3800; // 3.8s automatic transition
 
         function showSlide(index) {
             if (index < 0) index = slides.length - 1;
@@ -559,7 +571,6 @@
                 dot.classList.toggle('active', i === index);
                 const progress = dot.querySelector('.dot-progress');
                 if (progress) {
-                    // Reset animation
                     progress.style.animation = 'none';
                     progress.offsetHeight; // trigger reflow
                     if (i === index) {
@@ -585,22 +596,6 @@
             }
         }
 
-        if (nextBtn) {
-            nextBtn.addEventListener('click', (e) => {
-                e.preventDefault();
-                showSlide(currentIndex + 1);
-                startAutoplay();
-            });
-        }
-
-        if (prevBtn) {
-            prevBtn.addEventListener('click', (e) => {
-                e.preventDefault();
-                showSlide(currentIndex - 1);
-                startAutoplay();
-            });
-        }
-
         dots.forEach((dot, idx) => {
             dot.addEventListener('click', (e) => {
                 e.preventDefault();
@@ -608,12 +603,6 @@
                 startAutoplay();
             });
         });
-
-        // Pause autoplay on mouse enter, resume on mouse leave
-        if (sliderWrap) {
-            sliderWrap.addEventListener('mouseenter', stopAutoplay);
-            sliderWrap.addEventListener('mouseleave', startAutoplay);
-        }
 
         // Start initial cycle
         showSlide(0);

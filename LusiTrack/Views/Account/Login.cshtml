@@ -1,0 +1,222 @@
+@model LoginViewModel
+@{
+    ViewData["Title"] = "Sign In — Roaster's Guild";
+}
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-xl-10 col-lg-11">
+            <!-- Breadcrumb Navigation -->
+            <nav aria-label="breadcrumb" class="mb-4">
+                <ol class="breadcrumb small">
+                    <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index" class="text-decoration-none text-muted">Home</a></li>
+                    <li class="breadcrumb-item active text-dark fw-semibold" aria-current="page">Sign In</li>
+                </ol>
+            </nav>
+
+            <!-- Main Luxury Split Card -->
+            <div class="card border-0 shadow-lg rounded-4 overflow-hidden bg-white">
+                <div class="row g-0">
+                    <!-- Left Column: Roaster's Guild Showcase (Hidden on small mobile screens) -->
+                    <div class="col-lg-5 text-white d-none d-lg-flex flex-column justify-content-between p-5 position-relative"
+                         style="background: radial-gradient(circle at 20% 20%, #3e2617 0%, #170d08 70%, #0d0704 100%);">
+                        <!-- Ambient background pattern -->
+                        <div class="position-absolute top-0 start-0 w-100 h-100 opacity-25 pointer-events-none"
+                             style="background-image: url('https://images.unsplash.com/photo-1447933601403-0c6688de566e?auto=format&fit=crop&w=800&q=80'); background-size: cover; background-position: center; mix-blend-mode: overlay;"></div>
+
+                        <!-- Top Brand Badge -->
+                        <div class="position-relative" style="z-index: 2;">
+                            <div class="d-flex align-items-center gap-2 mb-4">
+                                <span class="brand-icon-wrap" style="width: 36px; height: 36px;">
+                                    <i class="bi bi-cup-hot-fill"></i>
+                                </span>
+                                <span class="brand-display text-white fs-5">LUSITRACK</span>
+                            </div>
+
+                            <span class="badge bg-warning bg-opacity-20 text-warning px-3 py-1 rounded-pill small fw-semibold mb-3 border border-warning border-opacity-25">
+                                <i class="bi bi-stars me-1"></i> Roaster's Guild VIP
+                            </span>
+
+                            <h2 class="display-6 brand-font fw-bold text-white mb-3" style="line-height: 1.2;">
+                                Your Sanctuary for Specialty Coffee
+                            </h2>
+                            <p class="text-white-50 small mb-4" style="line-height: 1.7;">
+                                Sign in to access your curated origin recommendations, manage recurring bean deliveries, and unlock member-only harvests.
+                            </p>
+
+                            <!-- VIP Privileges List -->
+                            <div class="d-flex flex-column gap-3 small text-white-50">
+                                <div class="d-flex align-items-start gap-2">
+                                    <i class="bi bi-check-circle-fill text-warning mt-1"></i>
+                                    <span><strong>10% Member Discount</strong> applied automatically on all reserve beans</span>
+                                </div>
+                                <div class="d-flex align-items-start gap-2">
+                                    <i class="bi bi-check-circle-fill text-warning mt-1"></i>
+                                    <span><strong>Saved Grind Preferences</strong> for espresso, V60, or French press</span>
+                                </div>
+                                <div class="d-flex align-items-start gap-2">
+                                    <i class="bi bi-check-circle-fill text-warning mt-1"></i>
+                                    <span><strong>Priority Harvest Allocation</strong> on limited seasonal micro-lots</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Bottom Testimonial Snippet -->
+                        <div class="position-relative pt-4 border-top border-secondary border-opacity-25 mt-4" style="z-index: 2;">
+                            <p class="fst-italic text-white-50 small mb-1">
+                                "The coffee club experience is sublime. Having fresh roasted beans arrive right on schedule changed our mornings."
+                            </p>
+                            <span class="small text-warning fw-semibold">— Sophie V., Verified Guild Member</span>
+                        </div>
+                    </div>
+
+                    <!-- Right Column: Sign In Form -->
+                    <div class="col-lg-7 p-4 p-md-5 d-flex flex-column justify-content-center">
+                        <div class="max-w-450 mx-auto w-100">
+                            <!-- Form Header -->
+                            <div class="mb-4">
+                                <span class="badge bg-light text-muted border mb-2 px-3 py-1 rounded-pill small fw-bold">
+                                    Member Authentication
+                                </span>
+                                <h2 class="brand-font fw-bold text-dark display-6 mb-1">Sign In</h2>
+                                <p class="text-muted small mb-0">
+                                    Welcome back to LusiTrack Roasters. Please enter your credentials.
+                                </p>
+                            </div>
+
+                            <!-- Clickable Quick Demo Credentials Hint -->
+                            <div class="alert alert-light border rounded-3 p-3 mb-4 d-flex align-items-center justify-content-between"
+                                 style="background-color: var(--coffee-cream-100); border-color: var(--coffee-border) !important;">
+                                <div class="small">
+                                    <strong class="text-dark d-block"><i class="bi bi-lightning-charge text-warning me-1"></i> Quick Demo Access:</strong>
+                                    <span class="text-muted">vip@lusitrack.com &bull; Coffee123!</span>
+                                </div>
+                                <button type="button" class="btn btn-sm btn-outline-dark rounded-pill px-3 py-1" id="fillDemoBtn" style="font-size: 0.78rem;">
+                                    Auto Fill
+                                </button>
+                            </div>
+
+                            <!-- Social Sign-in Buttons -->
+                            <div class="row g-2 mb-3">
+                                <div class="col-6">
+                                    <button type="button" class="btn btn-outline-secondary w-100 rounded-pill py-2 small fw-semibold d-flex align-items-center justify-content-center gap-2"
+                                            onclick="alert('Google Sign-In integration ready.');">
+                                        <i class="bi bi-google text-danger"></i> Google
+                                    </button>
+                                </div>
+                                <div class="col-6">
+                                    <button type="button" class="btn btn-outline-secondary w-100 rounded-pill py-2 small fw-semibold d-flex align-items-center justify-content-center gap-2"
+                                            onclick="alert('Apple ID Sign-In integration ready.');">
+                                        <i class="bi bi-apple text-dark"></i> Apple ID
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Divider -->
+                            <div class="d-flex align-items-center my-3">
+                                <hr class="flex-grow-1 border-secondary opacity-25" />
+                                <span class="px-3 text-muted small text-uppercase" style="font-size: 0.72rem; letter-spacing: 0.08em;">or with email</span>
+                                <hr class="flex-grow-1 border-secondary opacity-25" />
+                            </div>
+
+                            <!-- Login Form -->
+                            <form asp-action="Login" method="post">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" asp-for="ReturnUrl" />
+                                <div asp-validation-summary="ModelOnly" class="text-danger small mb-3"></div>
+
+                                <!-- Email Input -->
+                                <div class="mb-3">
+                                    <label asp-for="Email" class="form-label small fw-semibold text-muted mb-1"></label>
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-light border-end-0 text-muted">
+                                            <i class="bi bi-envelope"></i>
+                                        </span>
+                                        <input asp-for="Email" id="loginEmail" class="form-control border-start-0 ps-0" placeholder="yourname@domain.com" autocomplete="email" />
+                                    </div>
+                                    <span asp-validation-for="Email" class="text-danger small"></span>
+                                </div>
+
+                                <!-- Password Input with Eye Toggle -->
+                                <div class="mb-3">
+                                    <div class="d-flex justify-content-between align-items-center mb-1">
+                                        <label asp-for="Password" class="form-label small fw-semibold text-muted mb-0"></label>
+                                        <a href="javascript:void(0)" onclick="alert('Password reset instructions will be sent to your email.');" 
+                                           class="small text-muted text-decoration-none" style="font-size: 0.78rem;">
+                                            Forgot password?
+                                        </a>
+                                    </div>
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-light border-end-0 text-muted">
+                                            <i class="bi bi-shield-lock"></i>
+                                        </span>
+                                        <input asp-for="Password" id="loginPassword" type="password" class="form-control border-start-0 border-end-0 ps-0" placeholder="••••••••" autocomplete="current-password" />
+                                        <button class="btn btn-outline-secondary border-start-0 text-muted" type="button" id="togglePasswordBtn" title="Toggle password visibility">
+                                            <i class="bi bi-eye" id="togglePasswordIcon"></i>
+                                        </button>
+                                    </div>
+                                    <span asp-validation-for="Password" class="text-danger small"></span>
+                                </div>
+
+                                <!-- Remember Me Checkbox -->
+                                <div class="mb-4 d-flex align-items-center">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" asp-for="RememberMe" id="rememberCheck" />
+                                        <label class="form-check-label small text-secondary" for="rememberCheck">
+                                            Remember this device for 30 days
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <!-- Submit Button -->
+                                <button type="submit" class="btn-coffee-primary w-100 py-3 shadow fs-6">
+                                    <i class="bi bi-door-open-fill me-2"></i> Enter Roaster's Guild
+                                </button>
+                            </form>
+
+                            <!-- Sign Up Link -->
+                            <div class="text-center mt-4 pt-2 border-top small text-muted">
+                                <span>Don't have a coffee account yet?</span>
+                                <a asp-controller="Home" asp-action="Index" class="fw-bold ms-1 text-dark text-decoration-underline">
+                                    Explore Menu & Join Guild
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Toggle password visibility
+        const toggleBtn = document.getElementById('togglePasswordBtn');
+        const passInput = document.getElementById('loginPassword');
+        const passIcon = document.getElementById('togglePasswordIcon');
+
+        if (toggleBtn && passInput && passIcon) {
+            toggleBtn.addEventListener('click', function () {
+                const isPassword = passInput.type === 'password';
+                passInput.type = isPassword ? 'text' : 'password';
+                passIcon.classList.toggle('bi-eye', !isPassword);
+                passIcon.classList.toggle('bi-eye-slash', isPassword);
+            });
+        }
+
+        // Auto-fill demo credentials
+        const demoBtn = document.getElementById('fillDemoBtn');
+        const emailInput = document.getElementById('loginEmail');
+
+        if (demoBtn && emailInput && passInput) {
+            demoBtn.addEventListener('click', function () {
+                emailInput.value = 'vip@lusitrack.com';
+                passInput.value = 'Coffee123!';
+                emailInput.focus();
+            });
+        }
+    });
+</script>
+}

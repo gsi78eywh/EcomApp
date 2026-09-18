@@ -142,6 +142,142 @@ public class CoffeeCatalogService : ICoffeeCatalogService
             Altitude = "Single Estate",
             ImageUrl = "https://images.unsplash.com/photo-1536256263959-770b48d82b0a?auto=format&fit=crop&w=800&q=80",
             IsFeatured = false
+        },
+        new CoffeeProduct
+        {
+            Id = 9,
+            Name = "Colombia Geisha Reserve (250g)",
+            Description = "Award-winning Geisha lot cultivated at 2,000 meters in Huila. Extraordinary cup clarity displaying white tea florals, juicy apricot, and a lavender honey finish.",
+            Price = 22.00m,
+            Category = "Whole Bean Roasts",
+            RoastLevel = "Light",
+            RoastIntensity = 1,
+            Origin = "Huila, Colombia",
+            FlavorNotes = "White Tea • Apricot Nectar • Lavender Honey",
+            Process = "Anaerobic Washed",
+            BrewGuide = "Origami / Kalita Wave / Chemex",
+            Altitude = "1,950m – 2,100m",
+            ImageUrl = "https://images.unsplash.com/photo-1511537190424-bbbab87ac5eb?auto=format&fit=crop&w=800&q=80",
+            IsFeatured = true
+        },
+        new CoffeeProduct
+        {
+            Id = 10,
+            Name = "Guatemala Antigua Peaberry (250g)",
+            Description = "Rare natural mutation where a single round peaberry develops inside the cherry. Incredibly dense bean yielding intense cocoa, sweet Meyer lemon, and warming allspice.",
+            Price = 17.50m,
+            Category = "Whole Bean Roasts",
+            RoastLevel = "Medium",
+            RoastIntensity = 3,
+            Origin = "Antigua Valley, Guatemala",
+            FlavorNotes = "Dark Chocolate • Meyer Lemon • Warm Allspice",
+            Process = "Sun-Dried Washed",
+            BrewGuide = "V60 / Clever Dripper / French Press",
+            Altitude = "1,800m",
+            ImageUrl = "https://images.unsplash.com/photo-1611854779393-1b2da9d400fe?auto=format&fit=crop&w=800&q=80",
+            IsFeatured = false
+        },
+        new CoffeeProduct
+        {
+            Id = 11,
+            Name = "Aussie Flat White",
+            Description = "Expertly pulled double ristretto topped with free-poured velvety steamed whole milk, creating a paper-thin layer of glossy microfoam.",
+            Price = 4.65m,
+            Category = "Espresso & Hot",
+            RoastLevel = "Medium",
+            RoastIntensity = 3,
+            Origin = "East African & South American Blend",
+            FlavorNotes = "Creamy Praline • Cocoa Powder • Sweet Toffee",
+            Process = "Microfoam Steamed",
+            BrewGuide = "Traditional 6oz Ceramic Cup",
+            Altitude = "1,800m Blend",
+            ImageUrl = "https://images.unsplash.com/photo-1577968897966-3d4325b36b61?auto=format&fit=crop&w=800&q=80",
+            IsFeatured = true
+        },
+        new CoffeeProduct
+        {
+            Id = 12,
+            Name = "Single-Origin Dark Mocha",
+            Description = "Double shot espresso fused with artisanal 72% Valrhona single-origin melted chocolate ganache and steamed silky milk, lightly dusted with organic cocoa powder.",
+            Price = 5.25m,
+            Category = "Espresso & Hot",
+            RoastLevel = "Dark",
+            RoastIntensity = 4,
+            Origin = "Huila Colombia & Ecuadorian Cacao",
+            FlavorNotes = "72% Dark Cacao • Roasted Almond • Espresso Crema",
+            Process = "Artisan Ganache Melt",
+            BrewGuide = "Signature Ceramic Mug",
+            Altitude = "1,750m",
+            ImageUrl = "https://images.unsplash.com/photo-1578314675249-a6910f80cc4e?auto=format&fit=crop&w=800&q=80",
+            IsFeatured = false
+        },
+        new CoffeeProduct
+        {
+            Id = 13,
+            Name = "Salted Caramel Cream Cold Brew",
+            Description = "Signature 20-hour steeped cold brew coffee served over clear ice, crowned with a thick, decadent layer of salted burnt caramel cold foam.",
+            Price = 5.60m,
+            Category = "Cold Brew & Iced",
+            RoastLevel = "Medium",
+            RoastIntensity = 3,
+            Origin = "Central American Specialty Blend",
+            FlavorNotes = "Maldon Sea Salt • Burnt Caramel • Smooth Cocoa",
+            Process = "Cold Foam Layered",
+            BrewGuide = "Served Chilled in Highball",
+            Altitude = "1,650m",
+            ImageUrl = "https://images.unsplash.com/photo-1541167760496-1628856ab772?auto=format&fit=crop&w=800&q=80",
+            IsFeatured = true
+        },
+        new CoffeeProduct
+        {
+            Id = 14,
+            Name = "Cascara & Citrus Cold Brew Tonic",
+            Description = "Sparkling Fever-Tree botanical tonic poured over single-origin cold brew and natural coffee cherry cascara syrup, garnished with charred blood orange.",
+            Price = 5.40m,
+            Category = "Cold Brew & Iced",
+            RoastLevel = "Light",
+            RoastIntensity = 1,
+            Origin = "Yirgacheffe & Botanical Tonic",
+            FlavorNotes = "Sparkling Citrus • Hibiscus • Rose Hip",
+            Process = "Cascara Reduction",
+            BrewGuide = "Served over Crystal Ice Sphere",
+            Altitude = "2,000m",
+            ImageUrl = "https://images.unsplash.com/photo-1517256064527-09c73fc73e38?auto=format&fit=crop&w=800&q=80",
+            IsFeatured = false
+        },
+        new CoffeeProduct
+        {
+            Id = 15,
+            Name = "Cardamom Brown Sugar Morning Bun",
+            Description = "Croissant laminated dough swirled with freshly cracked organic green cardamom, dark muscovado brown sugar, and sea salt, baked to golden caramelized perfection.",
+            Price = 4.25m,
+            Category = "Bakery & Treats",
+            RoastLevel = "N/A",
+            RoastIntensity = 0,
+            Origin = "Daily Roastery Bakehouse",
+            FlavorNotes = "Green Cardamom • Caramelized Sugar • Flaky Butter",
+            Process = "Wild Yeast Sourdough",
+            BrewGuide = "Pairs with Pour-Over or Americano",
+            Altitude = "Baked Fresh 5:30 AM",
+            ImageUrl = "https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=800&q=80",
+            IsFeatured = false
+        },
+        new CoffeeProduct
+        {
+            Id = 16,
+            Name = "Espresso Hazelnut Cantucci Biscotti",
+            Description = "Traditional twice-baked Tuscan dipping biscuits loaded with roasted Piedmont hazelnuts, dark chocolate chunks, and a hint of house espresso liqueur.",
+            Price = 3.50m,
+            Category = "Bakery & Treats",
+            RoastLevel = "N/A",
+            RoastIntensity = 0,
+            Origin = "Daily Roastery Bakehouse",
+            FlavorNotes = "Piedmont Hazelnut • Dark Chocolate • Crisp Crunch",
+            Process = "Double Baked Cantucci",
+            BrewGuide = "Crafted for Espresso & Cortado Dipping",
+            Altitude = "Small Batch Pantry",
+            ImageUrl = "https://images.unsplash.com/photo-1558961363-fa8fdf82db35?auto=format&fit=crop&w=800&q=80",
+            IsFeatured = false
         }
     };
 
@@ -160,4 +296,34 @@ public class CoffeeCatalogService : ICoffeeCatalogService
     public CoffeeProduct? GetProductById(int id) => _products.FirstOrDefault(p => p.Id == id);
 
     public IEnumerable<string> GetCategories() => _products.Select(p => p.Category).Distinct().ToList();
+
+    public IEnumerable<CoffeeProduct> SearchProducts(string? query, string? category = null)
+    {
+        var baseList = _products.AsEnumerable();
+
+        if (!string.IsNullOrWhiteSpace(category) && !string.Equals(category, "All", StringComparison.OrdinalIgnoreCase))
+        {
+            baseList = baseList.Where(p => string.Equals(p.Category, category, StringComparison.OrdinalIgnoreCase));
+        }
+
+        if (string.IsNullOrWhiteSpace(query))
+        {
+            return baseList;
+        }
+
+        var terms = query.Trim().Split(' ', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+
+        return baseList.Where(p =>
+        {
+            return terms.All(term =>
+                (p.Name != null && p.Name.Contains(term, StringComparison.OrdinalIgnoreCase)) ||
+                (p.Description != null && p.Description.Contains(term, StringComparison.OrdinalIgnoreCase)) ||
+                (p.FlavorNotes != null && p.FlavorNotes.Contains(term, StringComparison.OrdinalIgnoreCase)) ||
+                (p.Origin != null && p.Origin.Contains(term, StringComparison.OrdinalIgnoreCase)) ||
+                (p.Category != null && p.Category.Contains(term, StringComparison.OrdinalIgnoreCase)) ||
+                (p.RoastLevel != null && p.RoastLevel.Contains(term, StringComparison.OrdinalIgnoreCase)) ||
+                (p.BrewGuide != null && p.BrewGuide.Contains(term, StringComparison.OrdinalIgnoreCase))
+            );
+        });
+    }
 }

@@ -545,7 +545,7 @@ a:hover {
     50% { opacity: 0.85; transform: translate(-50%, -50%) scale(1.1); }
 }
 
-/* Subtle Floating / Bobbing Levitation Frame */
+/* Static Luxury Frame (no up/down floating, static in place) */
 .hero-slider-frame {
     position: relative;
     z-index: 2;
@@ -553,17 +553,7 @@ a:hover {
     padding: 10px;
     background: linear-gradient(135deg, rgba(219, 162, 100, 0.45) 0%, rgba(255, 255, 255, 0.08) 100%);
     box-shadow: var(--shadow-lg), 0 0 50px rgba(196, 126, 66, 0.25);
-    animation: coffeeFloat 6s ease-in-out infinite;
     overflow: visible;
-}
-
-@keyframes coffeeFloat {
-    0%, 100% {
-        transform: translateY(0px) rotate(0deg);
-    }
-    50% {
-        transform: translateY(-12px) rotate(0.4deg);
-    }
 }
 
 /* The carousel viewport */
@@ -584,10 +574,10 @@ a:hover {
     height: 100%;
     opacity: 0;
     visibility: hidden;
-    transform: scale(1.06) translateX(30px);
-    transition: opacity 0.75s cubic-bezier(0.16, 1, 0.3, 1),
-                transform 0.75s cubic-bezier(0.16, 1, 0.3, 1),
-                visibility 0.75s ease;
+    transform: scale(1.04) translateX(20px);
+    transition: opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1),
+                transform 0.85s cubic-bezier(0.16, 1, 0.3, 1),
+                visibility 0.85s ease;
     z-index: 1;
 }
 
@@ -603,11 +593,11 @@ a:hover {
     height: 100%;
     object-fit: cover;
     display: block;
-    transition: transform 5s cubic-bezier(0.25, 1, 0.5, 1);
+    transition: transform 6s cubic-bezier(0.25, 1, 0.5, 1);
 }
 
 .hero-coffee-slide.active .hero-slide-img {
-    transform: scale(1.05);
+    transform: scale(1.04);
 }
 
 /* Sliding / Floating Tag with Micro-animation */
@@ -628,7 +618,7 @@ a:hover {
     align-items: center;
     gap: 12px;
     z-index: 10;
-    transform: translateY(12px);
+    transform: translateY(10px);
     opacity: 0;
     transition: transform 0.5s ease 0.15s, opacity 0.5s ease 0.15s;
 }
@@ -638,44 +628,64 @@ a:hover {
     opacity: 1;
 }
 
-/* Glassmorphic Nav Buttons (Prev / Next) */
+/* Hidden Arrow Buttons (automatic continuous slide without clicks) */
 .hero-slider-nav-btn {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 38px;
-    height: 38px;
-    border-radius: 50%;
-    background: rgba(18, 11, 7, 0.8);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-    border: 1px solid rgba(219, 162, 100, 0.4);
-    color: var(--coffee-gold);
+    display: none !important;
+}
+
+/* ==========================================================================
+   PAGINATION CONTROLS
+   ========================================================================== */
+.pagination-coffee {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.45rem;
+    margin-top: 3rem;
+    padding: 0;
+    list-style: none;
+}
+
+.pagination-coffee .page-item {
+    list-style: none;
+}
+
+.pagination-coffee .page-link {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    font-size: 1.1rem;
-    z-index: 12;
-    cursor: pointer;
+    min-width: 42px;
+    height: 42px;
+    padding: 0 14px;
+    border-radius: var(--radius-pill);
+    background: #ffffff;
+    border: 1.5px solid var(--coffee-border);
+    color: var(--text-primary);
+    font-weight: 600;
+    font-size: 0.92rem;
     transition: var(--transition-fast);
-    opacity: 0.75;
+    text-decoration: none;
 }
 
-.hero-slider-nav-btn:hover {
-    background: var(--coffee-amber);
-    color: #ffffff;
+.pagination-coffee .page-link:hover {
+    background: var(--coffee-cream-100);
     border-color: var(--coffee-amber);
-    opacity: 1;
-    transform: translateY(-50%) scale(1.1);
-    box-shadow: 0 4px 14px rgba(196, 126, 66, 0.4);
+    color: var(--coffee-amber);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-sm);
 }
 
-.hero-slider-nav-btn.prev {
-    left: -14px;
+.pagination-coffee .page-item.active .page-link {
+    background: var(--coffee-900);
+    border-color: var(--coffee-900);
+    color: #ffffff;
+    box-shadow: 0 4px 14px rgba(20, 13, 8, 0.25);
 }
 
-.hero-slider-nav-btn.next {
-    right: -14px;
+.pagination-coffee .page-item.disabled .page-link {
+    opacity: 0.4;
+    pointer-events: none;
+    background: var(--coffee-cream-50);
 }
 
 /* Animated Progress Dots Bar */
@@ -1022,4 +1032,264 @@ a:hover {
 .form-control:focus, .form-select:focus {
     border-color: var(--coffee-amber);
     box-shadow: 0 0 0 0.2rem rgba(196, 126, 66, 0.2);
+}
+
+/* ==========================================================================
+   SEARCH BAR COMPONENTS (NAVBAR, SHOP CATALOG, HERO)
+   ========================================================================== */
+
+/* 1. Navbar Search Bar */
+.search-nav-form {
+    min-width: 200px;
+    max-width: 260px;
+}
+
+.search-nav-group {
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(219, 162, 100, 0.28);
+    border-radius: var(--radius-pill);
+    padding: 2px 4px 2px 8px;
+    transition: var(--transition-smooth);
+}
+
+.search-nav-group:focus-within {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: var(--coffee-gold);
+    box-shadow: 0 0 16px rgba(219, 162, 100, 0.35);
+}
+
+.search-nav-input {
+    background: transparent !important;
+    border: none !important;
+    color: #ffffff !important;
+    font-size: 0.83rem !important;
+    box-shadow: none !important;
+    padding-left: 6px !important;
+}
+
+.search-nav-input::placeholder {
+    color: rgba(255, 255, 255, 0.55) !important;
+}
+
+.btn-nav-search-btn {
+    background: var(--coffee-amber);
+    color: #ffffff;
+    border: none;
+    border-radius: var(--radius-pill);
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    transition: var(--transition-fast);
+}
+
+.btn-nav-search-btn:hover {
+    background: var(--coffee-gold);
+    color: #140d08;
+}
+
+/* 2. Shop Catalog Main Search Bar */
+.shop-search-card {
+    background: #ffffff;
+    border: 1px solid var(--coffee-border);
+    border-radius: var(--radius-xl);
+    padding: 1.25rem 1.5rem;
+    box-shadow: var(--shadow-sm);
+    margin-bottom: 2rem;
+    position: relative;
+}
+
+.shop-search-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.shop-search-icon {
+    position: absolute;
+    left: 1.25rem;
+    font-size: 1.2rem;
+    color: var(--coffee-amber);
+    pointer-events: none;
+    z-index: 5;
+}
+
+.shop-search-input {
+    padding-left: 3.2rem !important;
+    padding-right: 7.5rem !important;
+    height: 54px;
+    border-radius: var(--radius-pill) !important;
+    border: 1.5px solid var(--coffee-border);
+    font-size: 1rem;
+    background-color: var(--coffee-cream-50);
+    transition: var(--transition-smooth);
+}
+
+.shop-search-input:focus {
+    background-color: #ffffff;
+    border-color: var(--coffee-amber);
+    box-shadow: 0 0 0 4px rgba(196, 126, 66, 0.15), 0 6px 20px rgba(196, 126, 66, 0.1);
+}
+
+.shop-search-btn-wrap {
+    position: absolute;
+    right: 6px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    z-index: 5;
+}
+
+.shop-search-clear-btn {
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    font-size: 1rem;
+    padding: 4px 8px;
+    cursor: pointer;
+    transition: var(--transition-fast);
+}
+
+.shop-search-clear-btn:hover {
+    color: var(--coffee-cinnamon);
+}
+
+.shop-search-submit-btn {
+    border-radius: var(--radius-pill);
+    padding: 8px 20px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    background: linear-gradient(135deg, var(--coffee-amber) 0%, var(--coffee-cinnamon) 100%);
+    border: none;
+    color: #ffffff;
+    box-shadow: 0 4px 12px rgba(196, 126, 66, 0.25);
+    transition: var(--transition-fast);
+}
+
+.shop-search-submit-btn:hover {
+    background: linear-gradient(135deg, var(--coffee-gold) 0%, var(--coffee-amber) 100%);
+    color: #1a100a;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(196, 126, 66, 0.35);
+}
+
+/* Quick Search Suggestions & Chips */
+.shop-search-tags {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 1rem;
+    padding-top: 0.85rem;
+    border-top: 1px dashed var(--coffee-border);
+}
+
+.shop-search-tag-label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-right: 4px;
+}
+
+.shop-search-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background: var(--coffee-cream-100);
+    border: 1px solid var(--coffee-border);
+    color: var(--text-secondary);
+    padding: 4px 12px;
+    border-radius: var(--radius-pill);
+    font-size: 0.8rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: var(--transition-fast);
+    cursor: pointer;
+}
+
+.shop-search-chip:hover, .shop-search-chip.active {
+    background: var(--coffee-800);
+    border-color: var(--coffee-800);
+    color: #ffffff;
+    transform: translateY(-1px);
+}
+
+.shop-search-chip.active {
+    background: var(--coffee-amber);
+    border-color: var(--coffee-amber);
+    color: #ffffff;
+}
+
+/* Active Search Result Pill Banner */
+.search-active-banner {
+    background: linear-gradient(135deg, rgba(219, 162, 100, 0.12) 0%, rgba(196, 126, 66, 0.06) 100%);
+    border: 1px solid rgba(219, 162, 100, 0.3);
+    border-radius: var(--radius-md);
+    padding: 0.75rem 1.25rem;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+/* 3. Hero Search Bar */
+.hero-search-bar {
+    position: relative;
+    display: flex;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(219, 162, 100, 0.35);
+    border-radius: var(--radius-pill);
+    padding: 4px 6px 4px 18px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    transition: var(--transition-smooth);
+}
+
+.hero-search-bar:focus-within {
+    background: rgba(255, 255, 255, 0.18);
+    border-color: var(--coffee-gold);
+    box-shadow: 0 10px 40px rgba(219, 162, 100, 0.35);
+}
+
+.hero-search-input {
+    background: transparent !important;
+    border: none !important;
+    color: #ffffff !important;
+    font-size: 0.95rem !important;
+    box-shadow: none !important;
+    flex: 1;
+    height: 44px;
+    outline: none;
+}
+
+.hero-search-input::placeholder {
+    color: rgba(255, 255, 255, 0.6) !important;
+}
+
+.btn-hero-search {
+    background: linear-gradient(135deg, var(--coffee-gold) 0%, var(--coffee-amber) 100%);
+    color: #140d08;
+    font-weight: 700;
+    font-size: 0.88rem;
+    padding: 10px 22px;
+    border: none;
+    border-radius: var(--radius-pill);
+    transition: var(--transition-fast);
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.btn-hero-search:hover {
+    background: #ffffff;
+    color: var(--coffee-950);
+    box-shadow: 0 4px 15px rgba(255, 255, 255, 0.3);
 }

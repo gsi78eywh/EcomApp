@@ -74,9 +74,31 @@
                         </li>
                     </ul>
 
-                    <!-- Right Action / Cart -->
-                    <div class="d-flex align-items-center gap-3">
-                        <a class="btn-nav-cart" asp-controller="Cart" asp-action="Index">
+                    <!-- Navbar Search Bar -->
+                    <form asp-controller="Shop" asp-action="Index" method="get" class="d-flex align-items-center me-lg-3 my-2 my-lg-0 search-nav-form">
+                        <div class="input-group input-group-sm search-nav-group w-100">
+                            <span class="input-group-text bg-transparent border-0 text-warning ps-2 pe-1">
+                                <i class="bi bi-search"></i>
+                            </span>
+                            <input type="text" name="search" class="form-control form-control-sm search-nav-input" 
+                                   placeholder="Search coffees..." 
+                                   value="@(Context.Request.Query["search"].ToString())" 
+                                   aria-label="Search coffees and menus" />
+                            <button class="btn btn-sm btn-nav-search-btn" type="submit" title="Search Menu">
+                                <i class="bi bi-arrow-right"></i>
+                            </button>
+                        </div>
+                    </form>
+
+                    <!-- Right Action / Cart & User -->
+                    <div class="d-flex align-items-center gap-2">
+                        <a class="nav-link text-white-50 d-inline-flex align-items-center gap-1 px-2 py-1 @(currentController == "Account" ? "active text-warning" : "")" 
+                           asp-controller="Account" asp-action="Login" title="Member Sign In">
+                            <i class="bi bi-person-circle fs-5 text-warning"></i>
+                            <span class="d-none d-sm-inline fw-semibold text-white">Sign In</span>
+                        </a>
+
+                        <a class="btn-nav-cart ms-1" asp-controller="Cart" asp-action="Index">
                             <i class="bi bi-bag-check-fill text-warning"></i>
                             <span>Cart</span>
                             @{
@@ -91,6 +113,7 @@
                         </a>
                     </div>
                 </div>
+
             </div>
         </nav>
     </header>

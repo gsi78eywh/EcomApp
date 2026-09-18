@@ -9,4 +9,5 @@ public interface ICoffeeCatalogService
     IEnumerable<CoffeeProduct> GetProductsByCategory(string category);
     CoffeeProduct? GetProductById(int id);
     IEnumerable<string> GetCategories();
+    IEnumerable<CoffeeProduct> SearchProducts(string? query, string? category = null);
 }

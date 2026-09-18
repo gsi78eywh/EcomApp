@@ -3,7 +3,17 @@
     ViewData["Title"] = "Reserve Coffee & Roastery Menu";
     var categories = ViewBag.Categories as IEnumerable<string> ?? Enumerable.Empty<string>();
     var selectedCategory = ViewBag.SelectedCategory as string ?? "All";
+    var searchQuery = ViewBag.SearchQuery as string ?? "";
     var productList = Model.ToList();
+
+    var currentPage = ViewBag.CurrentPage as int? ?? 1;
+    var totalPages = ViewBag.TotalPages as int? ?? 1;
+    var totalItems = ViewBag.TotalItems as int? ?? productList.Count;
+    var pageSize = ViewBag.PageSize as int? ?? 6;
+    var categoryCounts = ViewBag.CategoryCounts as Dictionary<string, int> ?? new Dictionary<string, int>();
+
+    var startItem = totalItems == 0 ? 0 : (currentPage - 1) * pageSize + 1;
+    var endItem = Math.Min(currentPage * pageSize, totalItems);
 }
 
 <!-- Menu Hero Section -->
@@ -20,15 +30,110 @@
 </div>
 
 <div class="container py-5">
+    <!-- Artisanal Coffee & Menu Search Bar -->
+    <div class="shop-search-card">
+        <form asp-action="Index" method="get" id="coffeeSearchForm">
+            <input type="hidden" name="category" value="@selectedCategory" />
+            <div class="shop-search-wrapper">
+                <i class="bi bi-search shop-search-icon"></i>
+                <input type="text" 
+                       id="coffeeSearchInput"
+                       name="search" 
+                       class="form-control shop-search-input" 
+                       placeholder="Search coffees by name, origin (Ethiopia, Colombia...), notes (caramel, jasmine...), or pastries..." 
+                       value="@searchQuery" 
+                       autocomplete="off" />
+                <div class="shop-search-btn-wrap">
+                    @if (!string.IsNullOrEmpty(searchQuery))
+                    {
+                        <a asp-action="Index" asp-route-category="@selectedCategory" class="shop-search-clear-btn" title="Clear search">
+                            <i class="bi bi-x-circle-fill"></i>
+                        </a>
+                    }
+                    <button type="submit" class="shop-search-submit-btn">
+                        <i class="bi bi-search me-1"></i> Search
+                    </button>
+                </div>
+            </div>
+        </form>
+
+        <!-- Quick Pick Tags / Curated Coffee Suggestions -->
+        <div class="shop-search-tags">
+            <span class="shop-search-tag-label">
+                <i class="bi bi-lightning-charge-fill text-warning me-1"></i>Trending:
+            </span>
+            <a asp-action="Index" asp-route-search="Ethiopian" asp-route-category="All" 
+               class="shop-search-chip @(searchQuery.Equals("Ethiopian", StringComparison.OrdinalIgnoreCase) ? "active" : "")">
+                <i class="bi bi-geo-alt"></i> Ethiopian Yirgacheffe
+            </a>
+            <a asp-action="Index" asp-route-search="Geisha" asp-route-category="All" 
+               class="shop-search-chip @(searchQuery.Equals("Geisha", StringComparison.OrdinalIgnoreCase) ? "active" : "")">
+                <i class="bi bi-stars"></i> Colombia Geisha
+            </a>
+            <a asp-action="Index" asp-route-search="Nitro" asp-route-category="All" 
+               class="shop-search-chip @(searchQuery.Equals("Nitro", StringComparison.OrdinalIgnoreCase) ? "active" : "")">
+                <i class="bi bi-snow2"></i> Nitro Cold Brew
+            </a>
+            <a asp-action="Index" asp-route-search="Macchiato" asp-route-category="All" 
+               class="shop-search-chip @(searchQuery.Equals("Macchiato", StringComparison.OrdinalIgnoreCase) ? "active" : "")">
+                <i class="bi bi-cup-hot"></i> Caramel Macchiato
+            </a>
+            <a asp-action="Index" asp-route-search="Croissant" asp-route-category="All" 
+               class="shop-search-chip @(searchQuery.Equals("Croissant", StringComparison.OrdinalIgnoreCase) ? "active" : "")">
+                <i class="bi bi-cake2"></i> Almond Croissant
+            </a>
+            <a asp-action="Index" asp-route-search="Dark" asp-route-category="All" 
+               class="shop-search-chip @(searchQuery.Equals("Dark", StringComparison.OrdinalIgnoreCase) ? "active" : "")">
+                <i class="bi bi-fire"></i> Dark Roast
+            </a>
+            <a asp-action="Index" asp-route-search="Matcha" asp-route-category="All" 
+               class="shop-search-chip @(searchQuery.Equals("Matcha", StringComparison.OrdinalIgnoreCase) ? "active" : "")">
+                <i class="bi bi-flower1"></i> Uji Matcha
+            </a>
+        </div>
+    </div>
+
+    <!-- Active Search Result Banner -->
+    @if (!string.IsNullOrWhiteSpace(searchQuery))
+    {
+        <div class="search-active-banner">
+            <div class="d-flex align-items-center gap-2">
+                <span class="badge bg-warning text-dark px-2 py-1 rounded-pill">
+                    <i class="bi bi-funnel-fill me-1"></i> Filtered
+                </span>
+                <span class="text-dark">
+                    Found <strong>@totalItems</strong> item@(totalItems == 1 ? "" : "s") matching 
+                    "<span class="fw-bold text-dark">@searchQuery</span>"
+                    @if (selectedCategory != "All")
+                    {
+                        <span> in <em>@selectedCategory</em></span>
+                    }
+                </span>
+            </div>
+            <div class="d-flex align-items-center gap-2">
+                <a asp-action="Index" asp-route-category="@selectedCategory" class="btn btn-sm btn-outline-dark rounded-pill px-3">
+                    <i class="bi bi-x-lg me-1"></i> Clear Search
+                </a>
+                @if (selectedCategory != "All")
+                {
+                    <a asp-action="Index" asp-route-search="@searchQuery" asp-route-category="All" class="btn btn-sm btn-coffee-outline rounded-pill px-3">
+                        Search in All Categories
+                    </a>
+                }
+            </div>
+        </div>
+    }
+
     <!-- Category Filter Pills -->
     <div class="filter-pill-container">
-        <a asp-action="Index" asp-route-category="All" 
+        <a asp-action="Index" asp-route-category="All" asp-route-search="@searchQuery" asp-route-page="1" 
            class="filter-pill @(selectedCategory == "All" ? "active" : "")">
-            <i class="bi bi-grid-fill me-1"></i> All Items (@productList.Count)
+            <i class="bi bi-grid-fill me-1"></i> All Items (@(categoryCounts.TryGetValue("All", out var allCount) ? allCount : totalItems))
         </a>
         @foreach (var cat in categories)
         {
-            <a asp-action="Index" asp-route-category="@cat" 
+            var catCount = categoryCounts.TryGetValue(cat, out var cnt) ? cnt : 0;
+            <a asp-action="Index" asp-route-category="@cat" asp-route-search="@searchQuery" asp-route-page="1" 
                class="filter-pill @(selectedCategory == cat ? "active" : "")">
                 @if (cat.Contains("Whole Bean"))
                 {
@@ -46,35 +151,72 @@
                 {
                     <i class="bi bi-cup-hot-fill text-warning me-1"></i>
                 }
-                @cat
+                @cat (@catCount)
             </a>
         }
     </div>
 
-    <!-- Product Grid -->
+    <!-- Product Grid & Pagination Info -->
     @if (!productList.Any())
     {
         <div class="card border-0 shadow-sm rounded-4 p-5 text-center bg-white my-4">
             <div class="mb-3">
                 <div class="brand-icon-wrap mx-auto" style="width: 72px; height: 72px; font-size: 2rem;">
-                    <i class="bi bi-cup"></i>
+                    <i class="bi bi-search text-warning"></i>
                 </div>
             </div>
-            <h3 class="brand-font fw-bold">No Coffees Found</h3>
-            <p class="text-muted">There are currently no items matching the selected category.</p>
-            <div class="mt-3">
-                <a asp-action="Index" asp-route-category="All" class="btn-coffee-primary text-decoration-none">
-                    View Complete Menu
-                </a>
-            </div>
+            @if (!string.IsNullOrWhiteSpace(searchQuery))
+            {
+                <h3 class="brand-font fw-bold">No Matches Found</h3>
+                <p class="text-muted max-w-500 mx-auto">
+                    We couldn't find any coffees or menu items matching "<strong>@searchQuery</strong>" 
+                    @(selectedCategory != "All" ? $"within the {selectedCategory} category" : "").
+                </p>
+                <div class="d-flex justify-content-center gap-3 mt-3">
+                    @if (selectedCategory != "All")
+                    {
+                        <a asp-action="Index" asp-route-search="@searchQuery" asp-route-category="All" class="btn btn-coffee-outline">
+                            Search All Categories
+                        </a>
+                    }
+                    <a asp-action="Index" asp-route-category="All" class="btn btn-coffee-primary">
+                        View Complete Menu
+                    </a>
+                </div>
+            }
+            else
+            {
+                <h3 class="brand-font fw-bold">No Coffees Found</h3>
+                <p class="text-muted">There are currently no items matching the selected category.</p>
+                <div class="mt-3">
+                    <a asp-action="Index" asp-route-category="All" asp-route-page="1" class="btn btn-coffee-primary text-decoration-none">
+                        View Complete Menu
+                    </a>
+                </div>
+            }
         </div>
     }
     else
     {
-        <div class="row g-4">
+        <!-- Pagination Count Bar -->
+        <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-2">
+            <span class="text-muted small">
+                Showing <strong>@startItem – @endItem</strong> of <strong>@totalItems</strong> specialty coffees
+            </span>
+            <span class="badge bg-white border text-dark px-3 py-2 rounded-pill small">
+                Page @currentPage of @totalPages
+            </span>
+        </div>
+
+        <!-- Product Cards Grid -->
+        <div class="row g-4" id="coffeeCatalogGrid">
             @foreach (var item in productList)
             {
-                <div class="col-md-6 col-lg-4 col-xl-3">
+                <div class="col-md-6 col-lg-4 coffee-card-item" 
+                     data-name="@item.Name.ToLowerInvariant()" 
+                     data-origin="@(item.Origin?.ToLowerInvariant() ?? "")" 
+                     data-flavor="@(item.FlavorNotes?.ToLowerInvariant() ?? "")" 
+                     data-category="@item.Category.ToLowerInvariant()">
                     <div class="card card-coffee h-100 d-flex flex-column">
                         <!-- Product Image Wrap -->
                         <div class="card-coffee-img-wrap">
@@ -154,5 +296,79 @@
                 </div>
             }
         </div>
+
+        <!-- Pagination Controls -->
+        @if (totalPages > 1)
+        {
+            <nav aria-label="Coffee Catalog Pagination" class="mt-4">
+                <ul class="pagination-coffee">
+                    <!-- Previous Button -->
+                    <li class="page-item @(currentPage <= 1 ? "disabled" : "")">
+                        <a class="page-link" asp-action="Index" asp-route-category="@selectedCategory" asp-route-search="@searchQuery" asp-route-page="@(currentPage - 1)" aria-label="Previous Page">
+                            <i class="bi bi-chevron-left"></i>
+                        </a>
+                    </li>
+
+                    <!-- Numbered Pages -->
+                    @for (int p = 1; p <= totalPages; p++)
+                    {
+                        <li class="page-item @(p == currentPage ? "active" : "")">
+                            <a class="page-link" asp-action="Index" asp-route-category="@selectedCategory" asp-route-search="@searchQuery" asp-route-page="@p">
+                                @p
+                            </a>
+                        </li>
+                    }
+
+                    <!-- Next Button -->
+                    <li class="page-item @(currentPage >= totalPages ? "disabled" : "")">
+                        <a class="page-link" asp-action="Index" asp-route-category="@selectedCategory" asp-route-search="@searchQuery" asp-route-page="@(currentPage + 1)" aria-label="Next Page">
+                            <i class="bi bi-chevron-right"></i>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        }
     }
 </div>
+
+@section Scripts {
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const searchInput = document.getElementById('coffeeSearchInput');
+        const clearBtn = document.querySelector('.shop-search-clear-btn');
+        const cardItems = document.querySelectorAll('.coffee-card-item');
+
+        if (!searchInput) return;
+
+        // Debounced live filter on current page items while typing
+        let liveFilterTimeout = null;
+        searchInput.addEventListener('input', function () {
+            clearTimeout(liveFilterTimeout);
+            const query = this.value.trim().toLowerCase();
+
+            liveFilterTimeout = setTimeout(() => {
+                if (!cardItems.length) return;
+                
+                if (query === '') {
+                    cardItems.forEach(card => card.style.display = '');
+                    return;
+                }
+
+                cardItems.forEach(card => {
+                    const name = card.dataset.name || '';
+                    const origin = card.dataset.origin || '';
+                    const flavor = card.dataset.flavor || '';
+                    const category = card.dataset.category || '';
+
+                    const matches = name.includes(query) || 
+                                    origin.includes(query) || 
+                                    flavor.includes(query) || 
+                                    category.includes(query);
+
+                    card.style.display = matches ? '' : 'none';
+                });
+            }, 150);
+        });
+    });
+</script>
+}
