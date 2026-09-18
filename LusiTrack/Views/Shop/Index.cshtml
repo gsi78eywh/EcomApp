@@ -1,94 +1,158 @@
 @model IEnumerable<CoffeeProduct>
 @{
-    ViewData["Title"] = "Coffee & Bakery Menu";
+    ViewData["Title"] = "Reserve Coffee & Roastery Menu";
     var categories = ViewBag.Categories as IEnumerable<string> ?? Enumerable.Empty<string>();
     var selectedCategory = ViewBag.SelectedCategory as string ?? "All";
+    var productList = Model.ToList();
 }
 
-<div class="container py-4">
-    <!-- Header -->
-    <div class="text-center mb-5">
-        <span class="badge bg-warning text-dark px-3 py-2 text-uppercase fw-bold mb-2 rounded-pill">
-            Specialty Roasts & Drinks
+<!-- Menu Hero Section -->
+<div class="py-5 text-white" style="background: radial-gradient(circle at 50% 30%, #3a2215 0%, #170d08 100%); border-bottom: 1px solid rgba(219, 162, 100, 0.2);">
+    <div class="container text-center py-2">
+        <span class="hero-badge mb-3">
+            <i class="bi bi-cup-hot-fill text-warning"></i> Sourced Directly from Origin
         </span>
-        <h1 class="brand-font display-5 fw-bold">Our Handcrafted Menu</h1>
-        <p class="text-muted max-w-600 mx-auto">
-            From single-origin pour-overs and silky nitro brews to locally baked morning pastries.
+        <h1 class="display-4 brand-font fw-bold mb-3 text-white">Our Handcrafted Menu</h1>
+        <p class="lead text-white-50 max-w-700 mx-auto" style="font-size: 1.1rem; line-height: 1.6;">
+            Explore rare single-origin roasts, signature espresso drinks, velvet cold brews, and fresh morning pastries baked daily in our roastery.
         </p>
     </div>
+</div>
 
-    <!-- Category Filters -->
-    <div class="d-flex flex-wrap justify-content-center gap-2 mb-5">
+<div class="container py-5">
+    <!-- Category Filter Pills -->
+    <div class="filter-pill-container">
         <a asp-action="Index" asp-route-category="All" 
-           class="btn rounded-pill px-4 py-2 fw-semibold @(selectedCategory == "All" ? "btn-dark" : "btn-outline-secondary")">
-            All Items
+           class="filter-pill @(selectedCategory == "All" ? "active" : "")">
+            <i class="bi bi-grid-fill me-1"></i> All Items (@productList.Count)
         </a>
         @foreach (var cat in categories)
         {
             <a asp-action="Index" asp-route-category="@cat" 
-               class="btn rounded-pill px-4 py-2 fw-semibold @(selectedCategory == cat ? "btn-dark" : "btn-outline-secondary")">
+               class="filter-pill @(selectedCategory == cat ? "active" : "")">
+                @if (cat.Contains("Whole Bean"))
+                {
+                    <i class="bi bi-bag-check-fill text-warning me-1"></i>
+                }
+                else if (cat.Contains("Cold"))
+                {
+                    <i class="bi bi-snow2 text-info me-1"></i>
+                }
+                else if (cat.Contains("Bakery"))
+                {
+                    <i class="bi bi-cake2-fill text-warning me-1"></i>
+                }
+                else
+                {
+                    <i class="bi bi-cup-hot-fill text-warning me-1"></i>
+                }
                 @cat
             </a>
         }
     </div>
 
     <!-- Product Grid -->
-    <div class="row g-4">
-        @if (!Model.Any())
-        {
-            <div class="col-12 text-center py-5">
-                <i class="bi bi-cup text-muted display-4 d-block mb-3"></i>
-                <h4 class="text-muted">No products found in this category.</h4>
-                <a asp-action="Index" asp-route-category="All" class="btn btn-warning rounded-pill mt-3">View All Products</a>
+    @if (!productList.Any())
+    {
+        <div class="card border-0 shadow-sm rounded-4 p-5 text-center bg-white my-4">
+            <div class="mb-3">
+                <div class="brand-icon-wrap mx-auto" style="width: 72px; height: 72px; font-size: 2rem;">
+                    <i class="bi bi-cup"></i>
+                </div>
             </div>
-        }
-        else
-        {
-            @foreach (var item in Model)
+            <h3 class="brand-font fw-bold">No Coffees Found</h3>
+            <p class="text-muted">There are currently no items matching the selected category.</p>
+            <div class="mt-3">
+                <a asp-action="Index" asp-route-category="All" class="btn-coffee-primary text-decoration-none">
+                    View Complete Menu
+                </a>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="row g-4">
+            @foreach (var item in productList)
             {
                 <div class="col-md-6 col-lg-4 col-xl-3">
                     <div class="card card-coffee h-100 d-flex flex-column">
-                        <div class="position-relative">
-                            <img src="@item.ImageUrl" class="card-img-top" alt="@item.Name" style="height: 220px; object-fit: cover;" />
-                            <span class="position-absolute top-0 end-0 m-2 badge bg-dark bg-opacity-75 badge-roast text-warning">
-                                @item.Category
-                            </span>
-                            @if (item.RoastLevel != "N/A")
+                        <!-- Product Image Wrap -->
+                        <div class="card-coffee-img-wrap">
+                            <a asp-action="Details" asp-route-id="@item.Id">
+                                <img src="@item.ImageUrl" class="card-coffee-img" alt="@item.Name" loading="lazy" />
+                            </a>
+                            <span class="badge-overlay-category">@item.Category</span>
+                            @if (!string.IsNullOrEmpty(item.Origin))
                             {
-                                <span class="position-absolute top-0 start-0 m-2 badge bg-light text-dark shadow-sm">
-                                    @item.RoastLevel Roast
+                                <span class="badge-overlay-origin">
+                                    <i class="bi bi-geo-alt-fill text-warning"></i> @item.Origin
                                 </span>
                             }
                         </div>
-                        <div class="card-body d-flex flex-column p-3">
+
+                        <!-- Card Body -->
+                        <div class="card-body p-4 d-flex flex-column">
+                            <!-- Roast Meter & Tag -->
                             <div class="d-flex justify-content-between align-items-center mb-2">
-                                <span class="fw-bold fs-5 text-success">@item.Price.ToString("C")</span>
+                                <span class="small fw-semibold text-secondary">
+                                    @(item.RoastLevel != "N/A" ? $"{item.RoastLevel} Roast" : "Artisanal Specialty")
+                                </span>
+                                @if (item.RoastIntensity > 0)
+                                {
+                                    <div class="roast-meter" title="Roast Intensity: @item.RoastIntensity / 5">
+                                        @for (int i = 1; i <= 5; i++)
+                                        {
+                                            <span class="roast-dot @(i <= item.RoastIntensity ? "filled" : "")"></span>
+                                        }
+                                    </div>
+                                }
                             </div>
-                            <h5 class="card-title brand-font fs-6 fw-bold mb-2">
+
+                            <!-- Product Name -->
+                            <h5 class="brand-font fs-6 fw-bold mb-2">
                                 <a asp-action="Details" asp-route-id="@item.Id" class="text-dark text-decoration-none">
                                     @item.Name
                                 </a>
                             </h5>
-                            <p class="card-text small text-muted flex-grow-1" style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
+
+                            <!-- Flavor Notes Pill -->
+                            @if (!string.IsNullOrEmpty(item.FlavorNotes))
+                            {
+                                <div class="mb-2">
+                                    <span class="flavor-pill">
+                                        <i class="bi bi-flower1 text-warning me-1"></i> @item.FlavorNotes
+                                    </span>
+                                </div>
+                            }
+
+                            <!-- Description -->
+                            <p class="text-muted small flex-grow-1 mb-3" style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; line-height: 1.5;">
                                 @item.Description
                             </p>
-                            <div class="d-flex gap-2 mt-3 pt-2 border-top">
-                                <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-outline-secondary btn-sm flex-fill">
-                                    Details
-                                </a>
-                                <form asp-controller="Cart" asp-action="AddToCart" method="post" class="flex-fill">
-                                    <input type="hidden" name="productId" value="@item.Id" />
-                                    <input type="hidden" name="quantity" value="1" />
-                                    <input type="hidden" name="returnUrl" value="@Context.Request.Path@Context.Request.QueryString" />
-                                    <button type="submit" class="btn btn-warning btn-sm w-100 fw-semibold text-dark">
-                                        <i class="bi bi-plus-lg"></i> Add
-                                    </button>
-                                </form>
+
+                            <!-- Price & Bottom Controls -->
+                            <div class="pt-3 border-top d-flex align-items-center justify-content-between gap-2">
+                                <div>
+                                    <span class="fs-5 fw-bold text-dark">@item.Price.ToString("C")</span>
+                                </div>
+                                <div class="d-flex gap-2">
+                                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-coffee-outline px-3">
+                                        Details
+                                    </a>
+                                    <form asp-controller="Cart" asp-action="AddToCart" method="post" class="d-inline">
+                                        <input type="hidden" name="productId" value="@item.Id" />
+                                        <input type="hidden" name="quantity" value="1" />
+                                        <input type="hidden" name="returnUrl" value="@Context.Request.Path@Context.Request.QueryString" />
+                                        <button type="submit" class="btn btn-sm btn-coffee-primary px-3">
+                                            <i class="bi bi-plus-lg"></i> Add
+                                        </button>
+                                    </form>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             }
-        }
-    </div>
+        </div>
+    }
 </div>

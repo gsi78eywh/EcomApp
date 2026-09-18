@@ -1,140 +1,623 @@
 @model IEnumerable<CoffeeProduct>
 @{
-    ViewData["Title"] = "Artisanal Coffee & Roastery";
-    var categories = ViewBag.Categories as IEnumerable<string> ?? Enumerable.Empty<string>();
+    ViewData["Title"] = "Artisanal Specialty Coffee Roasters";
 }
 
-<!-- Hero Section -->
-<section class="py-5 text-white mb-5 shadow-sm" style="background: linear-gradient(135deg, #20130b 0%, #3d2314 60%, #683b1d 100%);">
-    <div class="container py-4">
+<!-- Cinematic Hero Section -->
+<section class="hero-coffee">
+    <div class="container position-relative" style="z-index: 2;">
         <div class="row align-items-center g-5">
+            <!-- Left Column: Copy & Actions -->
             <div class="col-lg-7">
-                <span class="badge bg-warning text-dark px-3 py-2 text-uppercase fw-bold mb-3 rounded-pill">
-                    <i class="bi bi-stars"></i> Specialty Grade Coffee
-                </span>
-                <h1 class="display-3 fw-bold mb-3 brand-font">Freshly Roasted.<br />Obsessively Brewed.</h1>
-                <p class="lead mb-4 opacity-75">
-                    Experience rich aromas, single-origin roasts, and crafted espresso drinks made from ethically sourced beans harvested at peak ripeness.
+                <div class="d-inline-flex align-items-center gap-2 mb-3">
+                    <span class="hero-badge">
+                        <i class="bi bi-stars"></i> Specialty Coffee Reserve
+                    </span>
+                    <span class="badge bg-warning bg-opacity-20 text-warning px-3 py-1 rounded-pill small fw-semibold">
+                        <i class="bi bi-star-fill text-warning me-1"></i> 4.9/5 (1,200+ Reviews)
+                    </span>
+                </div>
+
+                <h1 class="display-3 fw-bold mb-3 text-white" style="letter-spacing: -0.02em; line-height: 1.15;">
+                    Obsessively Roasted.<br />
+                    <span style="color: var(--coffee-gold);">Mindfully Sourced.</span>
+                </h1>
+
+                <p class="lead mb-4 text-white-50" style="max-width: 580px; font-size: 1.15rem; line-height: 1.7;">
+                    Hand-crafted single origin harvests and velvety espresso blends, roasted in micro-batches and shipped within 48 hours of degassing. Taste coffee at its absolute peak.
                 </p>
-                <div class="d-flex flex-wrap gap-3">
-                    <a asp-controller="Shop" asp-action="Index" class="btn btn-warning btn-lg px-4 py-3 fw-bold text-dark rounded-pill shadow-sm">
-                        <i class="bi bi-cup-hot-fill me-2"></i> Explore Our Menu
+
+                <div class="d-flex flex-wrap gap-3 pt-2">
+                    <a asp-controller="Shop" asp-action="Index" class="btn-coffee-primary text-decoration-none">
+                        <i class="bi bi-cup-hot-fill"></i> Explore Reserve Menu
                     </a>
-                    <a asp-controller="Home" asp-action="About" class="btn btn-outline-light btn-lg px-4 py-3 fw-semibold rounded-pill">
-                        Our Story
+                    <a asp-controller="Home" asp-action="About" class="btn btn-coffee-outline text-white border-white border-opacity-25">
+                        Our Roastery Story <i class="bi bi-arrow-right ms-1"></i>
                     </a>
                 </div>
+
+                <!-- Quick highlights underneath buttons -->
+                <div class="d-flex align-items-center gap-4 mt-5 pt-3 border-top border-secondary border-opacity-25 text-white-50 small">
+                    <div class="d-flex align-items-center gap-2">
+                        <i class="bi bi-check-circle-fill text-warning"></i>
+                        <span>Small-Batch Drum Roasted</span>
+                    </div>
+                    <div class="d-flex align-items-center gap-2">
+                        <i class="bi bi-check-circle-fill text-warning"></i>
+                        <span>Direct-Trade Certified</span>
+                    </div>
+                    <div class="d-flex align-items-center gap-2">
+                        <i class="bi bi-check-circle-fill text-warning"></i>
+                        <span>Freshly Sealed with Valve</span>
+                    </div>
+                </div>
             </div>
-            <div class="col-lg-5 text-center d-none d-lg-block">
-                <img src="https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?auto=format&fit=crop&w=600&q=80" 
-                     alt="Artisanal Pour-Over Coffee" 
-                     class="img-fluid rounded-4 shadow-lg border border-warning border-opacity-25" 
-                     style="max-height: 420px; object-fit: cover;" />
+
+            <!-- Right Column: Dynamic Animated Coffee Showcase -->
+            <div class="col-lg-5">
+                <div class="hero-slider-wrap">
+                    <!-- Ambient Glow Halo -->
+                    <div class="hero-slider-glow"></div>
+
+                    <!-- Floating Frame -->
+                    <div class="hero-slider-frame">
+                        <!-- Progress Indicator Dots -->
+                        <div class="hero-slider-dots">
+                            <button type="button" class="slider-dot active" data-slide-to="0" aria-label="Slide 1">
+                                <span class="dot-progress"></span>
+                            </button>
+                            <button type="button" class="slider-dot" data-slide-to="1" aria-label="Slide 2">
+                                <span class="dot-progress"></span>
+                            </button>
+                            <button type="button" class="slider-dot" data-slide-to="2" aria-label="Slide 3">
+                                <span class="dot-progress"></span>
+                            </button>
+                            <button type="button" class="slider-dot" data-slide-to="3" aria-label="Slide 4">
+                                <span class="dot-progress"></span>
+                            </button>
+                        </div>
+
+                        <!-- Viewport containing the slides -->
+                        <div class="hero-slider-viewport">
+                            <!-- Slide 1: Pour Over Coffee Cup (The original favorite!) -->
+                            <div class="hero-coffee-slide active" data-index="0">
+                                <img src="https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?auto=format&fit=crop&w=800&q=80" 
+                                     alt="Artisanal Pour-Over Coffee with Rich Golden Crema" class="hero-slide-img" />
+                                <div class="hero-floating-tag">
+                                    <div class="brand-icon-wrap" style="width: 42px; height: 42px; flex-shrink: 0;">
+                                        <i class="bi bi-fire text-dark"></i>
+                                    </div>
+                                    <div>
+                                        <div class="small fw-bold text-white">Ethiopian Yirgacheffe G1</div>
+                                        <div class="small text-warning" style="font-size: 0.76rem;">Single-Origin • Jasmine & Sweet Bergamot</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Slide 2: Signature Caramel Macchiato -->
+                            <div class="hero-coffee-slide" data-index="1">
+                                <img src="https://images.unsplash.com/photo-1485808191679-5f86510681a2?auto=format&fit=crop&w=800&q=80" 
+                                     alt="Signature Caramel Macchiato with Steamed Micro-Foam" class="hero-slide-img" />
+                                <div class="hero-floating-tag">
+                                    <div class="brand-icon-wrap" style="width: 42px; height: 42px; flex-shrink: 0;">
+                                        <i class="bi bi-cup-hot-fill text-dark"></i>
+                                    </div>
+                                    <div>
+                                        <div class="small fw-bold text-white">Signature Caramel Macchiato</div>
+                                        <div class="small text-warning" style="font-size: 0.76rem;">Antioquia Roast • Burnt Butter Caramel Drizzle</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Slide 3: Velvet Nitro Cold Brew Draft -->
+                            <div class="hero-coffee-slide" data-index="2">
+                                <img src="https://images.unsplash.com/photo-1517701550927-30cf4ba1dba5?auto=format&fit=crop&w=800&q=80" 
+                                     alt="Velvet Nitro Cold Brew Draft with Micro Nitrogen Cascades" class="hero-slide-img" />
+                                <div class="hero-floating-tag">
+                                    <div class="brand-icon-wrap" style="width: 42px; height: 42px; flex-shrink: 0;">
+                                        <i class="bi bi-snow2 text-dark"></i>
+                                    </div>
+                                    <div>
+                                        <div class="small fw-bold text-white">Velvet Nitro Cold Brew</div>
+                                        <div class="small text-warning" style="font-size: 0.76rem;">20h Slow Steeped • Cascading Crema Draft</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Slide 4: Spanish Cortado in Gibraltar Glass -->
+                            <div class="hero-coffee-slide" data-index="3">
+                                <img src="https://images.unsplash.com/photo-1534778101976-62847782c213?auto=format&fit=crop&w=800&q=80" 
+                                     alt="Spanish Cortado Handcrafted Ristretto with Silky Milk" class="hero-slide-img" />
+                                <div class="hero-floating-tag">
+                                    <div class="brand-icon-wrap" style="width: 42px; height: 42px; flex-shrink: 0;">
+                                        <i class="bi bi-stars text-dark"></i>
+                                    </div>
+                                    <div>
+                                        <div class="small fw-bold text-white">Spanish Cortado</div>
+                                        <div class="small text-warning" style="font-size: 0.76rem;">Tarrazú Costa Rica • 1:1 Silky Espresso Balance</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Prev / Next Interactive Arrow Buttons -->
+                        <button type="button" class="hero-slider-nav-btn prev" id="heroPrevBtn" aria-label="Previous Harvest">
+                            <i class="bi bi-chevron-left"></i>
+                        </button>
+                        <button type="button" class="hero-slider-nav-btn next" id="heroNextBtn" aria-label="Next Harvest">
+                            <i class="bi bi-chevron-right"></i>
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 </section>
 
-<div class="container">
-    <!-- Value Badges -->
-    <div class="row g-4 text-center mb-5">
-        <div class="col-6 col-md-3">
-            <div class="p-3 bg-white rounded-3 shadow-sm h-100 border">
-                <i class="bi bi-award text-warning fs-1 mb-2 d-block"></i>
-                <h6 class="fw-bold mb-1">Single-Origin</h6>
-                <small class="text-muted">Top 1% harvest beans</small>
-            </div>
-        </div>
-        <div class="col-6 col-md-3">
-            <div class="p-3 bg-white rounded-3 shadow-sm h-100 border">
-                <i class="bi bi-fire text-warning fs-1 mb-2 d-block"></i>
-                <h6 class="fw-bold mb-1">Micro-Roast</h6>
-                <small class="text-muted">Roasted in small batches</small>
-            </div>
-        </div>
-        <div class="col-6 col-md-3">
-            <div class="p-3 bg-white rounded-3 shadow-sm h-100 border">
-                <i class="bi bi-heart text-warning fs-1 mb-2 d-block"></i>
-                <h6 class="fw-bold mb-1">Ethical Trade</h6>
-                <small class="text-muted">Direct farmer partnerships</small>
-            </div>
-        </div>
-        <div class="col-6 col-md-3">
-            <div class="p-3 bg-white rounded-3 shadow-sm h-100 border">
-                <i class="bi bi-truck text-warning fs-1 mb-2 d-block"></i>
-                <h6 class="fw-bold mb-1">Fresh Delivery</h6>
-                <small class="text-muted">Free on orders over $35</small>
-            </div>
-        </div>
-    </div>
-
-    <!-- Category Highlights -->
-    <div class="d-flex justify-content-between align-items-end mb-4">
-        <div>
-            <h2 class="brand-font fw-bold mb-1">Featured Blends & Drinks</h2>
-            <p class="text-muted mb-0">Hand-selected favorites recommended by our head roaster</p>
-        </div>
-        <a asp-controller="Shop" asp-action="Index" class="btn btn-outline-dark rounded-pill fw-semibold btn-sm px-3">
-            View All Menu <i class="bi bi-arrow-right"></i>
-        </a>
-    </div>
-
-    <!-- Product Grid -->
-    <div class="row g-4 mb-5">
-        @foreach (var item in Model)
-        {
-            <div class="col-md-6 col-lg-3">
-                <div class="card card-coffee h-100 d-flex flex-column">
-                    <div class="position-relative">
-                        <img src="@item.ImageUrl" class="card-img-top" alt="@item.Name" style="height: 200px; object-fit: cover;" />
-                        <span class="position-absolute top-0 end-0 m-2 badge bg-dark bg-opacity-75 badge-roast text-warning">
-                            @item.Category
-                        </span>
+<!-- Roastery Value Pillars -->
+<section class="py-5" style="margin-top: -2rem; position: relative; z-index: 3;">
+    <div class="container">
+        <div class="row g-3">
+            <div class="col-6 col-lg-3">
+                <div class="feature-badge-card">
+                    <div class="feature-badge-icon">
+                        <i class="bi bi-award"></i>
                     </div>
-                    <div class="card-body d-flex flex-column p-3">
-                        <div class="d-flex justify-content-between align-items-center mb-1">
-                            <span class="badge bg-secondary bg-opacity-10 text-dark small">@item.RoastLevel</span>
-                            <span class="fw-bold fs-5 text-success">@item.Price.ToString("C")</span>
+                    <h6 class="fw-bold mb-1">Top 1% Specialty Arabica</h6>
+                    <p class="text-muted small mb-0">Strictly high-altitude specialty grade (85+ SCA score).</p>
+                </div>
+            </div>
+            <div class="col-6 col-lg-3">
+                <div class="feature-badge-card">
+                    <div class="feature-badge-icon">
+                        <i class="bi bi-fire"></i>
+                    </div>
+                    <h6 class="fw-bold mb-1">5kg Drum Micro-Roast</h6>
+                    <p class="text-muted small mb-0">Hand-profiled to unlock delicate origin nuances.</p>
+                </div>
+            </div>
+            <div class="col-6 col-lg-3">
+                <div class="feature-badge-card">
+                    <div class="feature-badge-icon">
+                        <i class="bi bi-people"></i>
+                    </div>
+                    <h6 class="fw-bold mb-1">Direct Trade Ethics</h6>
+                    <p class="text-muted small mb-0">Paying up to 150% above fair-trade market rates.</p>
+                </div>
+            </div>
+            <div class="col-6 col-lg-3">
+                <div class="feature-badge-card">
+                    <div class="feature-badge-icon">
+                        <i class="bi bi-box-seam"></i>
+                    </div>
+                    <h6 class="fw-bold mb-1">48-Hour Fresh Dispatch</h6>
+                    <p class="text-muted small mb-0">Degassed and shipped in recyclable one-way valve bags.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Featured Harvests Section -->
+<section class="py-5">
+    <div class="container">
+        <div class="d-flex flex-wrap justify-content-between align-items-end mb-4">
+            <div>
+                <span class="text-uppercase small fw-bold text-muted" style="letter-spacing: 0.1em;">Curated Harvests</span>
+                <h2 class="display-6 fw-bold mb-1 brand-font">Roaster's Featured Reserve</h2>
+                <p class="text-muted mb-0">Seasonal micro-lots and house favorites selected by our master roaster.</p>
+            </div>
+            <div class="mt-3 mt-md-0">
+                <a asp-controller="Shop" asp-action="Index" class="btn-coffee-outline">
+                    View Complete Menu <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+
+        <!-- Product Cards Grid -->
+        <div class="row g-4">
+            @foreach (var item in Model)
+            {
+                <div class="col-md-6 col-lg-3">
+                    <div class="card card-coffee h-100 d-flex flex-column">
+                        <!-- Card Media -->
+                        <div class="card-coffee-img-wrap">
+                            <a asp-controller="Shop" asp-action="Details" asp-route-id="@item.Id">
+                                <img src="@item.ImageUrl" class="card-coffee-img" alt="@item.Name" loading="lazy" />
+                            </a>
+                            <span class="badge-overlay-category">@item.Category</span>
+                            @if (!string.IsNullOrEmpty(item.Origin))
+                            {
+                                <span class="badge-overlay-origin">
+                                    <i class="bi bi-geo-alt-fill text-warning"></i> @item.Origin
+                                </span>
+                            }
                         </div>
-                        <h5 class="card-title brand-font fs-6 fw-bold mb-2">
-                            <a asp-controller="Shop" asp-action="Details" asp-route-id="@item.Id" class="text-dark text-decoration-none">
-                                @item.Name
-                            </a>
-                        </h5>
-                        <p class="card-text small text-muted flex-grow-1" style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
-                            @item.Description
-                        </p>
-                        <div class="d-flex gap-2 mt-3 pt-2 border-top">
-                            <a asp-controller="Shop" asp-action="Details" asp-route-id="@item.Id" class="btn btn-outline-secondary btn-sm flex-fill">
-                                Details
-                            </a>
-                            <form asp-controller="Cart" asp-action="AddToCart" method="post" class="flex-fill">
-                                <input type="hidden" name="productId" value="@item.Id" />
-                                <input type="hidden" name="quantity" value="1" />
-                                <input type="hidden" name="returnUrl" value="@Context.Request.Path" />
-                                <button type="submit" class="btn btn-warning btn-sm w-100 fw-semibold text-dark">
-                                    <i class="bi bi-plus-lg"></i> Add
-                                </button>
-                            </form>
+
+                        <!-- Card Details -->
+                        <div class="card-body p-4 d-flex flex-column">
+                            <!-- Roast Level & Intensity -->
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span class="small fw-semibold text-secondary">
+                                    @(item.RoastLevel != "N/A" ? $"{item.RoastLevel} Roast" : "Artisanal")
+                                </span>
+                                @if (item.RoastIntensity > 0)
+                                {
+                                    <div class="roast-meter" title="Roast Intensity: @item.RoastIntensity / 5">
+                                        @for (int i = 1; i <= 5; i++)
+                                        {
+                                            <span class="roast-dot @(i <= item.RoastIntensity ? "filled" : "")"></span>
+                                        }
+                                    </div>
+                                }
+                            </div>
+
+                            <!-- Product Title -->
+                            <h5 class="brand-font fs-6 fw-bold mb-2">
+                                <a asp-controller="Shop" asp-action="Details" asp-route-id="@item.Id" class="text-dark text-decoration-none">
+                                    @item.Name
+                                </a>
+                            </h5>
+
+                            <!-- Tasting Notes Pill -->
+                            @if (!string.IsNullOrEmpty(item.FlavorNotes))
+                            {
+                                <div class="mb-2">
+                                    <span class="flavor-pill">
+                                        <i class="bi bi-flower1 text-warning me-1"></i> @item.FlavorNotes
+                                    </span>
+                                </div>
+                            }
+
+                            <!-- Description -->
+                            <p class="text-muted small flex-grow-1 mb-3" style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; line-height: 1.5;">
+                                @item.Description
+                            </p>
+
+                            <!-- Price and Actions -->
+                            <div class="pt-3 border-top d-flex align-items-center justify-content-between gap-2">
+                                <div>
+                                    <span class="fs-5 fw-bold text-dark">@item.Price.ToString("C")</span>
+                                </div>
+                                <div class="d-flex gap-2">
+                                    <a asp-controller="Shop" asp-action="Details" asp-route-id="@item.Id" 
+                                       class="btn btn-sm btn-coffee-outline px-3" title="View Tasting Notes">
+                                        Details
+                                    </a>
+                                    <form asp-controller="Cart" asp-action="AddToCart" method="post" class="d-inline">
+                                        <input type="hidden" name="productId" value="@item.Id" />
+                                        <input type="hidden" name="quantity" value="1" />
+                                        <input type="hidden" name="returnUrl" value="@Context.Request.Path" />
+                                        <button type="submit" class="btn btn-sm btn-coffee-primary px-3" title="Add to Cart">
+                                            <i class="bi bi-plus-lg"></i> Add
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</section>
+
+<!-- Barista Brewing Rituals Guide -->
+<section class="py-5" style="background-color: var(--coffee-cream-100); border-top: 1px solid var(--coffee-border); border-bottom: 1px solid var(--coffee-border);">
+    <div class="container py-3">
+        <div class="text-center max-w-700 mx-auto mb-5">
+            <span class="text-uppercase small fw-bold text-muted" style="letter-spacing: 0.1em;">Master the Craft</span>
+            <h2 class="display-6 fw-bold brand-font mb-2">Brew Like a Barista at Home</h2>
+            <p class="text-muted">Extract the fullest spectrum of sweetness and acidity with our tested extraction guides.</p>
+        </div>
+
+        <div class="row g-4">
+            <!-- V60 Pour Over -->
+            <div class="col-md-6 col-lg-3">
+                <div class="brew-guide-card">
+                    <div class="d-flex align-items-center justify-content-between mb-3">
+                        <span class="fs-3 text-warning"><i class="bi bi-funnel"></i></span>
+                        <span class="badge bg-light text-dark border">Clean & Bright</span>
+                    </div>
+                    <h5 class="fw-bold mb-2">Hario V60 / Pour-Over</h5>
+                    <p class="small text-muted mb-3">Accentuates floral jasmine and sweet citrus notes in light single-origins.</p>
+                    <div class="row g-2 small">
+                        <div class="col-6">
+                            <div class="brew-spec-item">
+                                <span class="d-block text-muted" style="font-size: 0.72rem;">RATIO</span>
+                                <strong>1:16 (15g : 240g)</strong>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="brew-spec-item">
+                                <span class="d-block text-muted" style="font-size: 0.72rem;">WATER TEMP</span>
+                                <strong>92°C – 94°C</strong>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        }
-    </div>
 
-    <!-- Callout Banner -->
-    <div class="card text-white bg-dark rounded-4 p-4 p-md-5 my-5 shadow" style="background: radial-gradient(circle at 10% 20%, #3d2314 0%, #1f1109 90%);">
-        <div class="row align-items-center">
-            <div class="col-lg-8">
-                <h3 class="brand-font fw-bold mb-2 text-warning">Want Coffee Delivered Every Week?</h3>
-                <p class="mb-0 text-white-50">Join our subscription program for free deliveries, exclusive micro-lots, and customized grinding tailored to your espresso machine or French press.</p>
+            <!-- French Press -->
+            <div class="col-md-6 col-lg-3">
+                <div class="brew-guide-card">
+                    <div class="d-flex align-items-center justify-content-between mb-3">
+                        <span class="fs-3 text-warning"><i class="bi bi-cup-straw"></i></span>
+                        <span class="badge bg-light text-dark border">Rich & Syrupy</span>
+                    </div>
+                    <h5 class="fw-bold mb-2">French Press Immersion</h5>
+                    <p class="small text-muted mb-3">Full metal-mesh extraction yields maximum body, cocoa, and cedar tones.</p>
+                    <div class="row g-2 small">
+                        <div class="col-6">
+                            <div class="brew-spec-item">
+                                <span class="d-block text-muted" style="font-size: 0.72rem;">RATIO</span>
+                                <strong>1:15 (30g : 450g)</strong>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="brew-spec-item">
+                                <span class="d-block text-muted" style="font-size: 0.72rem;">STEEP TIME</span>
+                                <strong>4 Minutes</strong>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="col-lg-4 text-lg-end mt-3 mt-lg-0">
-                <a asp-controller="Shop" asp-action="Index" class="btn btn-warning btn-lg fw-bold text-dark rounded-pill px-4">
-                    Explore Subscription Beans
+
+            <!-- Aeropress -->
+            <div class="col-md-6 col-lg-3">
+                <div class="brew-guide-card">
+                    <div class="d-flex align-items-center justify-content-between mb-3">
+                        <span class="fs-3 text-warning"><i class="bi bi-lightning-charge"></i></span>
+                        <span class="badge bg-light text-dark border">Punchy & Smooth</span>
+                    </div>
+                    <h5 class="fw-bold mb-2">Aeropress Precision</h5>
+                    <p class="small text-muted mb-3">Gentle air pressure produces zero bitterness and a creamy, espresso-like cup.</p>
+                    <div class="row g-2 small">
+                        <div class="col-6">
+                            <div class="brew-spec-item">
+                                <span class="d-block text-muted" style="font-size: 0.72rem;">GRIND</span>
+                                <strong>Medium-Fine</strong>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="brew-spec-item">
+                                <span class="d-block text-muted" style="font-size: 0.72rem;">BREW TIME</span>
+                                <strong>1.5 Minutes</strong>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Cold Brew -->
+            <div class="col-md-6 col-lg-3">
+                <div class="brew-guide-card">
+                    <div class="d-flex align-items-center justify-content-between mb-3">
+                        <span class="fs-3 text-warning"><i class="bi bi-snow2"></i></span>
+                        <span class="badge bg-light text-dark border">Velvet & Sweet</span>
+                    </div>
+                    <h5 class="fw-bold mb-2">Slow-Drip Cold Brew</h5>
+                    <p class="small text-muted mb-3">Slow immersion reduces acidity by 65%, highlighting toffee and milk chocolate.</p>
+                    <div class="row g-2 small">
+                        <div class="col-6">
+                            <div class="brew-spec-item">
+                                <span class="d-block text-muted" style="font-size: 0.72rem;">STEEP</span>
+                                <strong>18 – 20 Hours</strong>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="brew-spec-item">
+                                <span class="d-block text-muted" style="font-size: 0.72rem;">SERVING</span>
+                                <strong>Over Clear Ice</strong>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Coffee Enthusiasts Reviews -->
+<section class="py-5">
+    <div class="container py-3">
+        <div class="text-center mb-5">
+            <span class="text-uppercase small fw-bold text-muted" style="letter-spacing: 0.1em;">What Purists Say</span>
+            <h2 class="display-6 fw-bold brand-font mb-2">Devoted to Great Roasts</h2>
+            <p class="text-muted">From daily home brewers to certified SCA cuppers.</p>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-lg-4 col-md-6">
+                <div class="card border-0 shadow-sm rounded-4 p-4 bg-white h-100">
+                    <div class="text-warning mb-3">
+                        <i class="bi bi-star-fill"></i>
+                        <i class="bi bi-star-fill"></i>
+                        <i class="bi bi-star-fill"></i>
+                        <i class="bi bi-star-fill"></i>
+                        <i class="bi bi-star-fill"></i>
+                    </div>
+                    <p class="mb-4 text-secondary small" style="line-height: 1.7;">
+                        "The Ethiopian Yirgacheffe is extraordinary. As soon as hot water hit the grounds on my V60, my entire kitchen smelled like fresh jasmine and bergamot. Easily rivaling Portland and Tokyo roasteries."
+                    </p>
+                    <div class="d-flex align-items-center gap-3 mt-auto pt-3 border-top">
+                        <div class="rounded-circle bg-warning bg-opacity-25 p-2 text-dark fw-bold" style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;">
+                            MT
+                        </div>
+                        <div>
+                            <div class="fw-bold small text-dark">Marcus Thorne</div>
+                            <div class="text-muted small" style="font-size: 0.75rem;">Verified Coffee Guild Member • San Francisco</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-6">
+                <div class="card border-0 shadow-sm rounded-4 p-4 bg-white h-100">
+                    <div class="text-warning mb-3">
+                        <i class="bi bi-star-fill"></i>
+                        <i class="bi bi-star-fill"></i>
+                        <i class="bi bi-star-fill"></i>
+                        <i class="bi bi-star-fill"></i>
+                        <i class="bi bi-star-fill"></i>
+                    </div>
+                    <p class="mb-4 text-secondary small" style="line-height: 1.7;">
+                        "The Nitro Cold Brew has the creamiest head of micro-foam I've ever experienced from an artisanal coffee bar. Zero bitterness, pure chocolate and hazelnut notes. An absolute staple for my mornings."
+                    </p>
+                    <div class="d-flex align-items-center gap-3 mt-auto pt-3 border-top">
+                        <div class="rounded-circle bg-warning bg-opacity-25 p-2 text-dark fw-bold" style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;">
+                            EL
+                        </div>
+                        <div>
+                            <div class="fw-bold small text-dark">Elena Lin</div>
+                            <div class="text-muted small" style="font-size: 0.75rem;">Specialty Coffee Barista • Seattle</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-6">
+                <div class="card border-0 shadow-sm rounded-4 p-4 bg-white h-100">
+                    <div class="text-warning mb-3">
+                        <i class="bi bi-star-fill"></i>
+                        <i class="bi bi-star-fill"></i>
+                        <i class="bi bi-star-fill"></i>
+                        <i class="bi bi-star-fill"></i>
+                        <i class="bi bi-star-fill"></i>
+                    </div>
+                    <p class="mb-4 text-secondary small" style="line-height: 1.7;">
+                        "Knowing that every single bag is shipped within 48 hours of degassing makes a massive difference in crema and floral aromatics. Plus, direct farmer compensation makes drinking this feel right."
+                    </p>
+                    <div class="d-flex align-items-center gap-3 mt-auto pt-3 border-top">
+                        <div class="rounded-circle bg-warning bg-opacity-25 p-2 text-dark fw-bold" style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;">
+                            DK
+                        </div>
+                        <div>
+                            <div class="fw-bold small text-dark">David K.</div>
+                            <div class="text-muted small" style="font-size: 0.75rem;">Espresso Enthusiast • Chicago</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Luxury Roaster Subscription Banner -->
+<section class="container mb-5 pb-3">
+    <div class="card text-white rounded-4 p-4 p-md-5 shadow-lg border-0" 
+         style="background: radial-gradient(circle at 15% 25%, #3d2314 0%, #160d08 85%);">
+        <div class="row align-items-center g-4">
+            <div class="col-lg-8">
+                <span class="badge bg-warning text-dark px-3 py-1 rounded-pill small fw-bold mb-2">
+                    <i class="bi bi-calendar-check me-1"></i> The Roastery Club
+                </span>
+                <h3 class="display-6 brand-font fw-bold mb-2 text-white">Never Run Out of Exceptional Coffee</h3>
+                <p class="text-white-50 mb-3" style="max-width: 600px; line-height: 1.6;">
+                    Subscribe to bi-weekly or monthly roasts. Enjoy 15% savings, complimentary priority shipping, and priority access to limited micro-lots before public release.
+                </p>
+                <div class="d-flex flex-wrap gap-3 text-white-50 small">
+                    <span><i class="bi bi-check-lg text-warning me-1"></i> Modify or cancel anytime</span>
+                    <span><i class="bi bi-check-lg text-warning me-1"></i> Custom grind for your machine</span>
+                    <span><i class="bi bi-check-lg text-warning me-1"></i> Surprise reserve bean drops</span>
+                </div>
+            </div>
+            <div class="col-lg-4 text-lg-end">
+                <a asp-controller="Shop" asp-action="Index" class="btn btn-warning btn-lg fw-bold text-dark rounded-pill px-4 py-3 shadow">
+                    Start Custom Subscription <i class="bi bi-arrow-right ms-1"></i>
                 </a>
             </div>
         </div>
     </div>
-</div>
+</section>
+
+@section Scripts {
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const slides = document.querySelectorAll('.hero-coffee-slide');
+        const dots = document.querySelectorAll('.slider-dot');
+        const prevBtn = document.getElementById('heroPrevBtn');
+        const nextBtn = document.getElementById('heroNextBtn');
+        const sliderWrap = document.querySelector('.hero-slider-wrap');
+        
+        if (!slides.length) return;
+
+        let currentIndex = 0;
+        let slideTimer = null;
+        const intervalTime = 4500; // 4.5s per slide
+
+        function showSlide(index) {
+            if (index < 0) index = slides.length - 1;
+            if (index >= slides.length) index = 0;
+
+            slides.forEach((slide, i) => {
+                slide.classList.toggle('active', i === index);
+            });
+
+            dots.forEach((dot, i) => {
+                dot.classList.toggle('active', i === index);
+                const progress = dot.querySelector('.dot-progress');
+                if (progress) {
+                    // Reset animation
+                    progress.style.animation = 'none';
+                    progress.offsetHeight; // trigger reflow
+                    if (i === index) {
+                        progress.style.animation = 'progressFill ' + (intervalTime / 1000) + 's linear forwards';
+                    }
+                }
+            });
+
+            currentIndex = index;
+        }
+
+        function startAutoplay() {
+            stopAutoplay();
+            slideTimer = setInterval(() => {
+                showSlide(currentIndex + 1);
+            }, intervalTime);
+        }
+
+        function stopAutoplay() {
+            if (slideTimer) {
+                clearInterval(slideTimer);
+                slideTimer = null;
+            }
+        }
+
+        if (nextBtn) {
+            nextBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                showSlide(currentIndex + 1);
+                startAutoplay();
+            });
+        }
+
+        if (prevBtn) {
+            prevBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                showSlide(currentIndex - 1);
+                startAutoplay();
+            });
+        }
+
+        dots.forEach((dot, idx) => {
+            dot.addEventListener('click', (e) => {
+                e.preventDefault();
+                showSlide(idx);
+                startAutoplay();
+            });
+        });
+
+        // Pause autoplay on mouse enter, resume on mouse leave
+        if (sliderWrap) {
+            sliderWrap.addEventListener('mouseenter', stopAutoplay);
+            sliderWrap.addEventListener('mouseleave', startAutoplay);
+        }
+
+        // Start initial cycle
+        showSlide(0);
+        startAutoplay();
+    });
+</script>
+}

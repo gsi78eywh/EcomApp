@@ -1,38 +1,120 @@
 @{
-    ViewData["Title"] = "Our Coffee Story";
+    ViewData["Title"] = "Our Roastery Story & Philosophy";
 }
 
+<!-- About Hero -->
+<div class="py-5 text-white" style="background: radial-gradient(circle at 70% 30%, #3e2617 0%, #170d08 100%); border-bottom: 1px solid rgba(219, 162, 100, 0.2);">
+    <div class="container text-center py-4">
+        <span class="hero-badge mb-3">
+            <i class="bi bi-flower1 text-warning"></i> Sourced with Purpose
+        </span>
+        <h1 class="display-4 brand-font fw-bold mb-3 text-white">The LusiTrack Story</h1>
+        <p class="lead text-white-50 max-w-700 mx-auto" style="font-size: 1.15rem; line-height: 1.7;">
+            Bridging the gap between remote high-altitude coffee farmers and your morning brew cup through uncompromising devotion to craft roasting.
+        </p>
+    </div>
+</div>
+
 <div class="container py-5">
+    <!-- Story Narrative Split -->
     <div class="row align-items-center g-5 mb-5">
         <div class="col-lg-6">
-            <span class="badge bg-warning text-dark px-3 py-2 text-uppercase fw-bold mb-3 rounded-pill">
-                Passionate Craftsmanship
+            <span class="badge bg-warning bg-opacity-20 text-dark px-3 py-1 rounded-pill small fw-bold mb-3">
+                Origins & Mission
             </span>
-            <h1 class="display-4 fw-bold brand-font mb-4">Born from a Love of Specialty Roasting</h1>
-            <p class="lead text-muted mb-4">
-                At LusiTrack Coffee Roasters, we believe that coffee is more than just caffeine—it's an artisanal ritual, a bridge between cultures, and a sensory craft.
+            <h2 class="display-6 fw-bold brand-font mb-4">Born from a Sacred Ritual, Refined by Science</h2>
+            <p class="lead text-secondary mb-4" style="line-height: 1.7;">
+                Coffee is not just a caffeine delivery mechanism—it is an intricate agricultural treasure that holds hundreds of aromatic chemical compounds.
             </p>
-            <p class="text-secondary">
-                Founded in 2024, our roastery partners directly with smallholder coffee farmers across Ethiopia, Colombia, Guatemala, and Sumatra. We pay above Fair Trade prices to foster sustainable farming practices and support local harvest communities.
+            <p class="text-secondary" style="line-height: 1.8;">
+                Founded in 2024, LusiTrack Roasters was founded to challenge industrial mass-market coffee. We work exclusively with specialty-grade Arabica harvested above 1,600 meters elevation, where cold mountain nights slow cherry maturation, concentrating sugars and fruit acids.
+            </p>
+            <p class="text-secondary" style="line-height: 1.8;">
+                We visit our partner estates in Yirgacheffe, Antioquia, and Sumatra annually, establishing direct relationships with farming families and paying significantly above standard market pricing to ensure generational sustainability.
             </p>
             <div class="row g-3 mt-3">
                 <div class="col-sm-6">
-                    <div class="border-start border-warning border-4 ps-3">
-                        <h4 class="fw-bold mb-1">100% Arabica</h4>
-                        <p class="text-muted small mb-0">High-altitude specialty beans only</p>
+                    <div class="border-start border-warning border-3 ps-3">
+                        <h4 class="fw-bold mb-1 text-dark">100% Arabica</h4>
+                        <p class="text-muted small mb-0">High-altitude micro-lots exclusively</p>
                     </div>
                 </div>
                 <div class="col-sm-6">
-                    <div class="border-start border-warning border-4 ps-3">
-                        <h4 class="fw-bold mb-1">Freshly Roasted</h4>
-                        <p class="text-muted small mb-0">Shipped within 48 hours of roast</p>
+                    <div class="border-start border-warning border-3 ps-3">
+                        <h4 class="fw-bold mb-1 text-dark">&lt; 48hr Roast</h4>
+                        <p class="text-muted small mb-0">Dispatched at peak aromatic freshness</p>
                     </div>
                 </div>
             </div>
         </div>
         <div class="col-lg-6">
-            <img src="https://images.unsplash.com/photo-1442512595331-e89e73853f31?auto=format&fit=crop&w=700&q=80" 
-                 alt="Coffee Roasting Process" class="img-fluid rounded-4 shadow-lg" />
+            <div class="hero-img-frame">
+                <img src="https://images.unsplash.com/photo-1442512595331-e89e73853f31?auto=format&fit=crop&w=800&q=80" 
+                     alt="Artisanal Roasting Drum in Action" />
+            </div>
+        </div>
+    </div>
+
+    <!-- Core Roastery Pillars -->
+    <div class="p-4 p-md-5 rounded-4 mb-5" style="background-color: var(--coffee-cream-100); border: 1px solid var(--coffee-border);">
+        <div class="text-center max-w-700 mx-auto mb-5">
+            <span class="text-uppercase small fw-bold text-muted" style="letter-spacing: 0.1em;">The Four Cornerstones</span>
+            <h3 class="display-6 brand-font fw-bold mb-2">Our Craft Principles</h3>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-md-6 col-lg-3">
+                <div class="card border-0 rounded-3 p-4 bg-white shadow-sm h-100">
+                    <div class="fs-2 text-warning mb-2"><i class="bi bi-geo-alt"></i></div>
+                    <h6 class="fw-bold mb-2">Terroir Traceability</h6>
+                    <p class="small text-muted mb-0">Every bag lists the exact farm, altitude, botanical variety, and processing technique.</p>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="card border-0 rounded-3 p-4 bg-white shadow-sm h-100">
+                    <div class="fs-2 text-warning mb-2"><i class="bi bi-thermometer-half"></i></div>
+                    <h6 class="fw-bold mb-2">Profile Profiling</h6>
+                    <p class="small text-muted mb-0">Each batch is computer-monitored to balance Rate of Rise (RoR) and caramelization curves.</p>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="card border-0 rounded-3 p-4 bg-white shadow-sm h-100">
+                    <div class="fs-2 text-warning mb-2"><i class="bi bi-shield-heart"></i></div>
+                    <h6 class="fw-bold mb-2">Equitable Trade</h6>
+                    <p class="small text-muted mb-0">Direct contracts supporting local healthcare, education, and water infrastructure at harvest origins.</p>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="card border-0 rounded-3 p-4 bg-white shadow-sm h-100">
+                    <div class="fs-2 text-warning mb-2"><i class="bi bi-recycle"></i></div>
+                    <h6 class="fw-bold mb-2">Eco Packaging</h6>
+                    <p class="small text-muted mb-0">Bags and shipping boxes made from post-consumer recycled paper and non-toxic water-based inks.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Master Roaster Quote Banner -->
+    <div class="card text-white rounded-4 p-4 p-md-5 border-0 shadow" 
+         style="background: radial-gradient(circle at 10% 20%, #301b0f 0%, #100a06 100%);">
+        <div class="row align-items-center g-4">
+            <div class="col-lg-2 text-center">
+                <div class="rounded-circle mx-auto overflow-hidden border border-warning" style="width: 100px; height: 100px;">
+                    <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=200&q=80" 
+                         alt="Master Roaster" class="w-100 h-100" style="object-fit: cover;" />
+                </div>
+            </div>
+            <div class="col-lg-7">
+                <p class="fs-5 fst-italic mb-2 text-white-50" style="line-height: 1.7;">
+                    "We don't mask origin flavors behind heavy char. A great roaster's duty is to get out of the bean's way and let the terroir of the soil and sunshine tell its story."
+                </p>
+                <div class="small fw-bold text-warning">— Julian Vance, Head Roaster & Quality Cupper</div>
+            </div>
+            <div class="col-lg-3 text-lg-end">
+                <a asp-controller="Shop" asp-action="Index" class="btn-coffee-primary text-decoration-none">
+                    Explore Our Roasts
+                </a>
+            </div>
         </div>
     </div>
 </div>
