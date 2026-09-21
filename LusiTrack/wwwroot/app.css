@@ -2323,3 +2323,34 @@ p, .lead, body {
     background: linear-gradient(145deg, #150b06 0%, #281409 60%, #1a0d06 100%);
     border-right: 1px solid rgba(212, 163, 115, 0.2);
 }
+
+/* Official JMT Cafe Circular Logo */
+.brand-logo-img {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #d4a373;
+    background: #0f1c30;
+    box-shadow: 0 0 10px rgba(212, 163, 115, 0.35);
+    transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s ease;
+}
+
+.brand-logo-img:hover {
+    transform: scale(1.08) rotate(3deg);
+    box-shadow: 0 0 16px rgba(255, 193, 7, 0.6);
+}
+
+.brand-logo-hero {
+    width: 84px;
+    height: 84px;
+    border-radius: 50%;
+    border: 3px solid #ffc107;
+    background: #0f1c30;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+    transition: transform 0.3s ease;
+}
+
+.brand-logo-hero:hover {
+    transform: scale(1.05);
+}

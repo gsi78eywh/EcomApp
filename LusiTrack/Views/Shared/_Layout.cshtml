@@ -20,9 +20,9 @@
     <meta name="twitter:description" content="Dalaguete's premier food and coffee spot in Purok 5 Tabon, Cebu." />
     <meta name="twitter:image" content="~/images/jmt/jmt_storefront_highlands.jpg" />
 
-    <!-- Favicon & Touch Icons -->
-    <link rel="icon" type="image/svg+xml" href="~/favicon.svg" />
-    <link rel="apple-touch-icon" href="~/favicon.svg" />
+    <!-- Favicon & Touch Icons with Official Logo -->
+    <link rel="icon" type="image/png" href="~/images/jmt/jmt_logo.png" />
+    <link rel="apple-touch-icon" href="~/images/jmt/jmt_logo.png" />
     <link rel="manifest" href="~/site.webmanifest" />
     
     <!-- CSS Dependencies -->
@@ -111,12 +111,12 @@
     <header class="sticky-top">
         <nav class="navbar navbar-expand-lg navbar-dark navbar-coffee py-3">
             <div class="container">
-                <!-- Brand Emblem with subtle coffee steam animation -->
-                <a class="navbar-brand brand-font" href="/">
-                    <i class="bi bi-cup-hot-fill text-warning fs-3 coffee-steam-fx"></i>
+                <!-- Brand Emblem with Official JMT Cafe Logo -->
+                <a class="navbar-brand brand-font d-flex align-items-center gap-2" href="/">
+                    <img src="~/images/jmt/jmt_logo.png" alt="JMT CAFE Official Logo" class="brand-logo-img shadow-sm" />
                     <span class="d-flex flex-column lh-1">
                         <span class="fw-bold tracking-tight">@JmtCafeConfig.Name</span>
-                        <span class="brand-badge text-uppercase mt-1" style="letter-spacing: 0.12em;">@JmtCafeConfig.AddressLine1, @JmtCafeConfig.Municipality</span>
+                        <span class="brand-badge text-uppercase mt-1" style="letter-spacing: 0.1em;">@JmtCafeConfig.SubTitle</span>
                     </span>
                 </a>
 
@@ -225,9 +225,12 @@
             <div class="row g-4 mb-4">
                 <!-- Column 1: Brand & Philosophy -->
                 <div class="col-lg-4 col-md-6">
-                    <div class="d-flex align-items-center gap-2 mb-3">
-                        <i class="bi bi-cup-hot-fill text-warning fs-3"></i>
-                        <span class="brand-font fs-4 fw-bold text-white">@JmtCafeConfig.Name</span>
+                    <div class="d-flex align-items-center gap-3 mb-3">
+                        <img src="~/images/jmt/jmt_logo.png" alt="JMT CAFE Official Logo" class="brand-logo-img shadow-sm" style="width: 46px; height: 46px;" />
+                        <div>
+                            <span class="brand-font fs-4 fw-bold text-white d-block lh-1">@JmtCafeConfig.Name</span>
+                            <small class="text-warning fw-semibold" style="font-size: 0.72rem;">@JmtCafeConfig.SubTitle • @JmtCafeConfig.Established</small>
+                        </div>
                     </div>
                     <p class="small text-secondary mb-3 pe-lg-4" style="color: #b0a49d !important; line-height: 1.7;">
                         Dalaguete's welcoming comfort food and drink destination in Southern Cebu. Serving signature 10-inch celebration burgers, crispy chicken meals, French fries, decadent frappes, handcrafted barista coffee, and refreshing fruit coolers.
@@ -262,6 +265,7 @@
                         <li><a href="/franchise" class="footer-link">Events & Catering</a></li>
                         <li><a href="/privacy" class="footer-link">Privacy Statement</a></li>
                         <li><a href="@JmtCafeConfig.PhoneTelLink" class="footer-link text-warning"><i class="bi bi-telephone me-1"></i> @JmtCafeConfig.PhoneDisplay</a></li>
+                        <li><a href="mailto:@JmtCafeConfig.Email" class="footer-link text-white-50"><i class="bi bi-envelope me-1"></i> @JmtCafeConfig.Email</a></li>
                     </ul>
                 </div>
 

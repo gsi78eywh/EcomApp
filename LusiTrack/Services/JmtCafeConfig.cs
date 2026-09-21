@@ -6,7 +6,12 @@ namespace LusiTrack.Services;
 public static class JmtCafeConfig
 {
     public const string Name = "JMT CAFE";
-    public const string Tagline = "Dalaguete's Food & Drinks Spot in South Cebu";
+    public const string Tagline = "Eat & Chill Tambayan • Coffee, Resto";
+    public const string SubTitle = "Eat & Chill Tambayan";
+    public const string Established = "Est. 2024";
+    public const string LogoUrl = "/images/jmt/jmt_logo.png";
+    public const string ContactPerson = "Jonathan Villamor (Jonathan The Explorer)";
+    public const string Email = "jonathanvillamor37@gmail.com";
     
     // Exact official NAP (Name, Address, Phone)
     public const string AddressLine1 = "Purok 5 Tabon";
@@ -27,10 +32,15 @@ public static class JmtCafeConfig
     public const double Longitude = 123.4460781;
     public const string CoordinatesString = "9.7848734, 123.4460781";
     
-    // Phone & Communications
-    public const string PhoneDisplay = "0919 331 4702";
-    public const string PhoneInternational = "+639193314702";
-    public const string PhoneTelLink = "tel:09193314702";
+    // Phone & Communications (Official from Facebook Page)
+    public const string PhoneDisplay = "0906 014 7674";
+    public const string PhoneInternational = "+639060147674";
+    public const string PhoneTelLink = "tel:09060147674";
+    
+    // Delivery Policy (Official from Facebook Page)
+    public const decimal DeliveryFeeNear = 50m;
+    public const decimal DeliveryFeeLungsod = 150m;
+    public const string DeliveryDescription = "₱50 near the shop (Tabon) • Max ₱150 Lungsod sa Dalaguete (₱1k order bill)";
     
     // Operating Hours
     public const string OpeningTime = "9:00 AM";

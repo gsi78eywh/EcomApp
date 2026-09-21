@@ -92,17 +92,17 @@
                     <div class="d-inline-flex p-3 rounded-3 bg-success bg-opacity-10 text-success fs-3 mb-3">
                         <i class="bi bi-shop-window"></i>
                     </div>
-                    <h4 class="brand-font fw-bold mb-2 text-dark">Business Partnerships</h4>
+                    <h4 class="brand-font fw-bold mb-2 text-dark">Franchising & Partnerships</h4>
                     <p class="text-muted small mb-3">
-                        Interested in opening a branch, supplying local farm produce, or hosting brand events in Dalaguete? We are always open to exploring genuine partnerships.
+                        Interested in opening a branch, kiosk licensing, supplying local produce, or hosting events? Message <strong>Jonathan Villamor</strong> (<em>Jonathan The Explorer</em>) directly!
                     </p>
                     <ul class="list-unstyled small text-secondary d-flex flex-column gap-2 mb-4 mt-auto">
-                        <li><i class="bi bi-check2 text-success me-2 fw-bold"></i>Branch expansion & kiosk licensing</li>
+                        <li><i class="bi bi-check2 text-success me-2 fw-bold"></i>Open for Franchising & Kiosk licensing</li>
                         <li><i class="bi bi-check2 text-success me-2 fw-bold"></i>Direct founder & kitchen SOP training</li>
                         <li><i class="bi bi-check2 text-success me-2 fw-bold"></i>Local supplier & event collaborations</li>
                     </ul>
                     <a href="#inquiryFormSection" class="btn btn-outline-dark rounded-pill fw-semibold btn-sm py-2">
-                        Discuss Collaboration &rarr;
+                        Discuss Franchising &rarr;
                     </a>
                 </div>
             </div>
@@ -164,13 +164,23 @@
                     </div>
                 </a>
 
-                <a href="tel:09193314702" class="d-flex align-items-center gap-3 p-3 rounded-4 bg-white shadow-sm border text-decoration-none text-dark hover-gold">
+                <a href="@JmtCafeConfig.PhoneTelLink" class="d-flex align-items-center gap-3 p-3 rounded-4 bg-white shadow-sm border text-decoration-none text-dark hover-gold">
                     <div class="p-3 rounded-circle bg-success bg-opacity-10 text-success fs-4 flex-shrink-0">
                         <i class="bi bi-telephone-fill"></i>
                     </div>
                     <div>
-                        <h6 class="fw-bold mb-1">Call 0919 331 4702</h6>
+                        <h6 class="fw-bold mb-1">Call @JmtCafeConfig.PhoneDisplay</h6>
                         <small class="text-muted d-block">Open daily from 9:00 AM to 10:00 PM</small>
+                    </div>
+                </a>
+
+                <a href="mailto:@JmtCafeConfig.Email" class="d-flex align-items-center gap-3 p-3 rounded-4 bg-white shadow-sm border text-decoration-none text-dark hover-gold">
+                    <div class="p-3 rounded-circle bg-danger bg-opacity-10 text-danger fs-4 flex-shrink-0">
+                        <i class="bi bi-envelope-fill"></i>
+                    </div>
+                    <div>
+                        <h6 class="fw-bold mb-1">Email @JmtCafeConfig.Email</h6>
+                        <small class="text-muted d-block">Direct response from Jonathan Villamor</small>
                     </div>
                 </a>
 
@@ -205,8 +215,8 @@
                             <input type="email" name="email" class="form-control rounded-pill px-3 py-2" placeholder="name@domain.com" required />
                         </div>
                         <div class="col-md-6">
-                            <label class="form-label small fw-bold text-dark">Mobile / Contact Number *</label>
-                            <input type="tel" name="phone" class="form-control rounded-pill px-3 py-2" placeholder="0919 331 4702" required />
+                            <label class="form-label small fw-bold text-secondary">Your Mobile Phone *</label>
+                            <input type="tel" name="phone" class="form-control rounded-pill px-3 py-2" placeholder="@JmtCafeConfig.PhoneDisplay" required />
                         </div>
                     </div>
 
