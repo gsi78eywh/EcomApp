@@ -1,0 +1,21 @@
+{
+  "name": "JMT CAFE - Dalaguete Cebu",
+  "short_name": "JMT CAFE",
+  "description": "Artisan coffee, fresh fruit mojitos, giant burgers, and silog meals in Purok 5 Tabon, Dalaguete, Cebu.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#231709",
+  "theme_color": "#231709",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "64x64",
+      "type": "image/svg+xml"
+    },
+    {
+      "src": "/images/jmt/jmt_storefront_highlands.jpg",
+      "sizes": "512x512",
+      "type": "image/jpeg"
+    }
+  ]
+}

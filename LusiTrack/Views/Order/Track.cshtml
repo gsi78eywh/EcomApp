@@ -1,0 +1,679 @@
+@model OrderModel?
+@{
+    ViewData["Title"] = "Live Order & Delivery Tracker | JMT CAFE Dalaguete";
+    var notFound = ViewBag.NotFoundMessage as string;
+    var searchedId = ViewBag.SearchedId as string ?? "";
+    var isDelivery = Model?.FulfillmentType == "Delivery";
+    var courier = Model?.Courier ?? new DeliveryCourierInfo();
+}
+
+@section Scripts {
+    <!-- Leaflet Interactive Maps CSS & JS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
+    @if (Model != null && isDelivery)
+    {
+        <script>
+            // Coordinates configuration for Dalaguete
+            const roasteryPos = [9.7848734, 123.4460781]; // JMT CAFE Purok 5 Tabon
+            const customerPos = [@courier.CustomerLat, @courier.CustomerLng];
+            let currentCourierPos = [@courier.CurrentLat, @courier.CurrentLng];
+
+            // Road Network Waypoints from JMT CAFE along Dalaguete mountain road
+            const routeWaypoints = [
+                roasteryPos,
+                [9.7820, 123.4485],
+                [9.7790, 123.4510],
+                [9.7760, 123.4535],
+                [9.7730, 123.4560],
+                [9.7690, 123.4600],
+                [9.7650, 123.4640],
+                [@courier.CustomerLat, @courier.CustomerLng]
+            ];
+
+            let map, courierMarker, routePolyline, completedPolyline;
+            let currentWaypointIndex = 4; // Start near Gorordo/Salinas junction
+            let isSimulationRunning = true;
+            let simulationSpeed = 1;
+            let etaMinutes = @courier.EstimatedMinutesRemaining;
+            let distanceKm = @courier.DistanceRemainingKm;
+
+            function initLiveMap() {
+                const mapElement = document.getElementById('deliveryMap');
+                if (!mapElement) return;
+
+                // Initialize Leaflet Map centered on Cebu Rider
+                map = L.map('deliveryMap', {
+                    zoomControl: false,
+                    scrollWheelZoom: false
+                }).setView(currentCourierPos, 14);
+
+                // Add Zoom control on bottom-right
+                L.control.zoom({ position: 'bottomright' }).addTo(map);
+
+                // Free OpenStreetMap Standard Tiles (No API Key required, no watermark)
+                L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+                    maxZoom: 19
+                }).addTo(map);
+
+                // 1. Roastery Origin Pin
+                const roasteryIcon = L.divIcon({
+                    className: 'custom-leaflet-marker',
+                    html: `
+                        <div class="location-marker-pin roastery-pin shadow" title="JMT CAFE Dalaguete Hub">
+                            <i class="bi bi-cup-hot-fill text-warning"></i>
+                        </div>
+                    `,
+                    iconSize: [40, 40],
+                    iconAnchor: [20, 20]
+                });
+                L.marker(roasteryPos, { icon: roasteryIcon })
+                    .addTo(map)
+                    .bindPopup("<strong>JMT CAFE Dalaguete</strong><br>Purok 5 Tabon, Dalaguete, 6022 Cebu<br><small class='text-success'>Dispatched from mountain kitchen</small>");
+
+                // 2. Customer Destination Pin
+                const customerIcon = L.divIcon({
+                    className: 'custom-leaflet-marker',
+                    html: `
+                        <div class="location-marker-pin customer-pin shadow" title="Delivery Destination">
+                            <i class="bi bi-house-door-fill text-white"></i>
+                        </div>
+                    `,
+                    iconSize: [40, 40],
+                    iconAnchor: [20, 20]
+                });
+                L.marker(customerPos, { icon: customerIcon })
+                    .addTo(map)
+                    .bindPopup("<strong>Delivery Address</strong><br>@Model.Address<br><small class='text-muted'>@Model.CustomerName • @Model.Phone</small>");
+
+                // 3. Complete Route Polyline (dashed gray)
+                routePolyline = L.polyline(routeWaypoints, {
+                    color: '#94a3b8',
+                    weight: 5,
+                    opacity: 0.7,
+                    dashArray: '8, 8'
+                }).addTo(map);
+
+                // 4. Completed Portion Polyline (solid gold)
+                completedPolyline = L.polyline(routeWaypoints.slice(0, currentWaypointIndex + 1), {
+                    color: '#d4a373',
+                    weight: 6,
+                    opacity: 0.95
+                }).addTo(map);
+
+                // 5. Courier Motorbike Marker with Live Pulsing Radar Ring
+                const courierIcon = L.divIcon({
+                    className: 'custom-leaflet-marker',
+                    html: `
+                        <div class="courier-marker-container" id="courierMarkerEl">
+                            <div class="courier-pulse-ring"></div>
+                            <div class="courier-marker-badge moving">
+                                <i class="bi bi-bicycle"></i>
+                            </div>
+                        </div>
+                    `,
+                    iconSize: [50, 50],
+                    iconAnchor: [25, 25]
+                });
+
+                courierMarker = L.marker(currentCourierPos, { icon: courierIcon }).addTo(map);
+                courierMarker.bindTooltip("<strong>Kuya Junrey</strong> (Maxim Express)<br>Honda Click 125i • Speed: <span id='tooltipSpeed'>38</span> km/h", {
+                    permanent: false,
+                    direction: 'top',
+                    offset: [0, -22]
+                });
+
+                // Auto fit bounds so the customer can see the whole journey
+                fitBoundsToRoute();
+
+                // Start simulated real-time GPS movement
+                startLiveMovement();
+            }
+
+            // Fit bounds to entire route
+            function fitBoundsToRoute() {
+                if (!map) return;
+                map.fitBounds(routePolyline.getBounds(), { padding: [40, 40] });
+            }
+
+            // Recenter map on live rider location
+            function recenterOnRider() {
+                if (!map || !courierMarker) return;
+                map.setView(courierMarker.getLatLng(), 16, { animate: true });
+            }
+
+            // Real-Time GPS Movement Simulator
+            function startLiveMovement() {
+                let stepFraction = 0;
+                const intervalMs = 2000;
+
+                setInterval(() => {
+                    if (!isSimulationRunning) return;
+
+                    if (currentWaypointIndex >= routeWaypoints.length - 1) {
+                        // Rider has arrived at destination!
+                        document.getElementById('etaDisplay').innerText = "Arrived!";
+                        document.getElementById('distDisplay').innerText = "0.0 km";
+                        document.getElementById('speedDisplay').innerText = "0 km/h";
+                        document.getElementById('courierStatusText').innerText = "Kuya Junrey has arrived at your building entrance!";
+                        document.getElementById('courierStatusPill').className = "badge bg-success text-white px-3 py-1 rounded-pill fw-bold";
+                        document.getElementById('courierStatusPill').innerText = "ARRIVED AT LOBBY";
+                        return;
+                    }
+
+                    const start = routeWaypoints[currentWaypointIndex];
+                    const end = routeWaypoints[currentWaypointIndex + 1];
+
+                    stepFraction += 0.25 * simulationSpeed;
+
+                    if (stepFraction >= 1) {
+                        stepFraction = 0;
+                        currentWaypointIndex++;
+                    }
+
+                    const nextStart = routeWaypoints[currentWaypointIndex];
+                    const nextEnd = routeWaypoints[Math.min(routeWaypoints.length - 1, currentWaypointIndex + 1)];
+
+                    const lat = nextStart[0] + (nextEnd[0] - nextStart[0]) * stepFraction;
+                    const lng = nextStart[1] + (nextEnd[1] - nextStart[1]) * stepFraction;
+                    currentCourierPos = [lat, lng];
+
+                    courierMarker.setLatLng(currentCourierPos);
+
+                    // Update completed track
+                    const traveled = routeWaypoints.slice(0, currentWaypointIndex + 1);
+                    traveled.push(currentCourierPos);
+                    completedPolyline.setLatLngs(traveled);
+
+                    // Update live telemetry
+                    const remainingRatio = 1 - (currentWaypointIndex + stepFraction) / (routeWaypoints.length - 1);
+                    const remKm = Math.max(0.1, (2.4 * remainingRatio)).toFixed(1);
+                    const remMins = Math.max(1, Math.round(11 * remainingRatio));
+                    const liveSpeed = Math.floor(32 + Math.random() * 8);
+
+                    document.getElementById('distDisplay').innerText = remKm + " km";
+                    document.getElementById('etaDisplay').innerText = remMins + " mins";
+                    document.getElementById('speedDisplay').innerText = liveSpeed + " km/h";
+                    const tooltipSpeed = document.getElementById('tooltipSpeed');
+                    if (tooltipSpeed) tooltipSpeed.innerText = liveSpeed;
+
+                }, intervalMs);
+            }
+
+            // Fast-Forward / Speedup Demo Toggle
+            function toggleFastForward() {
+                const btn = document.getElementById('btnSpeedUp');
+                if (simulationSpeed === 1) {
+                    simulationSpeed = 4;
+                    btn.innerHTML = '<i class="bi bi-fast-forward-fill text-warning"></i> Fast 4x (Active)';
+                    btn.classList.add('border-warning');
+                    showCartToast("Fast-Forward Active", "Simulating high-speed courier movement along Cebu streets.");
+                } else {
+                    simulationSpeed = 1;
+                    btn.innerHTML = '<i class="bi bi-speedometer2"></i> Speed Up Demo';
+                    btn.classList.remove('border-warning');
+                }
+            }
+
+            // Quick Chat Simulator
+            function sendQuickMessage(text) {
+                const chatBox = document.getElementById('chatMessagesBox');
+                if (!chatBox) return;
+
+                const userMsg = document.createElement('div');
+                userMsg.className = 'text-end mb-2';
+                userMsg.innerHTML = `<span class="chat-bubble-sent">${text}</span>`;
+                chatBox.appendChild(userMsg);
+                chatBox.scrollTop = chatBox.scrollHeight;
+
+                setTimeout(() => {
+                    const replyMsg = document.createElement('div');
+                    replyMsg.className = 'text-start mb-2';
+                    replyMsg.innerHTML = `<span class="chat-bubble-received"><i class="bi bi-bicycle text-warning me-1"></i> Noted po sir/ma'am! Arriving shortly with your hot brews 😊</span>`;
+                    chatBox.appendChild(replyMsg);
+                    chatBox.scrollTop = chatBox.scrollHeight;
+                }, 1000);
+            }
+
+            function handleChatSubmit(e) {
+                e.preventDefault();
+                const input = document.getElementById('chatInput');
+                const val = input.value.trim();
+                if (val) {
+                    sendQuickMessage(val);
+                    input.value = '';
+                }
+            }
+
+            document.addEventListener('DOMContentLoaded', () => {
+                initLiveMap();
+            });
+        </script>
+    }
+}
+
+<div class="container py-4">
+    <!-- Header -->
+    <div class="text-center mb-4 py-2">
+        <div class="d-inline-flex align-items-center gap-2 px-3 py-1 rounded-pill mb-2" 
+             style="background: rgba(212, 163, 115, 0.15); border: 1px solid rgba(212, 163, 115, 0.35);">
+            <i class="bi bi-broadcast text-warning"></i>
+            <span class="text-warning small fw-bold text-uppercase" style="letter-spacing: 0.08em;">Live Order Dispatch &bull; JMT CAFE Dalaguete</span>
+        </div>
+        <h1 class="brand-font display-6 fw-bold mb-2">Track Your Food & Beverage Order</h1>
+        <p class="text-muted max-w-600 mx-auto" style="max-width: 600px;">
+            Follow your freshly prepared order with live delivery updates, real-time ETA, and direct cafe contact.
+        </p>
+    </div>
+
+    <!-- Tracking Code Search Bar -->
+    <div class="row justify-content-center mb-4">
+        <div class="col-md-8 col-lg-6">
+            <form method="get" asp-action="Track" class="card border-0 shadow-lg rounded-pill p-1 bg-white">
+                <div class="input-group">
+                    <span class="input-group-text bg-transparent border-0 ps-3">
+                        <i class="bi bi-search text-warning fs-5"></i>
+                    </span>
+                    <input type="text" name="orderId" value="@(Model?.OrderId ?? searchedId)" class="form-control border-0 bg-transparent py-3" placeholder="Enter Order Tracking ID (e.g. JMT-2026-00124)..." required />
+                    <button type="submit" class="btn btn-gold px-4 m-1 shadow-sm">
+                        Track Status
+                    </button>
+                </div>
+            </form>
+            <div class="text-center mt-2 small text-muted">
+                Try demo tracking orders: 
+                <a asp-action="Track" asp-route-orderId="JMT-2026-00124" class="text-dark fw-bold text-decoration-underline me-3">
+                    <i class="bi bi-bicycle text-warning me-1"></i>JMT-2026-00124 (Live Delivery Courier)
+                </a>
+                <a asp-action="Track" asp-route-orderId="JMT-2026-00120" class="text-dark fw-bold text-decoration-underline">
+                    <i class="bi bi-shop text-warning me-1"></i>JMT-2026-00120 (JMT Cafe Onsite Pickup)
+                </a>
+            </div>
+        </div>
+    </div>
+
+    @if (!string.IsNullOrEmpty(notFound))
+    {
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="alert alert-warning text-center rounded-4 shadow-sm p-4 border-0">
+                    <i class="bi bi-exclamation-circle display-4 text-warning d-block mb-2"></i>
+                    <h5 class="fw-bold mb-1">@notFound</h5>
+                    <p class="text-muted small mb-0">Please verify your order tracking ID from your email receipt.</p>
+                </div>
+            </div>
+        </div>
+    }
+    else if (Model != null)
+    {
+        <!-- ============================================================== -->
+        <!-- MAXIM-STYLE LIVE ONLIVE GPS MAP TRACKING SECTION              -->
+        <!-- ============================================================== -->
+        @if (isDelivery)
+        {
+            <div class="mb-5">
+                <div class="live-map-wrapper position-relative">
+                    <!-- Top Map Floating Telemetry Header -->
+                    <div class="position-absolute top-0 start-0 m-3 z-3 d-flex flex-wrap gap-2 align-items-center">
+                        <span class="badge bg-dark bg-opacity-90 text-warning px-3 py-2 rounded-pill shadow-sm border border-warning border-opacity-25 backdrop-blur">
+                            <span class="spinner-grow spinner-grow-sm text-warning me-1" role="status" style="width: 8px; height: 8px;"></span>
+                            LIVE ORDER PROGRESS • JMT Express Dispatch
+                        </span>
+                        <span id="courierStatusPill" class="badge bg-warning text-dark px-3 py-2 rounded-pill fw-bold shadow-sm">
+                            <i class="bi bi-bicycle me-1"></i> EN ROUTE TO DELIVERY
+                        </span>
+                    </div>
+
+                    <!-- Floating Map Action Buttons -->
+                    <div class="map-floating-controls">
+                        <button type="button" class="map-control-btn" onclick="recenterOnRider()" title="Center map on motorcycle rider">
+                            <i class="bi bi-crosshair"></i> Locate Rider
+                        </button>
+                        <button type="button" class="map-control-btn" onclick="fitBoundsToRoute()" title="View full route">
+                            <i class="bi bi-arrows-fullscreen"></i> Full Route
+                        </button>
+                        <button type="button" id="btnSpeedUp" class="map-control-btn" onclick="toggleFastForward()" title="Speed up animation">
+                            <i class="bi bi-speedometer2"></i> Speed Up Demo
+                        </button>
+                    </div>
+
+                    <!-- Interactive Leaflet Map Canvas -->
+                    <div id="deliveryMap"></div>
+                </div>
+
+                <!-- Maxim-Style Courier Driver Card -->
+                <div class="maxim-driver-card mt-3">
+                    <div class="row g-4 align-items-center">
+                        <!-- Driver Profile -->
+                        <div class="col-lg-5 col-md-6">
+                            <div class="d-flex align-items-center gap-3">
+                                <div class="driver-avatar-wrapper">
+                                    <img src="@courier.AvatarUrl" alt="@courier.Name" class="driver-avatar shadow-sm" />
+                                    <div class="driver-online-dot" title="Courier GPS Active"></div>
+                                </div>
+                                <div>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <h5 class="fw-bold text-dark mb-0">@courier.Name</h5>
+                                        <span class="badge bg-warning text-dark small fw-bold px-2 py-0">
+                                            <i class="bi bi-star-fill text-dark me-1"></i>@courier.Rating.ToString("0.00")
+                                        </span>
+                                    </div>
+                                    <div class="small text-secondary fw-semibold mt-1">
+                                        <i class="bi bi-bicycle text-warning me-1"></i>@courier.VehicleModel
+                                    </div>
+                                    <div class="small text-muted">
+                                        <i class="bi bi-patch-check-fill text-primary me-1"></i>Verified Cafe Courier &bull; Priority Dispatch
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Telemetry Badges (ETA, Distance, Speed) -->
+                        <div class="col-lg-4 col-md-6">
+                            <div class="row g-2">
+                                <div class="col-4">
+                                    <div class="maxim-telemetry-badge">
+                                        <div class="small text-muted text-uppercase fw-semibold" style="font-size: 0.7rem;">ETA</div>
+                                        <div class="fw-bold text-dark fs-6" id="etaDisplay">@courier.EstimatedMinutesRemaining mins</div>
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <div class="maxim-telemetry-badge">
+                                        <div class="small text-muted text-uppercase fw-semibold" style="font-size: 0.7rem;">Distance</div>
+                                        <div class="fw-bold text-dark fs-6" id="distDisplay">@courier.DistanceRemainingKm km</div>
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <div class="maxim-telemetry-badge">
+                                        <div class="small text-muted text-uppercase fw-semibold" style="font-size: 0.7rem;">Speed</div>
+                                        <div class="fw-bold text-success fs-6" id="speedDisplay">@courier.CurrentSpeedKmh km/h</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="small text-secondary mt-1 text-center" id="courierStatusText">
+                                <i class="bi bi-thermometer-half text-danger me-1"></i>@courier.Status
+                            </div>
+                        </div>
+
+                        <!-- Direct Driver Actions (Call & Chat) -->
+                        <div class="col-lg-3 col-12 text-lg-end text-center">
+                            <div class="d-flex gap-2 justify-content-lg-end justify-content-center">
+                                <a href="tel:@courier.Phone" class="btn btn-success rounded-pill px-3 py-2 fw-semibold shadow-sm">
+                                    <i class="bi bi-telephone-fill me-1"></i> Call
+                                </a>
+                                <button type="button" class="btn btn-dark-coffee rounded-pill px-3 py-2 fw-semibold shadow-sm" data-bs-toggle="modal" data-bs-target="#driverChatModal">
+                                    <i class="bi bi-chat-dots-fill text-warning me-1"></i> Chat
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Maxim-Style In-App Driver Chat Modal -->
+            <div class="modal fade" id="driverChatModal" tabindex="-1" aria-labelledby="driverChatModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content rounded-4 border-0 shadow-lg">
+                        <div class="modal-header bg-dark text-white rounded-top-4 border-bottom border-warning border-opacity-25 py-3">
+                            <div class="d-flex align-items-center gap-3">
+                                <img src="@courier.AvatarUrl" class="rounded-circle" style="width: 44px; height: 44px; object-fit: cover; border: 2px solid var(--gold-500);" />
+                                <div>
+                                    <h6 class="modal-title fw-bold mb-0 text-white" id="driverChatModalLabel">@courier.Name</h6>
+                                    <small class="text-warning"><i class="bi bi-bicycle me-1"></i>Maxim Express Courier &bull; @courier.VehicleModel</small>
+                                </div>
+                            </div>
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body p-4 bg-light">
+                            <!-- Messages Window -->
+                            <div id="chatMessagesBox" class="p-3 bg-white rounded-4 border mb-3" style="height: 240px; overflow-y: auto;">
+                                <div class="text-center text-muted small mb-3">Today • Live Courier Connection Established</div>
+                                <div class="text-start mb-2">
+                                    <span class="chat-bubble-received">
+                                        <i class="bi bi-bicycle text-warning me-1"></i> Hello po @Model.CustomerName! Kuya Junrey here from JMT CAFE Dalaguete. Your food and drinks are safely packed in the insulated carrier. I'm en route!
+                                    </span>
+                                </div>
+                            </div>
+
+                            <!-- Canned Quick Responses -->
+                            <div class="small fw-semibold text-secondary mb-2">Quick Message Suggestions:</div>
+                            <div class="d-flex flex-wrap gap-1 mb-3">
+                                <button type="button" class="btn btn-outline-secondary btn-sm rounded-pill" onclick="sendQuickMessage('Waiting at the lobby')">Waiting at lobby</button>
+                                <button type="button" class="btn btn-outline-secondary btn-sm rounded-pill" onclick="sendQuickMessage('Please leave with security guard')">Leave with guard</button>
+                                <button type="button" class="btn btn-outline-secondary btn-sm rounded-pill" onclick="sendQuickMessage('Call me when outside gate')">Call when outside</button>
+                                <button type="button" class="btn btn-outline-secondary btn-sm rounded-pill" onclick="sendQuickMessage('Keep coffee upright please')">Keep upright</button>
+                            </div>
+
+                            <!-- Send Input Form -->
+                            <form onsubmit="handleChatSubmit(event)" class="d-flex gap-2">
+                                <input type="text" id="chatInput" class="form-control rounded-pill" placeholder="Type a message to Kuya Junrey..." required />
+                                <button type="submit" class="btn btn-gold rounded-pill px-3 fw-bold">Send</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+        else
+        {
+            <!-- JMT Cafe Pickup Instructions View -->
+            <div class="card border-0 shadow-lg rounded-4 p-4 p-md-5 bg-white mb-5">
+                <div class="row align-items-center g-4">
+                    <div class="col-lg-7">
+                        <span class="badge bg-info bg-opacity-25 text-dark border border-info px-3 py-1 rounded-pill fw-bold mb-2">
+                            <i class="bi bi-shop me-1"></i> JMT Cafe Onsite Pickup
+                        </span>
+                        <h3 class="brand-font fw-bold mb-2">Your Order is Ready at the Counter</h3>
+                        <p class="text-muted mb-3" style="line-height: 1.7;">
+                            Please present your Tracking Code <strong>@Model.OrderId</strong> to our counter team at JMT CAFE in Purok 5 Tabon, Dalaguete. Your meals, burgers, or drinks are freshly prepared.
+                        </p>
+                        <div class="p-3 bg-light rounded-3 border mb-3">
+                            <div class="fw-bold"><i class="bi bi-geo-alt-fill text-danger me-1"></i> Purok 5 Tabon, Dalaguete, 6022 Cebu</div>
+                            <small class="text-muted">Highland Spot near Basketball Court &bull; Open until 10:00 PM</small>
+                        </div>
+                    </div>
+                    <div class="col-lg-5 text-center">
+                        <img src="/images/jmt/jmt_storefront_highlands.jpg" 
+                             alt="JMT Cafe Dalaguete Storefront" class="img-fluid rounded-4 shadow-sm" style="max-height: 240px; width: 100%; object-fit: cover;" />
+                    </div>
+                </div>
+            </div>
+        }
+
+        <!-- ============================================================== -->
+        <!-- MILESTONE TIMELINE & ORDER DETAILS BREAKDOWN                   -->
+        <!-- ============================================================== -->
+        <div class="row g-4">
+            <!-- Timeline Section -->
+            <div class="col-lg-7">
+                <div class="card border-0 shadow-lg rounded-4 p-4 p-md-5 bg-white h-100">
+                    <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom">
+                        <div>
+                            <span class="text-muted small text-uppercase fw-bold" style="letter-spacing: 0.05em;">Tracking ID</span>
+                            <h3 class="brand-font fw-bold mb-0 text-dark">@Model.OrderId</h3>
+                        </div>
+                        <div class="text-end">
+                            <span class="badge bg-warning text-dark px-3 py-2 fs-6 rounded-pill fw-bold shadow-sm">
+                                <i class="bi bi-clock-history me-1"></i> @Model.OrderStatus
+                            </span>
+                        </div>
+                    </div>
+
+                    <h4 class="brand-font fw-bold mb-4">Preparation & Dispatch Milestones</h4>
+
+                    @{
+                        var status = Model.OrderStatus;
+                        bool step1Done = true;
+                        bool step2Done = status == "Preparing" || status == "Ready" || status == "OutForDelivery" || status == "Completed";
+                        bool step3Done = status == "Ready" || status == "OutForDelivery" || status == "Completed";
+                        bool step4Done = status == "OutForDelivery" || status == "Completed";
+                        bool step5Done = status == "Completed";
+                    }
+
+                    <div class="tracking-timeline">
+                        <!-- Step 1 -->
+                        <div class="timeline-step @(step1Done ? "completed" : "")">
+                            <div class="timeline-node">
+                                <i class="bi bi-check-lg"></i>
+                            </div>
+                            <div class="timeline-content">
+                                <div class="timeline-title">Order Confirmed & Payment Verified</div>
+                                <div class="timeline-desc">Order registered in the system. Payment method: <strong>@Model.PaymentMethod</strong> (@Model.PaymentStatus).</div>
+                                <div class="timeline-time"><i class="bi bi-clock me-1"></i>@Model.OrderDate.ToString("MMM dd, yyyy • hh:mm tt")</div>
+                            </div>
+                        </div>
+
+                        <!-- Step 2 -->
+                        <div class="timeline-step @(step2Done ? (status == "Preparing" ? "active" : "completed") : "")">
+                            <div class="timeline-node">
+                                <i class="bi @(step2Done && status != "Preparing" ? "bi-check-lg" : "bi-fire")"></i>
+                            </div>
+                            <div class="timeline-content">
+                                <div class="timeline-title">Order Queued & Kitchen Prepared</div>
+                                <div class="timeline-desc">Dishes and burgers cooked fresh to order, beverages & shakes crafted by baristas.</div>
+                                <div class="timeline-time"><i class="bi bi-clock me-1"></i>@Model.OrderDate.AddMinutes(15).ToString("MMM dd, yyyy • hh:mm tt")</div>
+                            </div>
+                        </div>
+
+                        <!-- Step 3 -->
+                        <div class="timeline-step @(step3Done ? (status == "Ready" ? "active" : "completed") : "")">
+                            <div class="timeline-node">
+                                <i class="bi @(step3Done && status != "Ready" ? "bi-check-lg" : "bi-box-seam")"></i>
+                            </div>
+                            <div class="timeline-content">
+                                <div class="timeline-title">Packed with Freshness Seal</div>
+                                <div class="timeline-desc">Sealed in aroma-lock valve bags and insulated drink carriers for peak temperature.</div>
+                                <div class="timeline-time"><i class="bi bi-clock me-1"></i>@Model.OrderDate.AddMinutes(25).ToString("MMM dd, yyyy • hh:mm tt")</div>
+                            </div>
+                        </div>
+
+                        <!-- Step 4 -->
+                        <div class="timeline-step @(step4Done ? (status == "OutForDelivery" ? "active" : "completed") : "")">
+                            <div class="timeline-node">
+                                <i class="bi @(step4Done && status != "OutForDelivery" ? "bi-check-lg" : "bi-bicycle")"></i>
+                            </div>
+                            <div class="timeline-content">
+                                <div class="timeline-title">@(Model.FulfillmentType == "Pickup" ? "Ready for Pickup at JMT Cafe" : "Out for Dalaguete Local Delivery")</div>
+                                <div class="timeline-desc">
+                                    @(Model.FulfillmentType == "Pickup" 
+                                        ? "Your order is waiting at the counter at JMT CAFE in Purok 5 Tabon, Dalaguete." 
+                                        : "Courier Kuya Junrey is currently en route along the Dalaguete highway with live updates above.")
+                                </div>
+                                <div class="timeline-time"><i class="bi bi-clock me-1"></i>@Model.OrderDate.AddMinutes(35).ToString("MMM dd, yyyy • hh:mm tt")</div>
+                            </div>
+                        </div>
+
+                        <!-- Step 5 -->
+                        <div class="timeline-step @(step5Done ? "completed" : "")">
+                            <div class="timeline-node">
+                                <i class="bi bi-cup-hot-fill"></i>
+                            </div>
+                            <div class="timeline-content">
+                                <div class="timeline-title">Delivered & Enjoyed!</div>
+                                <div class="timeline-desc">Order handed to customer. Thank you for choosing JMT Cafe Dalaguete!</div>
+                                @if (step5Done)
+                                {
+                                    <div class="timeline-time text-success fw-bold"><i class="bi bi-check-circle me-1"></i>Completed</div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Order Details Sidebar -->
+            <div class="col-lg-5">
+                <div class="card border-0 shadow-lg rounded-4 p-4 bg-white mb-4">
+                    <h5 class="brand-font fw-bold mb-3">Order Details</h5>
+                    
+                    <div class="mb-3 pb-3 border-bottom">
+                        <div class="text-muted small">Customer Name</div>
+                        <div class="fw-bold">@Model.CustomerName</div>
+                        <div class="small text-secondary"><i class="bi bi-telephone me-1"></i>@Model.Phone</div>
+                        <div class="small text-secondary"><i class="bi bi-envelope me-1"></i>@Model.Email</div>
+                    </div>
+
+                    <div class="mb-3 pb-3 border-bottom">
+                        <div class="text-muted small">Fulfillment Details</div>
+                        <div class="fw-bold text-dark">
+                            @(Model.FulfillmentType == "Pickup" ? "JMT Cafe Onsite Pickup" : "Doorstep Delivery")
+                        </div>
+                        <div class="small text-secondary">
+                            <i class="bi bi-geo-alt me-1"></i>@Model.Address, @Model.City, @Model.PostalCode
+                        </div>
+                    </div>
+
+                    <!-- Products in Order -->
+                    <h6 class="fw-bold small text-uppercase text-secondary mb-2">Products in Order</h6>
+                    <div class="mb-3" style="max-height: 220px; overflow-y: auto;">
+                        @foreach (var item in Model.Items)
+                        {
+                            <div class="d-flex align-items-center justify-content-between py-2 border-bottom">
+                                <div class="d-flex align-items-center gap-3">
+                                    @if (!string.IsNullOrEmpty(item.ImageUrl))
+                                    {
+                                        <img src="@item.ImageUrl" alt="@item.ProductName" class="rounded-3 shadow-sm" style="width: 48px; height: 48px; object-fit: cover;" />
+                                    }
+                                    else
+                                    {
+                                        <div class="rounded-3 shadow-sm d-flex align-items-center justify-content-center bg-light text-muted border" style="width: 48px; height: 48px;">
+                                            <i class="bi bi-cup-hot text-warning"></i>
+                                        </div>
+                                    }
+                                    <div>
+                                        <div class="fw-semibold small">@item.ProductName</div>
+                                        <div class="text-muted small">
+                                            @item.Quantity &times; ₱@item.Price.ToString("N2")
+                                            @if (!string.IsNullOrEmpty(item.VariantSummary))
+                                            {
+                                                <span class="text-secondary">(@item.VariantSummary)</span>
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="fw-bold text-success small">
+                                    ₱@item.TotalPrice.ToString("N2")
+                                </div>
+                            </div>
+                        }
+                    </div>
+
+                    <!-- Financial Summary -->
+                    <div class="d-flex justify-content-between mb-1 small">
+                        <span class="text-muted">Subtotal</span>
+                        <span class="fw-semibold">₱@Model.Subtotal.ToString("N2")</span>
+                    </div>
+                    @if (Model.DiscountAmount > 0)
+                    {
+                        <div class="d-flex justify-content-between mb-1 small text-success">
+                            <span>Discount</span>
+                            <span class="fw-bold">-₱@Model.DiscountAmount.ToString("N2")</span>
+                        </div>
+                    }
+                    <div class="d-flex justify-content-between mb-2 small">
+                        <span class="text-muted">Delivery Fee</span>
+                        <span class="fw-semibold">@(Model.DeliveryFee == 0 ? "FREE" : "₱" + Model.DeliveryFee.ToString("N2"))</span>
+                    </div>
+                    <div class="d-flex justify-content-between fs-5 fw-bold border-top pt-2">
+                        <span>Total</span>
+                        <span class="text-success">₱@Model.TotalAmount.ToString("N2")</span>
+                    </div>
+                </div>
+
+                <!-- Support Box -->
+                <div class="card border-0 shadow-sm rounded-4 p-4 bg-light border">
+                    <h6 class="fw-bold mb-2"><i class="bi bi-headset text-warning me-2"></i>Need Help with Your Delivery?</h6>
+                    <p class="small text-muted mb-3">Our Dalaguete cafe dispatch desk is connected to your order. Call anytime for immediate assistance.</p>
+                    <a href="tel:+639193314702" class="btn btn-outline-dark btn-sm rounded-pill w-100 mb-2 fw-semibold">
+                        <i class="bi bi-telephone-fill me-1"></i> Call JMT Cafe Desk: 0919 331 4702
+                    </a>
+                    <a asp-controller="Home" asp-action="Contact" class="btn btn-outline-secondary btn-sm rounded-pill w-100 fw-semibold">
+                        <i class="bi bi-chat-dots me-1"></i> Send Support Ticket
+                    </a>
+                </div>
+            </div>
+        </div>
+    }
+</div>

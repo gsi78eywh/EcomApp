@@ -1,50 +1,120 @@
+@model OrderModel
 @{
-    ViewData["Title"] = "Order Confirmation";
-    var orderId = ViewBag.OrderId as string ?? "LUSI-ORDER";
-    var customerName = ViewBag.CustomerName as string ?? "Coffee Enthusiast";
-    var totalPaid = ViewBag.TotalPaid as string ?? "$0.00";
+    ViewData["Title"] = "Order & Reservation Confirmed | JMT CAFE Dalaguete";
 }
 
-<div class="container py-5 text-center">
+<div class="container py-5">
     <div class="row justify-content-center">
-        <div class="col-lg-7">
-            <div class="card border-0 shadow rounded-4 p-4 p-md-5 bg-white">
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-xl rounded-4 p-4 p-md-5 bg-white text-center">
+                <!-- Success Checkmark with Glowing Ring -->
                 <div class="mb-4">
-                    <div class="d-inline-flex align-items-center justify-content-center bg-success bg-opacity-10 text-success rounded-circle" style="width: 80px; height: 80px;">
+                    <div class="d-inline-flex align-items-center justify-content-center bg-success bg-opacity-10 text-success rounded-circle shadow-sm" style="width: 90px; height: 90px;">
                         <i class="bi bi-check2-circle display-4"></i>
                     </div>
                 </div>
 
-                <h1 class="brand-font fw-bold mb-2">Thank You, @customerName!</h1>
-                <p class="lead text-muted mb-4">Your coffee order has been placed successfully and is being prepared.</p>
+                <div class="d-inline-flex align-items-center gap-2 px-3 py-1 rounded-pill mb-3 mx-auto" 
+                     style="background: rgba(212, 163, 115, 0.15); border: 1px solid rgba(212, 163, 115, 0.35);">
+                    <i class="bi bi-stars text-warning"></i>
+                    <span class="text-warning small fw-bold text-uppercase" style="letter-spacing: 0.08em;">Order Received &bull; JMT Cafe Queued</span>
+                </div>
 
-                <div class="p-4 bg-light rounded-4 mb-4 text-start">
+                <h1 class="brand-font display-6 fw-bold mb-2">Thank You, @Model.CustomerName!</h1>
+                <p class="lead text-muted mb-4 fs-6" style="max-width: 540px; margin: 0 auto;">
+                    Your food and drinks order has been queued at JMT CAFE in Purok 5 Tabon, Dalaguete and will be prepared fresh to order.
+                </p>
+
+                <!-- Key Order Info Grid Card -->
+                <div class="p-4 bg-light rounded-4 mb-4 text-start border">
                     <div class="row g-3">
                         <div class="col-sm-6">
-                            <span class="text-muted small">Tracking Order ID</span>
-                            <div class="fw-bold fs-5 text-dark">@orderId</div>
+                            <span class="text-muted small text-uppercase fw-semibold">Tracking Order ID</span>
+                            <div class="fw-bold fs-5 text-dark font-monospace">@Model.OrderId</div>
                         </div>
                         <div class="col-sm-6">
-                            <span class="text-muted small">Total Paid</span>
-                            <div class="fw-bold fs-5 text-success">@totalPaid</div>
+                            <span class="text-muted small text-uppercase fw-semibold">Total Paid / Due</span>
+                            <div class="fw-bold fs-5 text-success">₱@Model.TotalAmount.ToString("N2")</div>
                         </div>
                         <div class="col-sm-6">
-                            <span class="text-muted small">Estimated Delivery</span>
-                            <div class="fw-semibold">Within 24-48 Hours</div>
+                            <span class="text-muted small text-uppercase fw-semibold">Fulfillment Mode</span>
+                            <div class="fw-semibold mt-1">
+                                @if (Model.FulfillmentType == "Pickup")
+                                {
+                                    <span class="badge bg-info bg-opacity-25 text-dark border border-info px-3 py-1 rounded-pill"><i class="bi bi-shop me-1"></i>JMT Cafe Onsite Pickup</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-primary bg-opacity-25 text-primary border border-primary px-3 py-1 rounded-pill"><i class="bi bi-truck me-1"></i>Dalaguete Local Delivery</span>
+                                }
+                            </div>
                         </div>
                         <div class="col-sm-6">
-                            <span class="text-muted small">Status</span>
-                            <div><span class="badge bg-warning text-dark">Roaster Preparing</span></div>
+                            <span class="text-muted small text-uppercase fw-semibold">Live Order Status</span>
+                            <div class="mt-1">
+                                <span class="badge bg-warning text-dark px-3 py-1 rounded-pill fw-bold"><i class="bi bi-gear-fill me-1"></i>@Model.OrderStatus</span>
+                            </div>
+                        </div>
+                        <div class="col-12 border-top pt-3 mt-2">
+                            <span class="text-muted small text-uppercase fw-semibold">Destination Address</span>
+                            <div class="fw-semibold text-secondary mt-1">@Model.Address, @Model.City, @Model.PostalCode</div>
                         </div>
                     </div>
                 </div>
 
+                <!-- Ordered Items Breakdown -->
+                <div class="text-start mb-4">
+                    <h5 class="brand-font fw-bold mb-3">Items in This Order</h5>
+                    <div class="list-group list-group-flush rounded-4 border overflow-hidden">
+                        @foreach (var item in Model.Items)
+                        {
+                            <div class="list-group-item d-flex align-items-center justify-content-between p-3">
+                                <div class="d-flex align-items-center gap-3">
+                                    @if (!string.IsNullOrEmpty(item.ImageUrl))
+                                    {
+                                        <img src="@item.ImageUrl" alt="@item.ProductName" class="rounded-3 shadow-sm" style="width: 54px; height: 54px; object-fit: cover;" />
+                                    }
+                                    else
+                                    {
+                                        <div class="rounded-3 bg-dark text-warning d-flex align-items-center justify-content-center" style="width: 54px; height: 54px;">
+                                            <i class="bi bi-camera"></i>
+                                        </div>
+                                    }
+                                    <div>
+                                        <div class="fw-bold text-dark">@item.ProductName</div>
+                                        <small class="text-muted">
+                                            Qty: @item.Quantity &times; ₱@item.Price.ToString("N2")
+                                            @if (!string.IsNullOrEmpty(item.VariantSummary))
+                                            {
+                                                <span>&bull; @item.VariantSummary</span>
+                                            }
+                                        </small>
+                                    </div>
+                                </div>
+                                <div class="fw-bold text-success">
+                                    ₱@item.TotalPrice.ToString("N2")
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+
+                <!-- Live GPS Tracking Callout -->
+                @if (Model.FulfillmentType == "Delivery")
+                {
+                    <div class="alert alert-warning d-flex align-items-center justify-content-center gap-2 rounded-pill py-2 px-3 mb-4 shadow-sm border-0" style="background: rgba(212, 163, 115, 0.2); color: #422416;">
+                        <span class="spinner-grow spinner-grow-sm text-warning" role="status"></span>
+                        <span class="small fw-bold"><i class="bi bi-bicycle me-1"></i> Live Maxim-Style GPS Motorbike Tracking is active for your order!</span>
+                    </div>
+                }
+
+                <!-- Action CTAs -->
                 <div class="d-flex flex-wrap justify-content-center gap-3">
-                    <a asp-controller="Shop" asp-action="Index" class="btn btn-warning btn-lg fw-bold text-dark rounded-pill px-4">
-                        <i class="bi bi-bag-plus me-1"></i> Order More Coffee
+                    <a asp-controller="Order" asp-action="Track" asp-route-orderId="@Model.OrderId" class="btn btn-gold btn-lg px-4 shadow">
+                        <i class="bi bi-geo-alt-fill me-2"></i> Track Live Courier on Map
                     </a>
-                    <a asp-controller="Home" asp-action="Index" class="btn btn-outline-dark btn-lg rounded-pill px-4">
-                        Return Home
+                    <a asp-controller="Shop" asp-action="Index" class="btn btn-outline-dark btn-lg rounded-pill px-4 fw-semibold">
+                        <i class="bi bi-cup-hot me-1"></i> Continue Shopping
                     </a>
                 </div>
             </div>

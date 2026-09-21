@@ -1,38 +1,269 @@
+@using LusiTrack.Services
 @{
-    ViewData["Title"] = "Our Coffee Story";
+    ViewData["Title"] = "Our Story & Cafe Experience | JMT CAFE Dalaguete Cebu";
 }
 
-<div class="container py-5">
-    <div class="row align-items-center g-5 mb-5">
+<!-- Hero Header -->
+<section class="py-5 text-white mb-5 position-relative overflow-hidden" 
+         style="background: radial-gradient(circle at 80% 20%, rgba(212, 163, 115, 0.25) 0%, transparent 60%), linear-gradient(135deg, #0b0604 0%, #1c1009 50%, #3e2416 100%); border-bottom: 1px solid rgba(212, 163, 115, 0.2);">
+    <div class="container py-4 text-center">
+        <div class="d-inline-flex align-items-center gap-2 px-3 py-1 rounded-pill mb-3 mx-auto" 
+             style="background: rgba(212, 163, 115, 0.18); border: 1px solid rgba(212, 163, 115, 0.4);">
+            <i class="bi bi-patch-check-fill text-warning"></i>
+            <span class="text-warning small fw-bold text-uppercase" style="letter-spacing: 0.08em;">Featured by Bisayang Explorer TV</span>
+        </div>
+        <h1 class="display-4 fw-bold brand-font mb-3">The Story of JMT CAFE</h1>
+        <p class="lead max-w-700 mx-auto text-light opacity-90" style="max-width: 740px; line-height: 1.8;">
+            Located in the mountain highlands of <strong>@JmtCafeConfig.FullAddress</strong>, JMT CAFE was created to give travelers and local communities hearty comfort food, artisan barista coffee, and icy refreshments in a cool, welcoming haven.
+        </p>
+        <div class="d-flex justify-content-center gap-3 mt-4 flex-wrap">
+            <a href="@JmtCafeConfig.FacebookPageUrl" target="_blank" rel="noopener noreferrer" class="btn btn-primary rounded-pill px-4 fw-bold shadow">
+                <i class="bi bi-facebook me-1"></i> Official Facebook Page
+            </a>
+            <a href="@JmtCafeConfig.BisayangExplorerUrl" target="_blank" rel="noopener noreferrer" class="btn btn-outline-light rounded-pill px-4 fw-semibold">
+                <i class="bi bi-play-circle-fill me-1"></i> Watch Feature Video
+            </a>
+            <a href="@JmtCafeConfig.GoogleMapsPlaceUrl" target="_blank" rel="noopener noreferrer" class="btn btn-outline-warning rounded-pill px-4 fw-semibold">
+                <i class="bi bi-geo-alt-fill me-1"></i> Get Directions
+            </a>
+        </div>
+    </div>
+</section>
+
+<div class="container">
+    <!-- Story Section with Authentic Photos -->
+    <div class="row align-items-center g-5 mb-5 pb-4">
         <div class="col-lg-6">
-            <span class="badge bg-warning text-dark px-3 py-2 text-uppercase fw-bold mb-3 rounded-pill">
-                Passionate Craftsmanship
+            <span class="badge bg-warning text-dark px-3 py-1 text-uppercase fw-bold mb-2 rounded-pill small">
+                Highlands of Dalaguete, South Cebu
             </span>
-            <h1 class="display-4 fw-bold brand-font mb-4">Born from a Love of Specialty Roasting</h1>
-            <p class="lead text-muted mb-4">
-                At LusiTrack Coffee Roasters, we believe that coffee is more than just caffeine—it's an artisanal ritual, a bridge between cultures, and a sensory craft.
+            <h2 class="display-6 fw-bold brand-font mb-4">Born from Passion on the Mountain Highway</h2>
+            <p class="lead text-secondary mb-3" style="line-height: 1.8;">
+                Dalaguete is celebrated across the Philippines as the "Vegetable Basket of Cebu" and the gateway to the breathtaking heights of Osmeña Peak. Winding through the scenic Dalaguete–Mantalongon mountain highway, road-trippers, riders, and travelers often yearned for a genuine cafe stopover with fresh mountain breeze, rooftop views, and premium hospitality.
             </p>
-            <p class="text-secondary">
-                Founded in 2024, our roastery partners directly with smallholder coffee farmers across Ethiopia, Colombia, Guatemala, and Sumatra. We pay above Fair Trade prices to foster sustainable farming practices and support local harvest communities.
+            <p class="text-secondary mb-4" style="line-height: 1.8;">
+                <strong>JMT CAFE</strong> opened its doors in Purok 5 Tabon to fill that void. We believe extraordinary food and handcrafted barista coffee should be accessible to all: with refreshing fruit mojitos starting at just <strong>₱35</strong>, savory rice meals starting from <strong>₱45 to ₱135</strong>, up to our signature <strong>Giant 10-Inch Party Burger at ₱879</strong> for visiting barkadas.
             </p>
-            <div class="row g-3 mt-3">
+
+            <div class="row g-3">
                 <div class="col-sm-6">
-                    <div class="border-start border-warning border-4 ps-3">
-                        <h4 class="fw-bold mb-1">100% Arabica</h4>
-                        <p class="text-muted small mb-0">High-altitude specialty beans only</p>
+                    <div class="p-3 bg-white rounded-4 border-start border-warning border-4 shadow-sm">
+                        <h6 class="fw-bold mb-1"><i class="bi bi-wind text-info me-1"></i> Mountain Breeze & Rooftop Deck</h6>
+                        <p class="text-muted small mb-0">Breathe in the naturally crisp highland air on our 2nd floor open-air viewing deck.</p>
                     </div>
                 </div>
                 <div class="col-sm-6">
-                    <div class="border-start border-warning border-4 ps-3">
-                        <h4 class="fw-bold mb-1">Freshly Roasted</h4>
-                        <p class="text-muted small mb-0">Shipped within 48 hours of roast</p>
+                    <div class="p-3 bg-white rounded-4 border-start border-warning border-4 shadow-sm">
+                        <h6 class="fw-bold mb-1"><i class="bi bi-wifi text-success me-1"></i> Free Customer Wi-Fi</h6>
+                        <p class="text-muted small mb-0">Fast fiber connection for work, study, and social sharing.</p>
                     </div>
                 </div>
             </div>
         </div>
         <div class="col-lg-6">
-            <img src="https://images.unsplash.com/photo-1442512595331-e89e73853f31?auto=format&fit=crop&w=700&q=80" 
-                 alt="Coffee Roasting Process" class="img-fluid rounded-4 shadow-lg" />
+            <div class="position-relative">
+                <img src="/images/jmt/jmt_storefront_highlands.jpg" 
+                     alt="JMT Cafe Roadside Mountain Haven in Dalaguete Cebu" class="img-fluid rounded-4 shadow-xl w-100 border border-warning border-opacity-25" style="max-height: 480px; object-fit: cover;" />
+                <div class="position-absolute bottom-0 end-0 m-3 p-3 rounded-4 shadow-lg text-white"
+                     style="background: rgba(14, 8, 4, 0.9); backdrop-filter: blur(10px); border: 1px solid rgba(212, 163, 115, 0.3);">
+                    <span class="text-warning fw-bold d-block"><i class="bi bi-award-fill me-1"></i>Authentic Dalaguete Experience</span>
+                    <small class="text-white-50">Dine-In &bull; Open-Air Rooftop Deck &bull; Roadside Mountain Parking</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Embedded Bisayang Explorer TV Video Card Feature -->
+    <div class="card border-0 shadow-lg rounded-4 overflow-hidden mb-5 bg-dark text-white position-relative" style="border: 1.5px solid rgba(212, 163, 115, 0.35) !important;">
+        <div class="row g-0 align-items-center">
+            <div class="col-lg-7">
+                <a href="@JmtCafeConfig.BisayangExplorerUrl" target="_blank" rel="noopener noreferrer" 
+                   class="video-feature-card border-0 rounded-0" title="Watch Bisayang Explorer TV Feature on YouTube">
+                    <div class="video-thumbnail-wrap" style="aspect-ratio: 16/9; max-height: 380px;">
+                        <img src="/images/jmt/jmt_chicken_meal.png" alt="Bisayang Explorer TV Feature Video Thumbnail" class="video-thumbnail-img" />
+                        <div class="video-overlay-gradient"></div>
+                        <div class="video-center-play">
+                            <i class="bi bi-play-fill" style="margin-left: 4px;"></i>
+                        </div>
+                        <div class="position-absolute bottom-0 start-0 m-3 d-flex align-items-center gap-2">
+                            <span class="badge bg-danger text-white fw-bold rounded-pill px-3 py-1">
+                                <i class="bi bi-youtube me-1"></i> Bisayang Explorer TV
+                            </span>
+                            <span class="badge bg-dark bg-opacity-75 text-warning fw-semibold rounded-pill px-2 py-1">
+                                200K+ Regional Views
+                            </span>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            <div class="col-lg-5 p-4 p-md-5">
+                <span class="badge bg-warning text-dark px-3 py-1 text-uppercase fw-bold mb-2 rounded-pill small">
+                    <i class="bi bi-patch-check-fill me-1"></i> Regional Spotlight
+                </span>
+                <h3 class="brand-font fw-bold mb-3 text-white">Featured by Bisayang Explorer TV</h3>
+                <p class="text-white-50 small mb-4" style="line-height: 1.8;">
+                    Popular travel and culinary creator <strong>Bisayang Explorer TV</strong> visited JMT CAFE in Purok 5 Tabon, praising our crispy chicken meals with Butterfly Pea Lemon drink, handcrafted barista latte art, and the open-air rooftop views overlooking the Dalaguete mountain ridge!
+                </p>
+                <a href="@JmtCafeConfig.BisayangExplorerUrl" target="_blank" rel="noopener noreferrer" 
+                   class="btn btn-warning rounded-pill px-4 py-2 fw-bold text-dark shadow-sm d-inline-flex align-items-center gap-2">
+                    <i class="bi bi-play-circle-fill text-danger fs-5"></i>
+                    <span>Watch Full Feature Video</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Authentic 3-Photo Atmospheric Lifestyle Gallery -->
+    <div class="mb-5 pb-3">
+        <div class="text-center mb-4">
+            <span class="badge bg-warning text-dark px-3 py-1 text-uppercase fw-bold mb-2 rounded-pill small">Scenic Mountain Dining</span>
+            <h2 class="brand-font display-6 fw-bold mb-2">Straight from JMT CAFE Dalaguete</h2>
+            <p class="text-muted">A glimpse into our cool highland haven along the scenic route to Osmeña Peak</p>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="lifestyle-gallery-card">
+                    <div class="gallery-img-wrap">
+                        <img src="/images/jmt/jmt_storefront_highlands.jpg" alt="Highland Stopover & Rooftop Deck" />
+                        <div class="position-absolute top-0 start-0 m-2">
+                            <span class="badge bg-dark bg-opacity-75 text-warning rounded-pill px-2 py-1 small">
+                                <i class="bi bi-geo-alt-fill me-1"></i>Purok 5 Tabon
+                            </span>
+                        </div>
+                    </div>
+                    <div class="p-3 bg-white flex-grow-1 d-flex flex-column justify-content-between">
+                        <div>
+                            <h6 class="fw-bold brand-font mb-1 text-dark">Highland Stopover & Rooftop Deck</h6>
+                            <p class="text-muted small mb-0" style="line-height: 1.6;">
+                                Our friendly 2-story orange cafe perched in the Dalaguete mountains, offering open-air terrace seating, roadside motorcycle & car parking, and sweeping mountain panoramas.
+                            </p>
+                        </div>
+                        <small class="text-warning fw-semibold mt-2 d-block">Open Daily: 9 AM – 10 PM</small>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="lifestyle-gallery-card">
+                    <div class="gallery-img-wrap">
+                        <img src="/images/jmt/jmt_coffee_clock.png" alt="Barista Coffee Clock & Handcrafted Drinks" />
+                        <div class="position-absolute top-0 start-0 m-2">
+                            <span class="badge bg-dark bg-opacity-75 text-warning rounded-pill px-2 py-1 small">
+                                <i class="bi bi-cup-hot-fill me-1"></i>Handcrafted
+                            </span>
+                        </div>
+                    </div>
+                    <div class="p-3 bg-white flex-grow-1 d-flex flex-column justify-content-between">
+                        <div>
+                            <h6 class="fw-bold brand-font mb-1 text-dark">The 12-Cup Barista Coffee Clock</h6>
+                            <p class="text-muted small mb-0" style="line-height: 1.6;">
+                                Our iconic 12-cup coffee clock at the counter, celebrating handcrafted coffee drinks, rich espresso, and artisan lattes along the scenic mountain route.
+                            </p>
+                        </div>
+                        <small class="text-warning fw-semibold mt-2 d-block">Coffee Drinks from ₱39</small>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="lifestyle-gallery-card">
+                    <div class="gallery-img-wrap">
+                        <img src="/images/jmt/jmt_chicken_meal.png" alt="Crispy Chicken & Silog Feasts" />
+                        <div class="position-absolute top-0 start-0 m-2">
+                            <span class="badge bg-dark bg-opacity-75 text-warning rounded-pill px-2 py-1 small">
+                                <i class="bi bi-egg-fried me-1"></i>Highland Feasts
+                            </span>
+                        </div>
+                    </div>
+                    <div class="p-3 bg-white flex-grow-1 d-flex flex-column justify-content-between">
+                        <div>
+                            <h6 class="fw-bold brand-font mb-1 text-dark">Crispy Chicken & Silog Feasts</h6>
+                            <p class="text-muted small mb-0" style="line-height: 1.6;">
+                                Savor our popular golden crispy fried chicken with savory house gravy, garlic rice silogs, and flame-grilled burgers while taking in the cool Dalaguete breeze.
+                            </p>
+                        </div>
+                        <small class="text-warning fw-semibold mt-2 d-block">Rice Meals from ₱45</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 4 Core Pillars of JMT Cafe -->
+    <div class="text-center mb-5">
+        <span class="badge bg-warning text-dark px-3 py-1 text-uppercase fw-bold mb-2 rounded-pill small">Our Commitment</span>
+        <h2 class="brand-font display-6 fw-bold mb-2">The JMT CAFE Experience</h2>
+        <p class="text-muted">What makes our highland cafe special</p>
+    </div>
+
+    <div class="row g-4 mb-5 pb-4">
+        <div class="col-md-6 col-lg-3">
+            <div class="card border-0 shadow-sm rounded-4 p-4 text-center bg-white h-100">
+                <div class="bg-warning bg-opacity-10 text-warning d-inline-flex p-3 rounded-circle mb-3 mx-auto fs-3">
+                    <i class="bi bi-wallet2"></i>
+                </div>
+                <h5 class="brand-font fw-bold mb-2">Honest, Accessible Prices</h5>
+                <p class="text-muted small mb-0">Drinks starting from ₱35 and hearty meals from ₱45. Premium taste without the premium markup.</p>
+            </div>
+        </div>
+        <div class="col-md-6 col-lg-3">
+            <div class="card border-0 shadow-sm rounded-4 p-4 text-center bg-white h-100">
+                <div class="bg-warning bg-opacity-10 text-warning d-inline-flex p-3 rounded-circle mb-3 mx-auto fs-3">
+                    <i class="bi bi-cup-hot-fill"></i>
+                </div>
+                <h5 class="brand-font fw-bold mb-2">Barista Craftsmanship</h5>
+                <p class="text-muted small mb-0">From swan and tulip latte art to authentic Vietnamese egg coffee and large 16oz fruit shakes.</p>
+            </div>
+        </div>
+        <div class="col-md-6 col-lg-3">
+            <div class="card border-0 shadow-sm rounded-4 p-4 text-center bg-white h-100">
+                <div class="bg-warning bg-opacity-10 text-warning d-inline-flex p-3 rounded-circle mb-3 mx-auto fs-3">
+                    <i class="bi bi-shop-window"></i>
+                </div>
+                <h5 class="brand-font fw-bold mb-2">Scenic Mountain Deck & Vibe</h5>
+                <p class="text-muted small mb-0">Clean tables, fresh mountain breeze, open-air viewing deck, and free high-speed Wi-Fi along your highland trip.</p>
+            </div>
+        </div>
+        <div class="col-md-6 col-lg-3">
+            <div class="card border-0 shadow-sm rounded-4 p-4 text-center bg-white h-100">
+                <div class="bg-warning bg-opacity-10 text-warning d-inline-flex p-3 rounded-circle mb-3 mx-auto fs-3">
+                    <i class="bi bi-geo-alt-fill"></i>
+                </div>
+                <h5 class="brand-font fw-bold mb-2">Highland Roadside Stop</h5>
+                <p class="text-muted small mb-0">Located right on the scenic Tabon highway route towards Mantalongon, with easy parking.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Info Banner -->
+    <div class="card border-0 shadow-xl rounded-4 p-4 p-md-5 mb-5 text-white" 
+         style="background: radial-gradient(circle at 10% 20%, #351a0c 0%, #120905 90%); border: 1.5px solid rgba(212, 163, 115, 0.28);">
+        <div class="row g-4 align-items-center">
+            <div class="col-lg-8">
+                <span class="badge bg-warning text-dark fw-bold px-3 py-1 rounded-pill mb-2">
+                    <i class="bi bi-geo-alt-fill me-1"></i>Official Cafe Address
+                </span>
+                <h3 class="brand-font display-6 fw-bold mb-2 text-white">@JmtCafeConfig.Name Dalaguete</h3>
+                <p class="text-light opacity-90 mb-3" style="font-size: 1.1rem;">
+                    @JmtCafeConfig.FullAddress (@JmtCafeConfig.Landmark)
+                </p>
+                <div class="d-flex flex-wrap gap-3 text-light small">
+                    <div><i class="bi bi-clock text-warning me-1"></i> <strong>@JmtCafeConfig.HoursDisplay</strong></div>
+                    <div><i class="bi bi-telephone text-warning me-1"></i> Tel: <strong>@JmtCafeConfig.PhoneDisplay</strong></div>
+                    <div><i class="bi bi-bicycle text-warning me-1"></i> <strong>Local Delivery Available</strong></div>
+                </div>
+            </div>
+            <div class="col-lg-4 text-lg-end">
+                <div class="d-flex flex-column gap-2">
+                    <a href="@JmtCafeConfig.FacebookPageUrl" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-lg rounded-pill fw-bold shadow">
+                        <i class="bi bi-facebook me-1"></i> Message on Facebook
+                    </a>
+                    <a href="@JmtCafeConfig.GoogleMapsPlaceUrl" target="_blank" rel="noopener noreferrer" class="btn btn-outline-light rounded-pill fw-semibold">
+                        <i class="bi bi-geo-alt-fill me-1"></i> Get Directions
+                    </a>
+                </div>
+            </div>
         </div>
     </div>
 </div>

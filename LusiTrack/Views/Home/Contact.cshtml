@@ -1,98 +1,185 @@
+@using LusiTrack.Services
 @{
-    ViewData["Title"] = "Contact Our Roastery";
+    ViewData["Title"] = "Find Us in Dalaguete | JMT CAFE";
 }
 
 <div class="container py-5">
-    <div class="row g-5">
+    <!-- Header -->
+    <div class="text-center mb-5">
+        <span class="badge bg-warning text-dark px-3 py-1 rounded-pill fw-bold text-uppercase small mb-2">
+            <i class="bi bi-geo-alt-fill me-1"></i> @JmtCafeConfig.AddressLine1, @JmtCafeConfig.Municipality, Cebu
+        </span>
+        <h1 class="brand-font display-5 fw-bold mb-2">Visit JMT CAFE in Dalaguete</h1>
+        <p class="text-muted mx-auto" style="max-width: 680px; line-height: 1.7;">
+            Stop by for our 10-Inch Giant Burger, crispy chicken meals, signature mojito drinks, iced Spanish lattes, and thick Oreo frappes. Fresh mountain breeze, scenic rooftop viewing deck, free high-speed Wi-Fi, roadside parking, and warm Dalaguete hospitality!
+        </p>
+    </div>
+
+    <div class="row g-5 mb-5 align-items-center">
+        <!-- Cafe Details Column -->
         <div class="col-lg-5">
-            <span class="badge bg-warning text-dark px-3 py-2 text-uppercase fw-bold mb-3 rounded-pill">
-                Get in Touch
-            </span>
-            <h1 class="brand-font fw-bold mb-4">Visit Us or Say Hello</h1>
-            <p class="text-muted mb-4">
-                Have questions about our brewing recommendations, bulk bean orders, or subscription deliveries? Drop by our brew bar or send us a message.
-            </p>
-
-            <div class="d-flex align-items-start gap-3 mb-4">
-                <div class="bg-warning bg-opacity-25 text-dark rounded-circle p-3 fs-5">
-                    <i class="bi bi-geo-alt-fill text-warning"></i>
+            <div class="card border-0 shadow-sm rounded-4 p-4 bg-white mb-4">
+                <!-- Storefront Photo -->
+                <div class="position-relative rounded-3 overflow-hidden shadow-sm mb-4" style="border: 2px solid #d4a373;">
+                    <img src="/images/jmt/jmt_storefront_highlands.jpg" alt="JMT Cafe Storefront and Mountain Terrace" class="w-100" style="height: 190px; object-fit: cover;" />
+                    <div class="position-absolute bottom-0 start-0 w-100 p-2 text-white" style="background: linear-gradient(to top, rgba(0,0,0,0.85), transparent);">
+                        <div class="fw-bold small"><i class="bi bi-camera-fill me-1"></i> Authentic Storefront</div>
+                        <div style="font-size: 0.72rem;" class="text-white-50">Highlands of Barangay Tabon, Dalaguete</div>
+                    </div>
                 </div>
-                <div>
-                    <h6 class="fw-bold mb-1">Roastery & Espresso Bar</h6>
-                    <p class="text-muted small mb-0">104 Artisanal Way, Specialty Coffee District</p>
-                </div>
-            </div>
 
-            <div class="d-flex align-items-start gap-3 mb-4">
-                <div class="bg-warning bg-opacity-25 text-dark rounded-circle p-3 fs-5">
-                    <i class="bi bi-envelope-fill text-warning"></i>
-                </div>
-                <div>
-                    <h6 class="fw-bold mb-1">Email Support</h6>
-                    <p class="text-muted small mb-0">hello@lusitrackcoffee.com</p>
-                </div>
-            </div>
+                <h4 class="brand-font fw-bold mb-3 text-dark">
+                    <i class="bi bi-shop text-warning me-2"></i> Official Cafe Details
+                </h4>
 
-            
-<div class="d-flex align-items-start gap-3">
-                <div class="bg-warning bg-opacity-25 text-dark rounded-circle p-3 fs-5">
-                    <i class="bi bi-clock-fill text-warning"></i>
+                <div class="d-flex align-items-start gap-3 mb-3">
+                    <div class="bg-warning bg-opacity-15 text-dark rounded-circle p-3 fs-5 shadow-xs flex-shrink-0">
+                        <i class="bi bi-geo-alt-fill text-warning"></i>
+                    </div>
+                    <div>
+                        <h6 class="fw-bold mb-1">Official Address</h6>
+                        <p class="text-secondary small mb-0 fw-semibold">@JmtCafeConfig.FullAddress</p>
+                        <small class="text-muted d-block">@JmtCafeConfig.Landmark</small>
+                        <small class="text-dark fw-bold">Plus Code: @JmtCafeConfig.PlusCode</small>
+                    </div>
                 </div>
-                <div>
-                    <h6 class="fw-bold mb-1">Brewing Hours</h6>
-                    <p class="text-muted small mb-0">Mon – Fri: 6:30am – 7:00pm<br />Weekends: 7:30am – 6:00pm</p>
+
+                <div class="d-flex align-items-start gap-3 mb-3">
+                    <div class="bg-success bg-opacity-10 text-success rounded-circle p-3 fs-5 shadow-xs flex-shrink-0">
+                        <i class="bi bi-telephone-fill"></i>
+                    </div>
+                    <div>
+                        <h6 class="fw-bold mb-1">Direct Mobile Phone</h6>
+                        <p class="text-muted small mb-1">Call for advance takeaway, delivery & inquiries</p>
+                        <a href="@JmtCafeConfig.PhoneTelLink" class="btn btn-outline-success btn-sm rounded-pill fw-bold px-3">
+                            <i class="bi bi-telephone me-1"></i> @JmtCafeConfig.PhoneDisplay
+                        </a>
+                    </div>
                 </div>
-            </div>
 
-           <div class="d-flex align-items-start gap-3">
-                <div class="bg-warning bg-opacity-25 text-dark rounded-circle p-3 fs-5">
-                    <i class="bi bi-clock-fill text-warning"></i>
+                <div class="d-flex align-items-start gap-3 mb-3">
+                    <div class="bg-primary bg-opacity-10 text-primary rounded-circle p-3 fs-5 shadow-xs flex-shrink-0">
+                        <i class="bi bi-facebook"></i>
+                    </div>
+                    <div>
+                        <h6 class="fw-bold mb-1">Official Facebook Page</h6>
+                        <p class="text-muted small mb-1">Message for orders, delivery & table reservations</p>
+                        <a href="@JmtCafeConfig.FacebookPageUrl" target="_blank" rel="noopener noreferrer" class="btn btn-outline-primary btn-sm rounded-pill fw-bold px-3">
+                            <i class="bi bi-facebook me-1"></i> JMT CAFE Facebook Page
+                        </a>
+                    </div>
                 </div>
-                <div>
-                    <h6 class="fw-bold mb-1">Brewing Hours</h6>
-                    <p class="text-muted small mb-0">Mon – Fri: 6:30am – 7:00pm<br />Weekends: 7:30am – 6:00pm</p>
+
+                <div class="d-flex align-items-start gap-3 mb-3">
+                    <div class="bg-warning bg-opacity-15 text-dark rounded-circle p-3 fs-5 shadow-xs flex-shrink-0">
+                        <i class="bi bi-clock-fill text-warning"></i>
+                    </div>
+                    <div>
+                        <h6 class="fw-bold mb-1">Operating Hours & Service</h6>
+                        <p class="text-muted small mb-0">Monday – Sunday: <strong>@JmtCafeConfig.HoursDisplay</strong></p>
+                        <small class="text-success fw-semibold"><i class="bi bi-bicycle me-1"></i>Delivery Available • Roadside Parking</small>
+                    </div>
                 </div>
-            </div>
 
+                <!-- Large Highway Mobile Direct Touch Targets -->
+                <div class="pt-3 border-top mt-2 mb-3 d-flex flex-column gap-2">
+                    <span class="small fw-bold text-uppercase text-secondary" style="font-size: 0.72rem; letter-spacing: 0.08em;">
+                        <i class="bi bi-lightning-charge-fill text-warning me-1"></i>Instant Highway Contact (Fastest)
+                    </span>
+                    
+                    <a href="@JmtCafeConfig.FacebookPageUrl" target="_blank" rel="noopener noreferrer" 
+                       class="highway-touch-target target-messenger">
+                        <i class="bi bi-messenger fs-4"></i>
+                        <div>
+                            <div class="lh-1">Tap to Message on Facebook</div>
+                            <small class="opacity-90 fw-normal" style="font-size: 0.76rem;">Instant replies for orders, takeout & table inquiries</small>
+                        </div>
+                    </a>
 
+                    <a href="@JmtCafeConfig.PhoneTelLink" class="highway-touch-target target-call">
+                        <i class="bi bi-telephone-fill fs-4"></i>
+                        <div>
+                            <div class="lh-1">Call @JmtCafeConfig.PhoneDisplay</div>
+                            <small class="opacity-90 fw-normal" style="font-size: 0.76rem;">Direct hotline for road trip & advance food prep</small>
+                        </div>
+                    </a>
 
-
-
-            <div class="d-flex align-items-start gap-3">
-                <div class="bg-warning bg-opacity-25 text-dark rounded-circle p-3 fs-5">
-                    <i class="bi bi-clock-fill text-warning"></i>
+                    <a href="@JmtCafeConfig.GoogleMapsPlaceUrl" target="_blank" rel="noopener noreferrer" 
+                       class="highway-touch-target target-maps">
+                        <i class="bi bi-compass-fill text-warning fs-4"></i>
+                        <div>
+                            <div class="lh-1 text-white">Open in Google Maps / Waze</div>
+                            <small class="text-white-50 fw-normal" style="font-size: 0.76rem;">1-Click Turn-by-Turn GPS to Purok 5 Tabon</small>
+                        </div>
+                    </a>
                 </div>
-                <div>
-                    <h6 class="fw-bold mb-1">Facebook Page</h6>
-                    <p class="text-muted small mb-0">fb page: tabon kapeShopBar<br />barangayTabonKape</p>
+
+                <div class="d-flex align-items-start gap-3 pt-2">
+                    <div class="bg-info bg-opacity-10 text-info rounded-circle p-3 fs-5 shadow-xs flex-shrink-0">
+                        <i class="bi bi-check2-circle"></i>
+                    </div>
+                    <div>
+                        <h6 class="fw-bold mb-1">Customer Amenities</h6>
+                        <div class="d-flex flex-wrap gap-1 mt-1">
+                            <span class="badge bg-light text-dark border"><i class="bi bi-wind text-info me-1"></i>Mountain Breeze</span>
+                            <span class="badge bg-light text-dark border"><i class="bi bi-building text-warning me-1"></i>Rooftop Deck</span>
+                            <span class="badge bg-light text-dark border"><i class="bi bi-wifi text-success me-1"></i>Free High-Speed Wi-Fi</span>
+                            <span class="badge bg-light text-dark border"><i class="bi bi-bicycle text-warning me-1"></i>Delivery</span>
+                            <span class="badge bg-light text-dark border"><i class="bi bi-p-square-fill text-primary me-1"></i>Roadside Parking</span>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
 
+        <!-- De-Emphasized Online Inquiry Form (For Non-Urgent Written Inquiries) -->
         <div class="col-lg-7">
-            <div class="card p-4 p-md-5 rounded-4 shadow-sm border-0 bg-white">
-                <h4 class="brand-font fw-bold mb-3">Send Us a Message</h4>
-                <form onsubmit="event.preventDefault(); alert('Thank you! Your message has been received.');">
+            <div class="card p-4 rounded-4 shadow-sm border bg-white">
+                <div class="d-flex align-items-center justify-content-between mb-2">
+                    <h4 class="brand-font fw-bold mb-0 text-dark">Non-Urgent Written Inquiry</h4>
+                    <span class="badge bg-light text-muted border small">Form Inquiry</span>
+                </div>
+                <p class="text-muted small mb-3">Prefer sending an email inquiry rather than calling or messaging on Facebook? Fill out the details below and our team will get back to you.</p>
+
+                @if (TempData["SuccessMessage"] != null)
+                {
+                    <div class="alert alert-success alert-dismissible fade show rounded-4 shadow-sm mb-4 border-0" role="alert" style="background: #eef9f1; color: #1e6b36;">
+                        <i class="bi bi-check-circle-fill me-2"></i> @TempData["SuccessMessage"]
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                }
+
+                <form asp-action="Contact" method="post">
+                    @Html.AntiForgeryToken()
                     <div class="row g-3">
                         <div class="col-md-6">
-                            <label class="form-label small fw-semibold">Your Name</label>
-                            <input type="text" class="form-control" placeholder="Seth Pogi" required />
+                            <label class="form-label small fw-bold text-secondary">Your Name *</label>
+                            <input type="text" name="name" class="form-control rounded-pill bg-light" placeholder="e.g. Maria Santos" required />
                         </div>
                         <div class="col-md-6">
-                            <label class="form-label small fw-semibold">Your Email</label>
-                            <input type="email" class="form-control" placeholder="seth@example.com" required />
+                            <label class="form-label small fw-bold text-secondary">Your Mobile Phone *</label>
+                            <input type="text" name="email" class="form-control rounded-pill bg-light" placeholder="09XX-XXX-XXXX" required />
                         </div>
+                        
                         <div class="col-12">
-                            <label class="form-label small fw-semibold">Subject</label>
-                            <input type="text" class="form-control" placeholder="Inquiry about whole beans / orders" required />
+                            <label class="form-label small fw-bold text-secondary">Inquiry Subject</label>
+                            <select name="category" class="form-select rounded-pill bg-light">
+                                <option value="Table Reservation">Table Reservation / Dining Inquiry</option>
+                                <option value="Giant 10-Inch Burger Order">Advance Order for Giant 10-Inch JMT Burger</option>
+                                <option value="Advance Food Order">Advance Takeout Food Preparation</option>
+                                <option value="Special Events">Birthday / Gathering Celebration</option>
+                                <option value="Other Questions">General Inquiries</option>
+                            </select>
                         </div>
+
                         <div class="col-12">
-                            <label class="form-label small fw-semibold">Message</label>
-                            <textarea class="form-control" rows="4" placeholder="How can we help your coffee experience?" required></textarea>
+                            <label class="form-label small fw-bold text-secondary">Your Message *</label>
+                            <textarea name="message" class="form-control rounded-4 bg-light" rows="3" placeholder="Hi JMT Cafe! I would like to inquire about..." required></textarea>
                         </div>
-                        <div class="col-12">
-                            <button type="submit" class="btn btn-warning fw-bold text-dark px-4 py-2 rounded-pill">
-                                Send Message <i class="bi bi-send-fill ms-1"></i>
+
+                        <div class="col-12 pt-2">
+                            <button type="submit" class="btn btn-outline-dark w-100 fw-bold rounded-pill shadow-xs">
+                                <i class="bi bi-envelope-fill me-1"></i> Submit Written Inquiry
                             </button>
                         </div>
                     </div>
@@ -100,4 +187,121 @@
             </div>
         </div>
     </div>
+
+    <!-- Dalaguete Exact Map Section -->
+    <div class="card border-0 shadow-lg rounded-4 overflow-hidden mb-5 bg-white" id="jmtLocationSection">
+        <div class="p-4 bg-dark text-white d-flex flex-wrap justify-content-between align-items-center gap-3">
+            <div>
+                <span class="badge bg-warning text-dark px-3 py-1 rounded-pill fw-bold small text-uppercase mb-1">
+                    <i class="bi bi-geo-alt-fill me-1"></i> Official Map Location
+                </span>
+                <h4 class="brand-font fw-bold text-white mb-0">@JmtCafeConfig.Name on the Map</h4>
+                <small class="text-white-50">@JmtCafeConfig.FullAddress • Coordinates: @JmtCafeConfig.CoordinatesString</small>
+            </div>
+            <a href="@JmtCafeConfig.GoogleMapsPlaceUrl" 
+               target="_blank" rel="noopener noreferrer" 
+               class="btn btn-warning btn-sm rounded-pill fw-bold text-dark px-3 py-2 shadow-sm d-inline-flex align-items-center gap-1">
+                <i class="bi bi-box-arrow-up-right me-1"></i> Open Google Maps
+            </a>
+        </div>
+
+        <!-- Map Navigation Tabs -->
+        <div class="bg-light p-2 border-bottom d-flex align-items-center justify-content-between flex-wrap gap-2">
+            <ul class="nav nav-pills gap-1" id="contactMapTabs" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active rounded-pill fw-bold small py-1 px-3" id="contact-gmaps-tab" data-bs-toggle="pill" data-bs-target="#contact-gmaps-pane" type="button" role="tab">
+                        <i class="bi bi-google me-1 text-danger"></i> Google Maps Embed
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link rounded-pill fw-bold small py-1 px-3 text-dark" id="contact-osm-tab" data-bs-toggle="pill" data-bs-target="#contact-osm-pane" type="button" role="tab" onclick="refreshContactOsm()">
+                        <i class="bi bi-map-fill me-1 text-success"></i> OpenStreetMap (Interactive Map)
+                    </button>
+                </li>
+            </ul>
+            <span class="small text-muted pe-2">
+                <i class="bi bi-pin-map text-warning me-1"></i> @JmtCafeConfig.Landmark
+            </span>
+        </div>
+
+        <div class="tab-content" id="contactMapTabContent">
+            <!-- Tab 1: Google Maps Interactive Embed -->
+            <div class="tab-pane fade show active" id="contact-gmaps-pane" role="tabpanel">
+                <iframe src="@JmtCafeConfig.GoogleMapsEmbedUrl" 
+                        width="100%" height="470" style="border:0; display: block;" allowfullscreen="" loading="lazy" 
+                        referrerpolicy="no-referrer-when-downgrade" title="Google Maps JMT CAFE Location"></iframe>
+            </div>
+
+            <!-- Tab 2: OpenStreetMap Leaflet Container -->
+            <div class="tab-pane fade" id="contact-osm-pane" role="tabpanel">
+                <div id="contactJmtMap" style="width: 100%; height: 470px; z-index: 1;"></div>
+            </div>
+        </div>
+    </div>
 </div>
+
+@section Scripts {
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
+    <script>
+        let contactLeafletMap = null;
+
+        function initContactMap() {
+            const mapEl = document.getElementById('contactJmtMap');
+            if (!mapEl || contactLeafletMap) return;
+
+            const jmtCoords = [@JmtCafeConfig.Latitude, @JmtCafeConfig.Longitude];
+            contactLeafletMap = L.map('contactJmtMap', {
+                zoomControl: true,
+                scrollWheelZoom: false
+            }).setView(jmtCoords, 17);
+
+            L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+                maxZoom: 19
+            }).addTo(contactLeafletMap);
+
+            const jmtIcon = L.divIcon({
+                className: 'custom-leaflet-marker',
+                html: `
+                    <div style="position: relative; width: 44px; height: 44px;">
+                        <div class="courier-pulse-ring" style="border-color: #ffc107; background: rgba(255,193,7,0.25);"></div>
+                        <div class="location-marker-pin shadow" style="background: #180e07; border: 2.5px solid #ffc107; color: #ffc107; width: 44px; height: 44px; font-size: 1.25rem;">
+                            <i class="bi bi-cup-hot-fill"></i>
+                        </div>
+                    </div>
+                `,
+                iconSize: [44, 44],
+                iconAnchor: [22, 22]
+            });
+
+            L.marker(jmtCoords, { icon: jmtIcon }).addTo(contactLeafletMap)
+                .bindPopup(`
+                    <div style="font-family: 'Plus Jakarta Sans', sans-serif; min-width: 230px;">
+                        <strong>@JmtCafeConfig.Name</strong><br>
+                        @JmtCafeConfig.FullAddress<br>
+                        <small class='text-muted'>@JmtCafeConfig.Landmark</small><br>
+                        <small class='text-warning fw-bold'>Mountain Breeze • Rooftop Deck • Free Wi-Fi • @JmtCafeConfig.HoursShort</small><br>
+                        <a href="@JmtCafeConfig.GoogleMapsPlaceUrl" target="_blank" class="btn btn-warning btn-sm rounded-pill fw-bold mt-2 w-100 py-1" style="font-size: 0.75rem;">
+                            Open in Google Maps
+                        </a>
+                    </div>
+                `)
+                .openPopup();
+        }
+
+        window.refreshContactOsm = function() {
+            setTimeout(() => {
+                initContactMap();
+                if (contactLeafletMap) {
+                    contactLeafletMap.invalidateSize();
+                }
+            }, 250);
+        };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            initContactMap();
+        });
+    </script>
+}

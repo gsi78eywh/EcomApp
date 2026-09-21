@@ -1,6 +1,7 @@
+@using LusiTrack.Services
 @model OrderModel
 @{
-    ViewData["Title"] = "Checkout";
+    ViewData["Title"] = "Order & Reservation | JMT CAFE Dalaguete";
     var cart = ViewBag.Cart as CartViewModel;
 }
 
@@ -8,19 +9,46 @@
     <!-- Breadcrumb -->
     <nav aria-label="breadcrumb" class="mb-4">
         <ol class="breadcrumb small">
-            <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Home</a></li>
-            <li class="breadcrumb-item"><a asp-controller="Cart" asp-action="Index">Cart</a></li>
-            <li class="breadcrumb-item active" aria-current="page">Checkout</li>
+            <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index" class="text-muted text-decoration-none">Home</a></li>
+            <li class="breadcrumb-item"><a asp-controller="Cart" asp-action="Index" class="text-muted text-decoration-none">Cart</a></li>
+            <li class="breadcrumb-item active fw-semibold text-dark" aria-current="page">Checkout</li>
         </ol>
     </nav>
 
-    <h1 class="brand-font fw-bold mb-4">Complete Your Coffee Order</h1>
+    <!-- 5-Step Checkout Stepper -->
+    <div class="checkout-stepper mb-5">
+        <div class="checkout-step-node completed">
+            <div class="step-node-circle"><i class="bi bi-check-lg"></i></div>
+            <div class="step-node-label">01 Cart</div>
+        </div>
+        <div class="checkout-step-node active">
+            <div class="step-node-circle">2</div>
+            <div class="step-node-label">02 Contact</div>
+        </div>
+        <div class="checkout-step-node active">
+            <div class="step-node-circle">3</div>
+            <div class="step-node-label">03 Delivery</div>
+        </div>
+        <div class="checkout-step-node active">
+            <div class="step-node-circle">4</div>
+            <div class="step-node-label">04 Payment</div>
+        </div>
+        <div class="checkout-step-node">
+            <div class="step-node-circle">5</div>
+            <div class="step-node-label">05 Receipt</div>
+        </div>
+    </div>
 
-    <div class="row g-5">
-        <!-- Customer & Delivery Form -->
+    <div class="row g-4">
+        <!-- Customer & Delivery Form Column -->
         <div class="col-lg-7">
-            <div class="card border-0 shadow-sm rounded-4 p-4 p-md-5 bg-white">
-                <h4 class="brand-font fw-bold mb-4">Shipping & Delivery Information</h4>
+            <div class="card border-0 shadow-lg rounded-4 p-4 p-md-5 bg-white">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h3 class="brand-font fw-bold mb-0">Customer & Delivery Details</h3>
+                    <span class="badge bg-light text-dark border rounded-pill px-3 py-1">
+                        <i class="bi bi-shield-check text-success me-1"></i> Fast Guest Checkout
+                    </span>
+                </div>
 
                 <form asp-action="PlaceOrder" method="post">
                     @Html.AntiForgeryToken()
@@ -28,78 +56,170 @@
 
                     <div class="row g-3">
                         <div class="col-12">
-                            <label asp-for="CustomerName" class="form-label small fw-semibold"></label>
-                            <input asp-for="CustomerName" class="form-control" placeholder="Jane Doe" />
+                            <label asp-for="CustomerName" class="form-label small fw-bold text-secondary">Full Name</label>
+                            <input asp-for="CustomerName" class="form-control" placeholder="e.g. Maria Santos" required />
                             <span asp-validation-for="CustomerName" class="text-danger small"></span>
                         </div>
 
                         <div class="col-md-6">
-                            <label asp-for="Email" class="form-label small fw-semibold"></label>
-                            <input asp-for="Email" type="email" class="form-control" placeholder="jane@example.com" />
+                            <label asp-for="Email" class="form-label small fw-bold text-secondary">Email Address (Order Confirmation)</label>
+                            <input asp-for="Email" type="email" class="form-control" placeholder="maria@example.com" required />
                             <span asp-validation-for="Email" class="text-danger small"></span>
                         </div>
 
                         <div class="col-md-6">
-                            <label asp-for="Phone" class="form-label small fw-semibold"></label>
-                            <input asp-for="Phone" class="form-control" placeholder="+1 (555) 019-2834" />
+                            <label asp-for="Phone" class="form-label small fw-bold text-secondary">Mobile Number (Courier SMS Dispatch)</label>
+                            <input asp-for="Phone" class="form-control" placeholder="0917 123 4567" required />
                             <span asp-validation-for="Phone" class="text-danger small"></span>
                         </div>
 
-                        <div class="col-12">
-                            <label asp-for="Address" class="form-label small fw-semibold"></label>
-                            <input asp-for="Address" class="form-control" placeholder="123 Coffee Lane, Apt 4B" />
+                        <!-- Fulfillment Option Selector -->
+                        <div class="col-12 mt-3">
+                            <label class="form-label small fw-bold text-secondary mb-2">Fulfillment Mode</label>
+                            <div class="row g-2">
+                                <div class="col-sm-6">
+                                    <label class="payment-card-option w-100">
+                                        <input class="form-check-input mt-0" type="radio" asp-for="FulfillmentType" value="Delivery" id="fulDelivery" checked onchange="toggleAddressSection(true)" />
+                                        <div>
+                                            <div class="fw-bold text-dark"><i class="bi bi-truck text-warning me-1"></i> Dalaguete Local Delivery</div>
+                                            <small class="text-muted d-block mt-1">Direct to your home, resort, or stopover spot</small>
+                                        </div>
+                                    </label>
+                                </div>
+                                <div class="col-sm-6">
+                                    <label class="payment-card-option w-100">
+                                        <input class="form-check-input mt-0" type="radio" asp-for="FulfillmentType" value="Pickup" id="fulPickup" onchange="toggleAddressSection(false)" />
+                                        <div>
+                                            <div class="fw-bold text-dark"><i class="bi bi-shop text-warning me-1"></i> JMT Cafe Onsite Pickup</div>
+                                            <small class="text-muted d-block mt-1">Pick up free at Purok 5 Tabon, Dalaguete</small>
+                                        </div>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Delivery Address Fields -->
+                        <div class="col-12" id="addressContainer">
+                            <label asp-for="Address" class="form-label small fw-bold text-secondary">Delivery Address (Sitio, Landmark, Barangay)</label>
+                            <input asp-for="Address" class="form-control" placeholder="Purok 5 Tabon, Dalaguete, near Basketball Court" />
                             <span asp-validation-for="Address" class="text-danger small"></span>
                         </div>
 
-                        <div class="col-md-6">
-                            <label asp-for="City" class="form-label small fw-semibold"></label>
-                            <input asp-for="City" class="form-control" placeholder="Seattle" />
+                        <div class="col-md-6" id="cityContainer">
+                            <label asp-for="City" class="form-label small fw-bold text-secondary">City / Municipality</label>
+                            <select asp-for="City" class="form-select">
+                                <option value="Dalaguete">Dalaguete</option>
+                                <option value="Argao">Argao</option>
+                                <option value="Alcoy">Alcoy</option>
+                                <option value="Cebu City">Cebu City (Advance Order)</option>
+                            </select>
                             <span asp-validation-for="City" class="text-danger small"></span>
                         </div>
 
-                        <div class="col-md-6">
-                            <label asp-for="PostalCode" class="form-label small fw-semibold"></label>
-                            <input asp-for="PostalCode" class="form-control" placeholder="98101" />
+                        <div class="col-md-6" id="postalContainer">
+                            <label asp-for="PostalCode" class="form-label small fw-bold text-secondary">Postal Code</label>
+                            <input asp-for="PostalCode" class="form-control" placeholder="6022" />
                             <span asp-validation-for="PostalCode" class="text-danger small"></span>
                         </div>
 
+                        <!-- Exclusive GCash Payment Portal -->
                         <div class="col-12 mt-4">
-                            <h5 class="brand-font fw-bold mb-3">Payment Method</h5>
-                            <div class="border rounded-3 p-3 mb-2">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="radio" asp-for="PaymentMethod" value="CreditCard" id="payCC" checked />
-                                    <label class="form-check-label fw-semibold" for="payCC">
-                                        <i class="bi bi-credit-card-2-front text-primary me-2"></i> Credit or Debit Card
-                                    </label>
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <h4 class="brand-font fw-bold mb-0">Payment Method</h4>
+                                <span class="badge bg-primary text-white px-3 py-1 rounded-pill fw-semibold">
+                                    <i class="bi bi-shield-check me-1"></i> 100% Pre-Paid via GCash
+                                </span>
+                            </div>
+
+                            <!-- Zero-RTS / No-COD Security Notice -->
+                            <div class="alert alert-primary bg-primary bg-opacity-10 border-primary border-opacity-25 rounded-4 p-3 mb-3 d-flex align-items-start gap-3">
+                                <i class="bi bi-shield-lock-fill text-primary fs-4 mt-1"></i>
+                                <div>
+                                    <strong class="text-primary d-block mb-1">Guaranteed Fresh Preparation & Priority Dispatch</strong>
+                                    <small class="text-secondary" style="line-height: 1.5;">
+                                        All party burgers, chicken meals, fruit shakes, and artisan drinks are prepared fresh to order at JMT CAFE in Purok 5 Tabon, Dalaguete. We accept GCash pre-payments and verified onsite orders.
+                                    </small>
                                 </div>
                             </div>
-                            <div class="border rounded-3 p-3 mb-2">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="radio" asp-for="PaymentMethod" value="DigitalWallet" id="payWallet" />
-                                    <label class="form-check-label fw-semibold" for="payWallet">
-                                        <i class="bi bi-apple text-dark me-1"></i> Apple Pay / Google Pay
-                                    </label>
+
+                            <!-- Hidden field ensuring GCash is always set -->
+                            <input type="hidden" asp-for="PaymentMethod" value="GCash" />
+
+                            <!-- GCash Official Merchant Card -->
+                            <div class="card border border-primary border-opacity-50 rounded-4 overflow-hidden shadow-sm mb-2" style="background: #f8fbff;">
+                                <div class="bg-primary text-white p-3 d-flex justify-content-between align-items-center">
+                                    <div class="d-flex align-items-center gap-2">
+                                        <div class="bg-white text-primary rounded-circle p-2 d-flex align-items-center justify-content-center" style="width: 38px; height: 38px;">
+                                            <i class="bi bi-wallet2 fs-5"></i>
+                                        </div>
+                                        <div>
+                                            <div class="fw-bold mb-0">GCash Official Merchant</div>
+                                            <small class="text-white-50">JMT CAFE Dalaguete • Official Food & Drinks Hub</small>
+                                        </div>
+                                    </div>
+                                    <span class="badge bg-white text-primary fw-bold px-3 py-1 rounded-pill">
+                                        <i class="bi bi-patch-check-fill text-primary me-1"></i> Verified
+                                    </span>
+                                </div>
+
+                                <div class="p-4">
+                                    <div class="row g-3 align-items-center">
+                                        <!-- GCash Merchant Details -->
+                                        <div class="col-md-7">
+                                            <div class="mb-3">
+                                                <span class="text-muted small text-uppercase fw-semibold">Send Payment To Account:</span>
+                                                <div class="d-flex align-items-center gap-2 mt-1">
+                                                    <span class="fs-4 fw-bold text-dark font-monospace">@JmtCafeConfig.PhoneDisplay</span>
+                                                    <button type="button" class="btn btn-outline-primary btn-sm rounded-pill px-3" onclick="copyMerchantNumber(this)">
+                                                        <i class="bi bi-clipboard me-1"></i> Copy
+                                                    </button>
+                                                </div>
+                                                <small class="text-muted">Account Name: <strong>JMT CAFE</strong></small>
+                                            </div>
+
+                                            <div class="mb-3">
+                                                <label asp-for="GCashReferenceNumber" class="form-label small fw-bold text-secondary">
+                                                    GCash Transaction Reference Number
+                                                </label>
+                                                <div class="input-group">
+                                                    <span class="input-group-text bg-white text-muted"><i class="bi bi-receipt"></i></span>
+                                                    <input asp-for="GCashReferenceNumber" class="form-control font-monospace" placeholder="e.g. 98328104821" required />
+                                                </div>
+                                                <small class="text-muted d-block mt-1">
+                                                    Pre-filled with your session token. You may update this with the 13-digit Reference No. from your GCash SMS or receipt.
+                                                </small>
+                                                <span asp-validation-for="GCashReferenceNumber" class="text-danger small"></span>
+                                            </div>
+                                        </div>
+
+                                        <!-- QR Code Scan Box -->
+                                        <div class="col-md-5 text-center">
+                                            <div class="p-3 bg-white rounded-4 border shadow-sm d-inline-block">
+                                                <div class="p-2 bg-light rounded-3 mb-2" style="width: 140px; height: 140px; margin: 0 auto; display: flex; align-items: center; justify-content: center; border: 2px dashed #007dfe;">
+                                                    <div class="text-center">
+                                                        <i class="bi bi-qr-code text-primary" style="font-size: 4rem;"></i>
+                                                        <div class="small fw-bold text-primary" style="font-size: 0.65rem;">SCAN TO PAY</div>
+                                                    </div>
+                                                </div>
+                                                <small class="text-secondary d-block fw-semibold" style="font-size: 0.75rem;">
+                                                    Scan with GCash App
+                                                </small>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="border rounded-3 p-3">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="radio" asp-for="PaymentMethod" value="CashOnPickup" id="payCash" />
-                                    <label class="form-check-label fw-semibold" for="payCash">
-                                        <i class="bi bi-shop text-success me-2"></i> Pay on Pickup at Roastery Bar
-                                    </label>
-                                </div>
-                            </div>
-                            <span asp-validation-for="PaymentMethod" class="text-danger small"></span>
                         </div>
 
+                        <!-- Courier / Barista Notes -->
                         <div class="col-12 mt-3">
-                            <label asp-for="OrderNotes" class="form-label small fw-semibold">Special Instructions (Optional)</label>
-                            <textarea asp-for="OrderNotes" class="form-control" rows="2" placeholder="e.g. Leave package on the front porch or grind for espresso"></textarea>
+                            <label asp-for="OrderNotes" class="form-label small fw-bold text-secondary">Special Instructions or Landmark (Optional)</label>
+                            <textarea asp-for="OrderNotes" class="form-control" rows="2" placeholder="e.g. Please ring doorbell at the front gate; leave with reception at IT Park Tower; grind beans for French press..."></textarea>
                         </div>
 
                         <div class="col-12 mt-4">
-                            <button type="submit" class="btn btn-warning btn-lg w-100 fw-bold text-dark rounded-pill py-3 shadow-sm">
-                                <i class="bi bi-lock-fill me-1"></i> Place Order & Pay
+                            <button type="submit" class="btn btn-gold btn-lg w-100 py-3 fw-bold shadow">
+                                <i class="bi bi-shield-lock-fill me-2"></i> Confirm Order & Dispatch
                             </button>
                         </div>
                     </div>
@@ -107,10 +227,10 @@
             </div>
         </div>
 
-        <!-- Order Summary Column -->
+        <!-- Sticky Order Receipt Column -->
         <div class="col-lg-5">
-            <div class="card border-0 shadow-sm rounded-4 p-4 bg-white sticky-top" style="top: 90px;">
-                <h5 class="brand-font fw-bold mb-3">Order Items</h5>
+            <div class="card border-0 shadow-lg rounded-4 p-4 bg-white sticky-top" style="top: 90px;">
+                <h4 class="brand-font fw-bold mb-3">Order Summary (@cart?.TotalItemsCount items)</h4>
 
                 @if (cart != null)
                 {
@@ -118,15 +238,21 @@
                         @foreach (var item in cart.Items)
                         {
                             <div class="d-flex align-items-center justify-content-between py-2 border-bottom">
-                                <div class="d-flex align-items-center gap-2">
-                                    <img src="@item.ImageUrl" alt="@item.ProductName" class="rounded-2" style="width: 46px; height: 46px; object-fit: cover;" />
+                                <div class="d-flex align-items-center gap-3">
+                                    <img src="@item.ImageUrl" alt="@item.ProductName" class="rounded-3" style="width: 52px; height: 52px; object-fit: cover;" />
                                     <div>
-                                        <div class="fw-semibold small">@item.ProductName</div>
-                                        <div class="text-muted small">Qty: @item.Quantity &times; @item.Price.ToString("C")</div>
+                                        <div class="fw-bold text-dark small">@item.ProductName</div>
+                                        <div class="text-muted small">
+                                            @item.Quantity &times; ₱@item.Price.ToString("N2")
+                                            @if (!string.IsNullOrEmpty(item.VariantSummary))
+                                            {
+                                                <span class="text-secondary">(@item.VariantSummary)</span>
+                                            }
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="fw-bold text-success small">
-                                    @item.TotalPrice.ToString("C")
+                                    ₱@item.TotalPrice.ToString("N2")
                                 </div>
                             </div>
                         }
@@ -134,35 +260,89 @@
 
                     <div class="d-flex justify-content-between mb-2 small">
                         <span class="text-muted">Subtotal</span>
-                        <span class="fw-semibold">@cart.Subtotal.ToString("C")</span>
+                        <span class="fw-semibold">₱@cart.Subtotal.ToString("N2")</span>
                     </div>
+
+                    @if (cart.DiscountAmount > 0)
+                    {
+                        <div class="d-flex justify-content-between mb-2 small text-success">
+                            <span>Promo Discount (@cart.CouponCode)</span>
+                            <span class="fw-bold">-₱@cart.DiscountAmount.ToString("N2")</span>
+                        </div>
+                    }
+
                     <div class="d-flex justify-content-between mb-2 small">
-                        <span class="text-muted">Tax</span>
-                        <span class="fw-semibold">@cart.EstimatedTax.ToString("C")</span>
+                        <span class="text-muted">Local VAT (5%)</span>
+                        <span class="fw-semibold">₱@cart.EstimatedTax.ToString("N2")</span>
                     </div>
+
                     <div class="d-flex justify-content-between mb-3 small">
-                        <span class="text-muted">Delivery</span>
-                        @if (cart.ShippingFee == 0)
+                        <span class="text-muted">Fulfillment</span>
+                        @if (cart.ShippingFee == 0 || cart.IsPickup)
                         {
                             <span class="text-success fw-bold">FREE</span>
                         }
                         else
                         {
-                            <span class="fw-semibold">@cart.ShippingFee.ToString("C")</span>
+                            <span class="fw-semibold">₱@cart.ShippingFee.ToString("N2")</span>
                         }
                     </div>
+
                     <hr />
-                    <div class="d-flex justify-content-between fs-5 mb-3">
-                        <span class="fw-bold">Total Due</span>
-                        <span class="fw-bold text-success">@cart.GrandTotal.ToString("C")</span>
+
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <span class="fw-bold fs-5">Total Due</span>
+                        <span class="fw-bold fs-4 text-success">₱@cart.GrandTotal.ToString("N2")</span>
                     </div>
                 }
 
-                <div class="p-3 bg-light rounded-3 small text-muted">
-                    <i class="bi bi-clock-history me-1 text-warning"></i>
-                    Your coffee beans will be packaged and prepared fresh today!
+                <div class="p-3 bg-light rounded-4 small text-muted border">
+                    <div class="d-flex gap-2 align-items-start">
+                        <i class="bi bi-shield-check text-success fs-5"></i>
+                        <div>
+                            <strong>Guaranteed Freshness</strong>
+                            <p class="mb-0 mt-1">Dishes, burgers, and beverages are prepared fresh to order at JMT CAFE in Purok 5 Tabon, Dalaguete.</p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        function toggleAddressSection(isDelivery) {
+            const addr = document.getElementById('addressContainer');
+            const city = document.getElementById('cityContainer');
+            const postal = document.getElementById('postalContainer');
+            if (addr && city && postal) {
+                if (isDelivery) {
+                    addr.style.display = 'block';
+                    city.style.display = 'block';
+                    postal.style.display = 'block';
+                } else {
+                    addr.style.display = 'none';
+                    city.style.display = 'none';
+                    postal.style.display = 'none';
+                }
+            }
+        }
+
+        function copyMerchantNumber(btn) {
+            navigator.clipboard.writeText('@JmtCafeConfig.PhoneDisplay').then(() => {
+                const originalHtml = btn.innerHTML;
+                btn.innerHTML = '<i class="bi bi-check2 me-1"></i> Copied!';
+                btn.classList.replace('btn-outline-primary', 'btn-success');
+                if (window.showToast) {
+                    window.showToast("GCash Number Copied", "0917-882-1940 copied to clipboard.");
+                }
+                setTimeout(() => {
+                    btn.innerHTML = originalHtml;
+                    btn.classList.replace('btn-success', 'btn-outline-primary');
+                }, 2000);
+            });
+        }
+    </script>
+}

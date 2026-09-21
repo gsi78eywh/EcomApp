@@ -1,115 +1,360 @@
+@using LusiTrack.Services
 @model CoffeeProduct
 @{
-    ViewData["Title"] = Model.Name;
+    ViewData["Title"] = Model.Name + " | JMT CAFE Dalaguete Cebu";
     var related = ViewBag.Related as IEnumerable<CoffeeProduct> ?? Enumerable.Empty<CoffeeProduct>();
+    var basePrice = Model.Price;
 }
 
 <div class="container py-4">
-    <!-- Breadcrumb -->
+    <!-- Breadcrumb Navigation -->
     <nav aria-label="breadcrumb" class="mb-4">
         <ol class="breadcrumb small">
-            <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index" class="text-decoration-none">Home</a></li>
-            <li class="breadcrumb-item"><a asp-controller="Shop" asp-action="Index" class="text-decoration-none">Menu</a></li>
-            <li class="breadcrumb-item active" aria-current="page">@Model.Name</li>
-        </ol>1
-
-
+            <li class="breadcrumb-item"><a href="/" class="text-muted text-decoration-none"><i class="bi bi-house-door me-1"></i>Home</a></li>
+            <li class="breadcrumb-item"><a href="/menu" class="text-muted text-decoration-none">JMT Menu</a></li>
+            <li class="breadcrumb-item"><a href="/menu?category=@Model.Category" class="text-muted text-decoration-none">@Model.Category</a></li>
+            <li class="breadcrumb-item active fw-semibold text-dark" aria-current="page">@Model.Name</li>
+        </ol>
     </nav>
 
-    <div class="card border-0 shadow-sm rounded-4 overflow-hidden mb-5 bg-white">
+    <!-- Main Showcase Card -->
+    <div class="card border-0 shadow-lg rounded-4 overflow-hidden mb-5 bg-white">
         <div class="row g-0">
-            <div class="col-lg-6">
-                <img src="@Model.ImageUrl" alt="@Model.Name" class="w-100 h-100" style="min-height: 380px; max-height: 480px; object-fit: cover;" />
+            <!-- Product Visual Gallery Column or Verification Hero -->
+            <div class="col-lg-6 position-relative bg-light">
+                @if (!string.IsNullOrEmpty(Model.ImageUrl))
+                {
+                    <img src="@Model.ImageUrl" alt="@Model.Name" class="w-100 h-100" style="min-height: 440px; max-height: 540px; object-fit: cover;" />
+                    
+                    <!-- Floating Cafe Badge -->
+                    <div class="position-absolute bottom-0 start-0 m-3">
+                        <span class="badge-glass fs-6 px-3 py-2 shadow d-inline-flex align-items-center gap-2">
+                            <i class="bi bi-geo-alt-fill text-warning"></i>
+                            <span>@JmtCafeConfig.AddressLine1, @JmtCafeConfig.Municipality, Cebu</span>
+                        </span>
+                    </div>
+                }
+                else
+                {
+                    <div class="jmt-no-photo-details-hero d-flex flex-column justify-content-center align-items-center p-4 p-md-5 text-center text-white h-100" style="min-height: 440px;">
+                        <span class="badge bg-warning bg-opacity-10 text-warning border border-warning border-opacity-25 rounded-pill px-3 py-2 fw-bold small mb-3">
+                            <i class="bi bi-shield-check me-1"></i>100% Authentic Menu • No AI Imagery
+                        </span>
+                        <div class="no-photo-icon-circle mb-3" style="width: 68px; height: 68px; font-size: 2rem;">
+                            <i class="bi bi-camera"></i>
+                        </div>
+                        <h3 class="brand-font fw-bold text-white mb-2">Authentic Photo Pending</h3>
+                        <p class="text-white-50 small mb-4" style="max-width: 420px; line-height: 1.6;">
+                            We believe in 100% honesty: we don't display AI-generated photos so you always get the real deal! To view live photos of our freshly prepared <strong>@Model.Name</strong>, daily specials, and counter updates, please check our official Facebook page.
+                        </p>
+                        <div class="d-flex flex-column gap-2 w-100" style="max-width: 320px;">
+                            <a href="@JmtCafeConfig.FacebookPageUrl" target="_blank" rel="noopener noreferrer" 
+                               class="btn btn-primary rounded-pill py-2 px-3 fw-bold shadow-sm d-flex align-items-center justify-content-center gap-2"
+                               style="background: #1877f2; border-color: #1877f2;">
+                                <i class="bi bi-facebook fs-5"></i>
+                                <span>View Real Photos on Facebook</span>
+                                <i class="bi bi-box-arrow-up-right small"></i>
+                            </a>
+                            <a href="@JmtCafeConfig.GoogleMapsPlaceUrl" target="_blank" rel="noopener noreferrer" 
+                               class="btn btn-outline-warning rounded-pill py-2 px-3 fw-semibold small text-white">
+                                <i class="bi bi-geo-alt-fill text-warning me-1"></i>Visit Cafe Onsite
+                            </a>
+                        </div>
+                    </div>
+                }
             </div>
+
+            <!-- Product Details & Actions Column -->
             <div class="col-lg-6 p-4 p-md-5 d-flex flex-column justify-content-between">
                 <div>
-                    <div class="d-flex align-items-center gap-2 mb-2">
-                        <span class="badge bg-warning text-dark">@Model.Category</span>
-                        @if (Model.RoastLevel != "N/A")
-                        {
-                            <span class="badge bg-dark">@Model.RoastLevel Roast</span>
-                        }
-                        <span class="badge bg-success bg-opacity-10 text-success">In Stock</span>
+                    <!-- Category & Status Pills -->
+                    <div class="d-flex flex-wrap align-items-center gap-2 mb-3">
+                        <span class="badge bg-warning text-dark fw-bold px-3 py-1 rounded-pill">@Model.Category</span>
+                        <span class="badge bg-light text-dark fw-semibold border rounded-pill px-3 py-1">
+                            <i class="bi bi-fire text-danger me-1"></i>Made Fresh to Order
+                        </span>
+                        <span class="badge bg-success bg-opacity-10 text-success fw-semibold rounded-pill px-3 py-1">
+                            <i class="bi bi-check-circle-fill me-1"></i>@JmtCafeConfig.HoursDisplay
+                        </span>
                     </div>
 
-                    <h1 class="brand-font fw-bold display-6 mb-3">@Model.Name</h1>
+                    <h1 class="brand-font display-6 fw-bold mb-2">@Model.Name</h1>
 
-                    <div class="mb-4">
-                        <span class="fs-2 fw-bold text-success">@Model.Price.ToString("C")</span>
-                        <span class="text-muted small ms-2">tax included at checkout</span>
+                    <!-- Rating & Social Bar -->
+                    <div class="d-flex align-items-center gap-3 mb-3">
+                        <div class="rating-pill">
+                            <i class="bi bi-star-fill text-warning"></i> @Model.Rating.ToString("0.0")
+                        </div>
+                        <span class="text-muted small"><strong>@Model.ReviewCount verified ratings</strong></span>
+                        <span class="text-muted small border-start ps-3"><i class="bi bi-patch-check-fill text-primary me-1"></i>Bisayang Explorer TV Feature</span>
                     </div>
 
-                    <p class="text-muted lead fs-6 mb-4">
+                    <!-- Price Header -->
+                    <div class="mb-3 py-2 border-bottom">
+                        <span class="display-6 fw-bold text-success">₱@basePrice.ToString("N0")</span>
+                        <span class="text-muted small ms-2">Dine-In or Takeout Price at JMT Cafe</span>
+                    </div>
+
+                    <p class="text-secondary lead fs-6 mb-4" style="line-height: 1.7;">
                         @Model.Description
                     </p>
 
-                    <div class="p-3 bg-light rounded-3 mb-4">
-                        <div class="row g-2 text-center small">
-                            <div class="col-4 border-end">
-                                <div class="text-muted">Aroma</div>
-                                <div class="fw-bold">Intense & Fresh</div>
+                    <!-- Flavor Notes / Highlights -->
+                    @if (Model.TastingNotes != null && Model.TastingNotes.Any())
+                    {
+                        <div class="mb-4">
+                            <span class="text-secondary small fw-bold text-uppercase d-block mb-2" style="letter-spacing: 0.06em;">Flavor Profile & Highlights</span>
+                            <div class="d-flex flex-wrap gap-2">
+                                @foreach (var note in Model.TastingNotes)
+                                {
+                                    <span class="badge bg-light text-dark border px-3 py-2 rounded-pill fw-semibold">
+                                        <i class="bi bi-check2 text-warning me-1"></i>@note
+                                    </span>
+                                }
                             </div>
-                            <div class="col-4 border-end">
-                                <div class="text-muted">Origin</div>
-                                <div class="fw-bold">Direct Harvest</div>
+                        </div>
+                    }
+
+                    <!-- Cafe Amenities Notice -->
+                    <div class="p-3 rounded-4 mb-4" style="background: rgba(212, 163, 115, 0.1); border: 1px dashed rgba(212, 163, 115, 0.4);">
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="text-warning fs-3"><i class="bi bi-shop"></i></div>
+                            <div>
+                                <h6 class="fw-bold mb-1">Freshly Prepared at JMT CAFE</h6>
+                                <p class="text-secondary small mb-0">
+                                    Please visit our official Facebook page for live daily updates, or visit our cafe onsite for freshly prepared dishes and warm mountain hospitality!
+                                </p>
                             </div>
-                            <div class="col-4">
-                                <div class="text-muted">Roast Freshness</div>
-                                <div class="fw-bold">&lt; 48 hrs</div>
-                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Conversion Buttons: Visit Onsite + Inquire on FB + Call -->
+                    <div class="d-flex flex-column gap-2 pt-2 border-top">
+                        <div class="d-flex flex-wrap gap-2">
+                            <!-- Primary: Visit Us Onsite -->
+                            <a href="@JmtCafeConfig.GoogleMapsPlaceUrl" target="_blank" rel="noopener noreferrer" 
+                               class="btn btn-warning btn-lg flex-fill fw-bold rounded-pill shadow d-inline-flex align-items-center justify-content-center gap-2 text-dark">
+                                <i class="bi bi-pin-map-fill text-danger fs-5"></i>
+                                <span>Visit Us Onsite &bull; Get Directions</span>
+                                <i class="bi bi-box-arrow-up-right ms-1 small"></i>
+                            </a>
+
+                            <!-- Facebook Official Page Button -->
+                            <a href="@JmtCafeConfig.FacebookPageUrl" target="_blank" rel="noopener noreferrer" 
+                               class="btn btn-primary btn-lg rounded-pill fw-bold shadow-sm d-inline-flex align-items-center justify-content-center gap-2"
+                               style="background: #1877f2; border-color: #1877f2;">
+                                <i class="bi bi-facebook fs-5"></i>
+                                <span>Inquire on Facebook</span>
+                                <i class="bi bi-box-arrow-up-right ms-1 small"></i>
+                            </a>
+                        </div>
+
+                        <div class="d-flex flex-wrap gap-2 mt-1">
+                            <!-- Direct Call Button -->
+                            <a href="@JmtCafeConfig.PhoneTelLink" class="btn btn-outline-success rounded-pill fw-semibold py-2 px-3 d-inline-flex align-items-center gap-2">
+                                <i class="bi bi-telephone-fill"></i> Call @JmtCafeConfig.PhoneDisplay
+                            </a>
+
+                            <!-- Directions / Map Link -->
+                            <a href="/contact" 
+                               class="btn btn-outline-dark rounded-pill fw-semibold py-2 flex-fill d-inline-flex align-items-center justify-content-center gap-2">
+                                <i class="bi bi-geo-alt-fill text-warning"></i> View Interactive Map & Directions
+                            </a>
+                        </div>
+
+                        <div class="d-flex justify-content-center align-items-center gap-2 text-muted small mt-2">
+                            <span><i class="bi bi-bicycle text-warning me-1"></i>Delivery Available</span>
+                            <span>•</span>
+                            <span><i class="bi bi-p-square-fill text-primary me-1"></i>Roadside Parking</span>
+                            <span>•</span>
+                            <span><i class="bi bi-wifi text-success me-1"></i>Free Fast Wi-Fi</span>
                         </div>
                     </div>
                 </div>
-
-                <!-- Add to Cart Form -->
-                <form asp-controller="Cart" asp-action="AddToCart" method="post" class="mt-3">
-                    <input type="hidden" name="productId" value="@Model.Id" />
-                    <input type="hidden" name="returnUrl" value="@Url.Action(
-
-"Index", "Cart")" />
-                    <div class="row g-3 align-items-center">
-                        <div class="col-sm-4">
-                            <label class="form-label small fw-semibold">Quantity</label>
-                            <div class="input-group">
-                                <button type="button" class="btn btn-outline-secondary" onclick="let q=document.getElementById('qty');if(q.value>1)q.value--;">-</button>
-                                <input type="number" id="qty" name="quantity" value="1" min="1" max="99" class="form-control text-center fw-bold" />
-                                <button type="button" class="btn btn-outline-secondary" onclick="let q=document.getElementById('qty');q.value++;">+</button>
-                            </div>
-                        </div>
-                        <div class="col-sm-8 pt-sm-4">
-                            <button type="submit" class="btn btn-warning btn-lg w-100 fw-bold text-dark rounded-pill shadow-sm">
-                                <i class="bi bi-bag-plus-fill me-2"></i> Add to Cart
-                            </button>
-                        </div>
-                    </div>
-                </form>
             </div>
         </div>
     </div>
 
-    <!-- Related Products -->
+    <!-- Product Information Tabs -->
+    <div class="card border-0 shadow-sm rounded-4 p-4 bg-white mb-5">
+        <ul class="nav nav-pills mb-4 gap-2 border-bottom pb-3" id="productTab" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active rounded-pill fw-semibold" id="brew-tab" data-bs-toggle="tab" data-bs-target="#brew" type="button" role="tab">
+                    <i class="bi bi-cup-hot me-1"></i> Serving & Preparation
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link rounded-pill fw-semibold" id="origin-tab" data-bs-toggle="tab" data-bs-target="#origin" type="button" role="tab">
+                    <i class="bi bi-geo-alt me-1"></i> Cafe Location & Vibe
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link rounded-pill fw-semibold" id="nutrition-tab" data-bs-toggle="tab" data-bs-target="#nutrition" type="button" role="tab">
+                    <i class="bi bi-list-check me-1"></i> Ingredients & Notes
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link rounded-pill fw-semibold" id="reviews-tab" data-bs-toggle="tab" data-bs-target="#reviews" type="button" role="tab">
+                    <i class="bi bi-star me-1"></i> Customer Love & Reviews (@Model.ReviewCount)
+                </button>
+            </li>
+        </ul>
+
+        <div class="tab-content" id="productTabContent">
+            <!-- Tab 1: Serving & Preparation -->
+            <div class="tab-pane fade show active" id="brew" role="tabpanel">
+                <h5 class="brand-font fw-bold mb-3">Serving & Freshness Commitment</h5>
+                <p class="text-secondary mb-3">@Model.BrewGuide</p>
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <div class="p-3 bg-light rounded-3 border">
+                            <h6 class="fw-bold mb-1"><i class="bi bi-clock-history text-warning me-1"></i> Prepared Fresh</h6>
+                            <small class="text-muted">Cooked and crafted right when you arrive to ensure top temperature and crunch.</small>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="p-3 bg-light rounded-3 border">
+                            <h6 class="fw-bold mb-1"><i class="bi bi-wind text-info me-1"></i> Mountain Breeze & Rooftop Deck</h6>
+                            <small class="text-muted">Enjoy the crisp Dalaguete highland breeze on our open-air 2nd floor viewing deck.</small>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="p-3 bg-light rounded-3 border">
+                            <h6 class="fw-bold mb-1"><i class="bi bi-wifi text-success me-1"></i> Free Customer Wi-Fi</h6>
+                            <small class="text-muted">High-speed internet for studying, remote work, or posting your food memories.</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab 2: Location & Vibe -->
+            <div class="tab-pane fade" id="origin" role="tabpanel">
+                <h5 class="brand-font fw-bold mb-3">Visit JMT CAFE in Dalaguete, Cebu</h5>
+                <p class="text-secondary">
+                    <strong>JMT CAFE</strong> is located at <strong>@JmtCafeConfig.FullAddress</strong> (@JmtCafeConfig.Landmark). Situated along the route towards Mantalongon and Osmeña Peak, JMT Cafe is the perfect food and coffee pit stop.
+                </p>
+                <div class="d-flex flex-wrap gap-2 mt-3">
+                    <a href="@JmtCafeConfig.GoogleMapsPlaceUrl" target="_blank" rel="noopener noreferrer" class="btn btn-warning rounded-pill fw-bold">
+                        <i class="bi bi-geo-alt-fill me-1"></i> Get Directions on Google Maps
+                    </a>
+                    <a href="@JmtCafeConfig.PhoneTelLink" class="btn btn-outline-dark rounded-pill fw-bold">
+                        <i class="bi bi-telephone-fill me-1"></i> Call @JmtCafeConfig.PhoneDisplay
+                    </a>
+                    <a href="@JmtCafeConfig.BisayangExplorerUrl" target="_blank" rel="noopener noreferrer" class="btn btn-outline-primary rounded-pill fw-bold">
+                        <i class="bi bi-play-circle-fill me-1"></i> Watch Bisayang Explorer TV Feature
+                    </a>
+                </div>
+            </div>
+
+            <!-- Tab 3: Ingredients & Allergens -->
+            <div class="tab-pane fade" id="nutrition" role="tabpanel">
+                <div class="row g-4">
+                    <div class="col-md-6">
+                        <h6 class="fw-bold mb-2">Ingredients:</h6>
+                        <p class="text-secondary">@Model.Ingredients</p>
+                    </div>
+                    <div class="col-md-6">
+                        <h6 class="fw-bold mb-2 text-warning">Notice & Add-ons:</h6>
+                        <div class="p-3 bg-light rounded-3 border">
+                            <i class="bi bi-info-circle-fill text-warning me-2"></i> @Model.Allergens
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab 4: Customer Reviews -->
+            <div class="tab-pane fade" id="reviews" role="tabpanel">
+                <div class="row g-4 mb-4">
+                    <div class="col-md-4 text-center border-end">
+                        <div class="display-3 fw-bold text-warning brand-font">@Model.Rating.ToString("0.0")</div>
+                        <div class="text-warning fs-5 mb-1">★★★★★</div>
+                        <p class="text-muted small">Based on @Model.ReviewCount Dalaguete guest reviews</p>
+                    </div>
+                    <div class="col-md-8">
+                        <div class="d-flex align-items-center gap-2 mb-2 small">
+                            <span class="fw-bold" style="width: 30px;">5 ★</span>
+                            <div class="progress flex-grow-1" style="height: 8px;">
+                                <div class="progress-bar bg-warning" style="width: 92%;"></div>
+                            </div>
+                            <span class="text-muted" style="width: 40px;">92%</span>
+                        </div>
+                        <div class="d-flex align-items-center gap-2 mb-2 small">
+                            <span class="fw-bold" style="width: 30px;">4 ★</span>
+                            <div class="progress flex-grow-1" style="height: 8px;">
+                                <div class="progress-bar bg-warning" style="width: 8%;"></div>
+                            </div>
+                            <span class="text-muted" style="width: 40px;">8%</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Verified Reviews List -->
+                <div class="border-top pt-3">
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between">
+                            <strong>Jonathan (Bisayang Explorer TV)</strong>
+                            <span class="text-warning">★★★★★</span>
+                        </div>
+                        <small class="text-muted d-block mb-1">Cebu Travel Explorer & Food Enthusiast</small>
+                        <p class="text-secondary small mb-0">"Lami kaayo ang burger ug oreo shake! Daghan ug serving, presko ang hangin sa bukid, nindot ang rooftop deck, ug kusog ang Wi-Fi. A must-visit cafe when in Dalaguete, Cebu!"</p>
+                    </div>
+                    <div class="border-top pt-3">
+                        <div class="d-flex justify-content-between">
+                            <strong>Arianne D. (Dalaguete Local)</strong>
+                            <span class="text-warning">★★★★★</span>
+                        </div>
+                        <small class="text-muted d-block mb-1">Regular Dine-In Customer</small>
+                        <p class="text-secondary small mb-0">"The 1pc chicken meal and burger steak silog are super affordable and fulfilling. Best spot in Tabon to chill with friends."</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Related Menu Items -->
     @if (related.Any())
     {
-        <h3 class="brand-font fw-bold mb-4">You Might Also Enjoy</h3>
+        <h3 class="brand-font display-6 fw-bold mb-4">More JMT Favorites to Explore</h3>
         <div class="row g-4">
             @foreach (var rel in related)
             {
                 <div class="col-md-4">
-                    <div class="card card-coffee h-100">
-                        <img src="@rel.ImageUrl" class="card-img-top" alt="@rel.Name" style="height: 180px; object-fit: cover;" />
-                        <div class="card-body p-3">
+                    <div class="jmt-product-card">
+                        <div style="aspect-ratio: 16/10; overflow: hidden; position: relative;">
+                            @if (!string.IsNullOrEmpty(rel.ImageUrl))
+                            {
+                                <a href="/menu/@rel.Id">
+                                    <img src="@rel.ImageUrl" class="card-img-top" alt="@rel.Name" style="width: 100%; height: 100%; object-fit: cover;" />
+                                </a>
+                            }
+                            else
+                            {
+                                <div class="jmt-no-photo-card p-2 text-center d-flex flex-column justify-content-center align-items-center">
+                                    <i class="bi bi-camera text-warning fs-5 mb-1"></i>
+                                    <span class="text-white small fw-bold">Authentic Photo Pending</span>
+                                    <small class="text-white-50" style="font-size: 0.68rem;">View on Facebook Page</small>
+                                </div>
+                            }
+                        </div>
+                        <div class="jmt-card-body">
                             <div class="d-flex justify-content-between align-items-center mb-1">
                                 <span class="badge bg-secondary bg-opacity-10 text-dark small">@rel.Category</span>
-                                <span class="fw-bold text-success">@rel.Price.ToString("C")</span>
+                                <span class="fw-bold text-success">₱@rel.Price.ToString("N0")</span>
                             </div>
                             <h6 class="fw-bold brand-font mb-2">
-                                <a asp-action="Details" asp-route-id="@rel.Id" class="text-dark text-decoration-none">
+                                <a href="/menu/@rel.Id" class="text-dark text-decoration-none">
                                     @rel.Name
                                 </a>
                             </h6>
-                            <a asp-action="Details" asp-route-id="@rel.Id" class="btn btn-outline-dark btn-sm w-100 rounded-pill">
-                                View Details
-                            </a>
+                            <p class="small text-muted flex-grow-1" style="height: 38px; overflow: hidden;">
+                                @(rel.Description.Length > 70 ? rel.Description.Substring(0, 68) + "..." : rel.Description)
+                            </p>
+                            <div class="jmt-card-footer">
+                                <button type="button" class="btn btn-warning btn-sm w-100 rounded-pill fw-bold text-dark shadow-sm py-2"
+                                        onclick='openJmtInquiryModal({ id: @rel.Id, name: "@rel.Name.Replace("\"", "\\\"")", price: @rel.Price, imageUrl: "@rel.ImageUrl", category: "@rel.Category", description: "@rel.Description.Replace("\"", "\\\"")" })'>
+                                    <i class="bi bi-shop me-1"></i> Visit / Inquire
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>

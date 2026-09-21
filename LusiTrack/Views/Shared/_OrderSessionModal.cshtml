@@ -1,0 +1,368 @@
+<!-- Starbucks-Style Order & Flavor Customization Session Modal -->
+<div class="modal fade" id="orderSessionModal" tabindex="-1" aria-labelledby="orderSessionModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered order-session-dialog">
+        <div class="modal-content border-0 shadow-2xl rounded-4 overflow-hidden" style="background: #ffffff;">
+            
+            <!-- Modal Header with Dark Coffee Aesthetic -->
+            <div class="modal-header text-white px-4 py-3 border-0 position-relative" 
+                 style="background: linear-gradient(135deg, #150b06 0%, #29180e 100%);">
+                <div class="d-flex align-items-center gap-3">
+                    <img id="sessionProductImg" src="" alt="Coffee" class="rounded-3 shadow-sm" style="width: 58px; height: 58px; object-fit: cover; border: 1px solid rgba(212, 163, 115, 0.4);" />
+                    <div>
+                        <span class="badge bg-warning text-dark small fw-bold text-uppercase px-2 py-1 rounded-pill" id="sessionCategoryBadge">Espresso</span>
+                        <h5 class="modal-title brand-font fw-bold text-white mb-0 mt-1" id="sessionProductTitle">Spanish Velvet Latte</h5>
+                        <div class="small text-warning fw-semibold mt-0" id="sessionBasePriceBadge">₱195.00 Base</div>
+                    </div>
+                </div>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <!-- Customization Form Body -->
+            <form asp-controller="Cart" asp-action="AddToCart" method="post" id="orderSessionForm">
+                <input type="hidden" name="productId" id="sessionProductId" value="1" />
+                <input type="hidden" name="priceAdjustment" id="sessionPriceAdjustment" value="0" />
+                <input type="hidden" name="returnUrl" id="sessionReturnUrl" value="" />
+                
+                <div class="modal-body p-4" style="max-height: 68vh; overflow-y: auto;">
+                    
+                    <!-- Beverage Size & Temp Section (For Drinks) -->
+                    <div id="sessionBeverageOptions">
+                        <div class="row g-3 mb-3">
+                            <div class="col-6">
+                                <label class="form-label small fw-bold text-uppercase text-secondary mb-1">
+                                    <i class="bi bi-cup me-1 text-warning"></i> Size
+                                </label>
+                                <div class="d-flex flex-column gap-2">
+                                    <label class="flavor-chip-card" id="sizeRegCard">
+                                        <input type="radio" name="size" value="Regular" checked onchange="calcSessionPrice()" />
+                                        <span class="fw-bold small text-dark">Regular (12 oz)</span>
+                                        <small class="text-muted">Standard pour</small>
+                                    </label>
+                                    <label class="flavor-chip-card" id="sizeLrgCard">
+                                        <input type="radio" name="size" value="Large" onchange="calcSessionPrice()" />
+                                        <span class="fw-bold small text-dark">Large (16 oz)</span>
+                                        <small class="text-warning fw-bold">+₱35.00</small>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <label class="form-label small fw-bold text-uppercase text-secondary mb-1">
+                                    <i class="bi bi-thermometer-half me-1 text-warning"></i> Temp
+                                </label>
+                                <div class="d-flex flex-column gap-2">
+                                    <label class="flavor-chip-card" id="tempHotCard">
+                                        <input type="radio" name="temperature" value="Hot" checked onchange="calcSessionPrice()" />
+                                        <span class="fw-bold small text-dark"><i class="bi bi-cup-hot text-danger me-1"></i> Hot</span>
+                                        <small class="text-muted">Velvet steamed</small>
+                                    </label>
+                                    <label class="flavor-chip-card" id="tempIcedCard">
+                                        <input type="radio" name="temperature" value="Iced" onchange="calcSessionPrice()" />
+                                        <span class="fw-bold small text-dark"><i class="bi bi-snow text-info me-1"></i> Iced</span>
+                                        <small class="text-warning fw-bold">+₱15.00</small>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Milk Choice -->
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold text-uppercase text-secondary mb-1">
+                                <i class="bi bi-droplet me-1 text-warning"></i> Milk Option
+                            </label>
+                            <select name="milkOption" id="sessionMilkSelect" class="form-select rounded-pill" onchange="calcSessionPrice()">
+                                <option value="Regular Milk" data-extra="0">Fresh Whole Dairy (Standard)</option>
+                                <option value="Oat Milk" data-extra="35">Barista Edition Oat Milk (+₱35.00)</option>
+                                <option value="Almond Milk" data-extra="35">Organic Almond Milk (+₱35.00)</option>
+                                <option value="Non-Fat Milk" data-extra="0">Skim / Low Fat Milk (+₱0.00)</option>
+                            </select>
+                        </div>
+
+                        <!-- Flavor Syrup Customization (Starbucks Style) -->
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <label class="form-label small fw-bold text-uppercase text-secondary mb-0">
+                                    <i class="bi bi-magic me-1 text-warning"></i> Customize Flavor Syrups
+                                </label>
+                                <small class="text-muted">Select 1 flavor</small>
+                            </div>
+                            <div class="flavor-chip-grid">
+                                <label class="flavor-chip-card">
+                                    <input type="radio" name="flavorSyrup" value="None" checked onchange="calcSessionPrice()" />
+                                    <span class="fw-bold small text-dark">Original</span>
+                                    <small class="text-muted">Pure brew profile</small>
+                                </label>
+                                <label class="flavor-chip-card">
+                                    <input type="radio" name="flavorSyrup" value="Madagascar Vanilla (+₱25)" onchange="calcSessionPrice()" />
+                                    <span class="fw-bold small text-dark">Vanilla</span>
+                                    <small class="text-warning fw-bold">+₱25.00</small>
+                                </label>
+                                <label class="flavor-chip-card">
+                                    <input type="radio" name="flavorSyrup" value="Salted Caramel (+₱25)" onchange="calcSessionPrice()" />
+                                    <span class="fw-bold small text-dark">Salted Caramel</span>
+                                    <small class="text-warning fw-bold">+₱25.00</small>
+                                </label>
+                                <label class="flavor-chip-card">
+                                    <input type="radio" name="flavorSyrup" value="Roasted Hazelnut (+₱25)" onchange="calcSessionPrice()" />
+                                    <span class="fw-bold small text-dark">Hazelnut</span>
+                                    <small class="text-warning fw-bold">+₱25.00</small>
+                                </label>
+                                <label class="flavor-chip-card">
+                                    <input type="radio" name="flavorSyrup" value="Spiced Cinnamon Dolce (+₱20)" onchange="calcSessionPrice()" />
+                                    <span class="fw-bold small text-dark">Cinnamon Dolce</span>
+                                    <small class="text-warning fw-bold">+₱20.00</small>
+                                </label>
+                                <label class="flavor-chip-card">
+                                    <input type="radio" name="flavorSyrup" value="Dark Chocolate Mocha (+₱30)" onchange="calcSessionPrice()" />
+                                    <span class="fw-bold small text-dark">Mocha Ganache</span>
+                                    <small class="text-warning fw-bold">+₱30.00</small>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Sweetness Level -->
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold text-uppercase text-secondary mb-1">
+                                <i class="bi bi-sliders me-1 text-warning"></i> Sweetness Level
+                            </label>
+                            <div class="sweetness-bar-grid">
+                                <label class="sweetness-chip active" onclick="setSweetness(this, '100% Normal')">
+                                    <input type="radio" name="sweetnessLevel" value="100% Normal" checked class="d-none" />
+                                    100% Regular
+                                </label>
+                                <label class="sweetness-chip" onclick="setSweetness(this, '70% Less Sweet')">
+                                    <input type="radio" name="sweetnessLevel" value="70% Less Sweet" class="d-none" />
+                                    70% Less
+                                </label>
+                                <label class="sweetness-chip" onclick="setSweetness(this, '50% Half Sweet')">
+                                    <input type="radio" name="sweetnessLevel" value="50% Half Sweet" class="d-none" />
+                                    50% Half
+                                </label>
+                                <label class="sweetness-chip" onclick="setSweetness(this, '0% Unsweetened')">
+                                    <input type="radio" name="sweetnessLevel" value="0% Unsweetened" class="d-none" />
+                                    0% Sugar-Free
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Barista Add-Ons -->
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold text-uppercase text-secondary mb-1">
+                                <i class="bi bi-plus-circle-fill me-1 text-warning"></i> Barista Add-Ons
+                            </label>
+                            <div class="row g-2">
+                                <div class="col-6">
+                                    <label class="flavor-chip-card">
+                                        <input type="checkbox" name="sessionAddOn" value="Extra Espresso Shot (+₱35)" data-extra="35" onchange="calcSessionPrice()" />
+                                        <span class="fw-bold small text-dark">+ Extra Shot</span>
+                                        <small class="text-warning fw-bold">+₱35.00</small>
+                                    </label>
+                                </div>
+                                <div class="col-6">
+                                    <label class="flavor-chip-card">
+                                        <input type="checkbox" name="sessionAddOn" value="Whipped Crema Cloud (+₱20)" data-extra="20" onchange="calcSessionPrice()" />
+                                        <span class="fw-bold small text-dark">+ Crema Cloud</span>
+                                        <small class="text-warning fw-bold">+₱20.00</small>
+                                    </label>
+                                </div>
+                                <div class="col-12">
+                                    <label class="flavor-chip-card">
+                                        <input type="checkbox" name="sessionAddOn" value="Brown Sugar Boba Pearls (+₱25)" data-extra="25" onchange="calcSessionPrice()" />
+                                        <span class="fw-bold small text-dark">+ Brown Sugar Boba Pearls</span>
+                                        <small class="text-warning fw-bold">+₱25.00</small>
+                                    </label>
+                                </div>
+                            </div>
+                            <input type="hidden" name="addOns" id="sessionCombinedAddOns" value="None" />
+                        </div>
+                    </div>
+
+                    <!-- Non-beverage notice if item is beans/treat -->
+                    <div id="sessionNonBeverageNotice" class="d-none alert alert-light border small text-muted">
+                        <i class="bi bi-info-circle me-1 text-warning"></i> This whole-bean or bakery treat is packed freshly sealed to order.
+                        <input type="hidden" name="size" id="sessionStaticSize" value="Standard" />
+                        <input type="hidden" name="temperature" id="sessionStaticTemp" value="Standard" />
+                        <input type="hidden" name="milkOption" id="sessionStaticMilk" value="None" />
+                        <input type="hidden" name="flavorSyrup" id="sessionStaticFlavor" value="None" />
+                        <input type="hidden" name="sweetnessLevel" id="sessionStaticSweetness" value="None" />
+                        <input type="hidden" name="addOns" id="sessionStaticAddOns" value="None" />
+                    </div>
+
+                    <!-- Barista Instructions -->
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold text-uppercase text-secondary mb-1">
+                            <i class="bi bi-chat-left-text me-1 text-warning"></i> Special Barista Note
+                        </label>
+                        <input type="text" name="specialInstructions" class="form-control rounded-pill small" placeholder="e.g. Extra hot, coarse grind, cinnamon on top..." maxlength="100" />
+                    </div>
+
+                    <!-- Quantity Stepper -->
+                    <div class="d-flex align-items-center justify-content-between pt-2 border-top">
+                        <span class="fw-bold text-secondary small">Quantity:</span>
+                        <div class="input-group" style="width: 130px;">
+                            <button type="button" class="btn btn-outline-secondary btn-sm px-2 fw-bold" onclick="stepSessionQty(-1)">-</button>
+                            <input type="number" id="sessionQty" name="quantity" value="1" min="1" max="50" class="form-control text-center fw-bold bg-white form-control-sm" onchange="calcSessionPrice()" />
+                            <button type="button" class="btn btn-outline-secondary btn-sm px-2 fw-bold" onclick="stepSessionQty(1)">+</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Footer with Two Prominent Action Buttons: Add to Cart & Proceed to Order -->
+                <div class="modal-footer bg-light px-4 py-3 d-flex flex-wrap align-items-center justify-content-between gap-2 border-top">
+                    <div>
+                        <small class="text-muted d-block lh-1">Total Due:</small>
+                        <span class="fs-4 fw-bold text-success" id="sessionCalculatedTotal">₱195.00</span>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <!-- Add to Cart (Stays or confirms with toast) -->
+                        <button type="submit" name="actionType" value="cart" class="btn btn-outline-dark btn-sm rounded-pill fw-bold px-3 py-2 shadow-sm" onclick="setSubmitAction('cart')">
+                            <i class="bi bi-cart-plus me-1"></i> Add to Cart
+                        </button>
+                        <!-- Order Now (Proceeds directly to checkout) -->
+                        <button type="submit" name="actionType" value="order" class="btn btn-gold btn-sm rounded-pill fw-bold px-4 py-2 shadow" onclick="setSubmitAction('order')">
+                            <i class="bi bi-lightning-charge-fill me-1"></i> Order Now
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    let currentSessionProduct = {
+        id: 1,
+        name: 'Spanish Velvet Latte',
+        price: 195.0,
+        imageUrl: '',
+        category: 'Espresso & Hot',
+        isBeverage: true
+    };
+
+    window.openOrderSession = function(product) {
+        if (!product) return;
+        currentSessionProduct = product;
+        
+        document.getElementById('sessionProductId').value = product.id;
+        document.getElementById('sessionProductTitle').innerText = product.name;
+        document.getElementById('sessionCategoryBadge').innerText = product.category || 'Espresso';
+        document.getElementById('sessionBasePriceBadge').innerText = '₱' + Number(product.price).toFixed(2) + ' Base';
+        document.getElementById('sessionProductImg').src = product.imageUrl || '';
+        document.getElementById('sessionReturnUrl').value = window.location.pathname + window.location.search;
+        
+        const isBev = product.category !== 'Whole Bean Roasts' && product.category !== 'Bakery & Treats';
+        currentSessionProduct.isBeverage = isBev;
+        
+        const bevContainer = document.getElementById('sessionBeverageOptions');
+        const nonBevNotice = document.getElementById('sessionNonBeverageNotice');
+        if (isBev) {
+            bevContainer.classList.remove('d-none');
+            nonBevNotice.classList.add('d-none');
+        } else {
+            bevContainer.classList.add('d-none');
+            nonBevNotice.classList.remove('d-none');
+        }
+        
+        document.getElementById('sessionQty').value = 1;
+        calcSessionPrice();
+        
+        const modal = new bootstrap.Modal(document.getElementById('orderSessionModal'));
+        modal.show();
+    };
+
+    window.setSweetness = function(elem, val) {
+        document.querySelectorAll('.sweetness-chip').forEach(c => c.classList.remove('active'));
+        elem.classList.add('active');
+        const radio = elem.querySelector('input[type="radio"]');
+        if (radio) radio.checked = true;
+    };
+
+    window.stepSessionQty = function(delta) {
+        const inp = document.getElementById('sessionQty');
+        let val = parseInt(inp.value) || 1;
+        val = Math.max(1, Math.min(50, val + delta));
+        inp.value = val;
+        calcSessionPrice();
+    };
+
+    window.calcSessionPrice = function() {
+        if (!currentSessionProduct) return;
+        let base = Number(currentSessionProduct.price) || 0;
+        let unitAdjustment = 0;
+        
+        if (currentSessionProduct.isBeverage) {
+            // Size
+            const sizeLrg = document.querySelector('input[name="size"][value="Large"]');
+            if (sizeLrg && sizeLrg.checked) unitAdjustment += 35;
+            
+            // Temp
+            const tempIced = document.querySelector('input[name="temperature"][value="Iced"]');
+            if (tempIced && tempIced.checked) unitAdjustment += 15;
+            
+            // Milk
+            const milkSelect = document.getElementById('sessionMilkSelect');
+            if (milkSelect) {
+                const opt = milkSelect.options[milkSelect.selectedIndex];
+                const milkExtra = Number(opt.getAttribute('data-extra')) || 0;
+                unitAdjustment += milkExtra;
+            }
+            
+            // Flavor Syrup
+            const checkedFlavor = document.querySelector('input[name="flavorSyrup"]:checked');
+            if (checkedFlavor) {
+                const fVal = checkedFlavor.value;
+                if (fVal.includes('+₱25')) unitAdjustment += 25;
+                else if (fVal.includes('+₱20')) unitAdjustment += 20;
+                else if (fVal.includes('+₱30')) unitAdjustment += 30;
+            }
+            
+            // AddOns
+            const checkedAddOns = document.querySelectorAll('input[name="sessionAddOn"]:checked');
+            const addOnNames = [];
+            checkedAddOns.forEach(cb => {
+                unitAdjustment += Number(cb.getAttribute('data-extra')) || 0;
+                addOnNames.push(cb.value);
+            });
+            document.getElementById('sessionCombinedAddOns').value = addOnNames.length > 0 ? addOnNames.join(' + ') : 'None';
+        }
+        
+        document.getElementById('sessionPriceAdjustment').value = unitAdjustment;
+        const qty = parseInt(document.getElementById('sessionQty').value) || 1;
+        const grandTotal = (base + unitAdjustment) * qty;
+        
+        document.getElementById('sessionCalculatedTotal').innerText = '₱' + grandTotal.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    };
+
+    let submitActionType = 'cart';
+    window.setSubmitAction = function(type) {
+        submitActionType = type;
+    };
+
+    document.getElementById('orderSessionForm')?.addEventListener('submit', function(e) {
+        if (submitActionType === 'cart') {
+            e.preventDefault();
+            const form = this;
+            const formData = new FormData(form);
+            formData.append('actionType', 'cart');
+            
+            fetch(form.action, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    bootstrap.Modal.getInstance(document.getElementById('orderSessionModal'))?.hide();
+                    showCartToast("Added to Order!", data.productName + " (" + data.variant + ")", data.price);
+                    updateCartBadge(data.totalCount);
+                } else {
+                    form.submit();
+                }
+            })
+            .catch(() => form.submit());
+        }
+        // If 'order', default form submission proceeds and controller redirects directly to /Checkout!
+    });
+</script>

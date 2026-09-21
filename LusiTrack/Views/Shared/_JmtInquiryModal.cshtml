@@ -1,0 +1,163 @@
+@using LusiTrack.Services
+<!-- JMT CAFE Visit, Reservations & Facebook Inquiries Hook Modal -->
+<div class="modal fade" id="jmtInquiryModal" tabindex="-1" aria-labelledby="jmtInquiryModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" style="max-width: 580px;">
+        <div class="modal-content border-0 shadow-2xl rounded-4 overflow-hidden" style="background: #ffffff;">
+            
+            <!-- Modal Header with Warm Amber / Charcoal JMT Branding -->
+            <div class="modal-header text-white px-4 py-3 border-0 position-relative" 
+                 style="background: linear-gradient(135deg, #180e07 0%, #2f190c 100%);">
+                <div class="d-flex align-items-center gap-3">
+                    <img id="jmtModalItemImg" src="/images/jmt/jmt_chicken_meal.png" alt="JMT Menu Item" 
+                         class="rounded-3 shadow-sm" style="width: 62px; height: 62px; object-fit: cover; border: 2px solid #e5b880;" />
+                    <div>
+                        <span class="badge bg-warning text-dark small fw-bold text-uppercase px-2 py-1 rounded-pill" id="jmtModalItemCategory">Chicken Meal</span>
+                        <h5 class="modal-title brand-font fw-bold text-white mb-0 mt-1" id="jmtModalItemTitle">1-Pc Crispy Chicken Meal</h5>
+                        <div class="text-warning fw-bold small mt-0" id="jmtModalItemPrice">₱135</div>
+                    </div>
+                </div>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <!-- Modal Body: Visit Cafe & Inquiries Hook -->
+            <div class="modal-body p-4">
+                <!-- Item description brief -->
+                <p class="text-muted small mb-3 pb-3 border-bottom" id="jmtModalItemDesc">
+                    Golden crispy fried chicken served with 1 cup hot steamed rice, savory house chicken gravy, and 1 signature chilled drink.
+                </p>
+
+                <!-- No Photo Facebook Verification Notice (Shown dynamically if item has no photo) -->
+                <div id="jmtModalNoPhotoNotice" class="alert alert-warning align-items-center gap-2 py-2 px-3 small rounded-3 mb-3" style="display: none; background: rgba(212, 163, 115, 0.15); border-color: rgba(212, 163, 115, 0.5);">
+                    <i class="bi bi-shield-check fs-5 text-warning flex-shrink-0"></i>
+                    <div>
+                        <strong>Authentic Photo Pending:</strong> We don't use AI-generated images. To view real photos and live servings of this item, please check our official Facebook page!
+                    </div>
+                </div>
+
+                <!-- Dine-in & Visit Hook Banner -->
+                <div class="p-3 rounded-3 mb-3" style="background: rgba(212, 163, 115, 0.12); border: 1.5px solid rgba(212, 163, 115, 0.4);">
+                    <div class="d-flex align-items-center gap-2 mb-2">
+                        <i class="bi bi-shop-window text-warning fs-5"></i>
+                        <h6 class="fw-bold mb-0 text-dark">Freshly Prepared at JMT CAFE</h6>
+                    </div>
+                    <p class="small text-secondary mb-2" style="line-height: 1.6;">
+                        <strong>Please visit our official Facebook page for inquiries or visit our cafe onsite!</strong>
+                        All dishes, party burgers, and artisan drinks are prepared fresh to order at our scenic mountain spot in Dalaguete. We warmly welcome walk-in guests, dine-in barkadas, and highway road-trippers!
+                    </p>
+                    <div class="d-flex flex-wrap gap-2 pt-1">
+                        <span class="badge bg-white text-dark border shadow-xs"><i class="bi bi-wind text-info me-1"></i>Mountain Breeze</span>
+                        <span class="badge bg-white text-dark border shadow-xs"><i class="bi bi-building text-warning me-1"></i>Rooftop Deck</span>
+                        <span class="badge bg-white text-dark border shadow-xs"><i class="bi bi-wifi text-success me-1"></i>Free Fast Wi-Fi</span>
+                        <span class="badge bg-white text-dark border shadow-xs"><i class="bi bi-clock text-warning me-1"></i>@JmtCafeConfig.HoursDisplay</span>
+                        <span class="badge bg-white text-dark border shadow-xs"><i class="bi bi-p-square-fill text-primary me-1"></i>Roadside Parking</span>
+                        <span class="badge bg-white text-dark border shadow-xs"><a href="@JmtCafeConfig.PhoneTelLink" class="text-decoration-none text-dark"><i class="bi bi-telephone text-success me-1"></i>@JmtCafeConfig.PhoneDisplay</a></span>
+                    </div>
+                </div>
+
+                <!-- Location Quick Details with Interactive Copy -->
+                <div class="d-flex align-items-start gap-3 mb-4 p-3 rounded-3 bg-light border">
+                    <img src="/images/jmt/jmt_storefront_highlands.jpg" alt="JMT Cafe Storefront" class="rounded-3 shadow-xs flex-shrink-0" style="width: 72px; height: 62px; object-fit: cover; border: 1.5px solid #d4a373;" />
+                    <div class="flex-grow-1">
+                        <div class="fw-bold small text-dark">@JmtCafeConfig.Name Official Spot:</div>
+                        <div class="text-secondary small fw-semibold" id="jmtModalAddressText">@JmtCafeConfig.FullAddress</div>
+                        <small class="text-muted d-block mt-0">@JmtCafeConfig.Landmark • Plus Code: <strong>@JmtCafeConfig.PlusCode</strong></small>
+                        <button type="button" class="btn btn-sm btn-white bg-white border rounded-pill px-2 py-0 mt-1 small shadow-xs" onclick="copyAddressText(this)" style="font-size: 0.72rem;">
+                            <i class="bi bi-clipboard me-1 text-warning"></i><span>Copy Address</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Primary Action 1: Visit Onsite & Get Directions -->
+                <a href="@JmtCafeConfig.GoogleMapsPlaceUrl" target="_blank" rel="noopener noreferrer" 
+                   class="btn btn-warning w-100 rounded-pill py-3 fw-bold text-dark shadow-sm mb-2 d-flex align-items-center justify-content-center gap-2">
+                    <i class="bi bi-pin-map-fill text-danger fs-5"></i>
+                    <span>Visit Us Onsite &bull; Get Directions</span>
+                    <i class="bi bi-box-arrow-up-right ms-1 small"></i>
+                </a>
+
+                <!-- Primary Action 2: Inquire on Official Facebook Page -->
+                <a href="@JmtCafeConfig.FacebookPageUrl" target="_blank" rel="noopener noreferrer" 
+                   class="btn btn-primary w-100 rounded-pill py-3 fw-bold shadow-sm mb-2 d-flex align-items-center justify-content-center gap-2" 
+                   style="background: #1877f2; border-color: #1877f2;">
+                    <i class="bi bi-facebook fs-5"></i>
+                    <span>Inquire on Official Facebook Page</span>
+                    <i class="bi bi-box-arrow-up-right ms-1 small"></i>
+                </a>
+
+                <!-- Secondary Row: Call & Item Details Link -->
+                <div class="row g-2 pt-1">
+                    <div class="col-6">
+                        <a href="@JmtCafeConfig.PhoneTelLink" 
+                           class="btn btn-outline-success w-100 rounded-pill fw-semibold small py-2 d-flex align-items-center justify-content-center gap-1">
+                            <i class="bi bi-telephone-fill"></i>
+                            <span>Call @JmtCafeConfig.PhoneDisplay</span>
+                        </a>
+                    </div>
+                    <div class="col-6">
+                        <a id="jmtModalViewDetailsBtn" href="/menu" 
+                           class="btn btn-outline-dark w-100 rounded-pill fw-semibold small py-2 d-flex align-items-center justify-content-center gap-1">
+                            <i class="bi bi-info-circle"></i>
+                            <span>View Full Details</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    let currentModalItem = null;
+
+    function openJmtInquiryModal(product) {
+        currentModalItem = product;
+        const img = document.getElementById('jmtModalItemImg');
+        const title = document.getElementById('jmtModalItemTitle');
+        const price = document.getElementById('jmtModalItemPrice');
+        const cat = document.getElementById('jmtModalItemCategory');
+        const desc = document.getElementById('jmtModalItemDesc');
+        const detailsBtn = document.getElementById('jmtModalViewDetailsBtn');
+
+        if (img) {
+            if (product.imageUrl && product.imageUrl.trim() !== '') {
+                img.src = product.imageUrl;
+            } else {
+                img.src = '/images/jmt/jmt_storefront_highlands.jpg';
+            }
+        }
+
+        const notice = document.getElementById('jmtModalNoPhotoNotice');
+        if (notice) {
+            if (!product.imageUrl || product.imageUrl.trim() === '') {
+                notice.style.display = 'flex';
+            } else {
+                notice.style.display = 'none';
+            }
+        }
+
+        if (title && product.name) title.innerText = product.name;
+        if (price) price.innerText = `₱${Math.round(product.price).toLocaleString()}`;
+        if (cat && product.category) cat.innerText = product.category;
+        if (desc && product.description) desc.innerText = product.description;
+        if (detailsBtn && product.id) detailsBtn.href = `/menu/${product.id}`;
+
+        const modalEl = document.getElementById('jmtInquiryModal');
+        if (modalEl) {
+            const modal = new bootstrap.Modal(modalEl);
+            modal.show();
+        }
+    }
+
+    function copyAddressText(btn) {
+        const text = '@JmtCafeConfig.FullAddress';
+        if (navigator.clipboard) {
+            navigator.clipboard.writeText(text).then(() => {
+                const originalHtml = btn.innerHTML;
+                btn.innerHTML = '<i class="bi bi-check2 text-success me-1"></i><span class="text-success fw-bold">Address Copied!</span>';
+                setTimeout(() => {
+                    btn.innerHTML = originalHtml;
+                }, 2500);
+            });
+        }
+    }
+</script>

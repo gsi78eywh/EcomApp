@@ -1,140 +1,843 @@
+@using LusiTrack.Services
 @model IEnumerable<CoffeeProduct>
 @{
-    ViewData["Title"] = "Artisanal Coffee & Roastery";
+    ViewData["Title"] = "JMT CAFE | Highland Resto & Coffee Bar Dalaguete";
     var categories = ViewBag.Categories as IEnumerable<string> ?? Enumerable.Empty<string>();
 }
 
-<!-- Hero Section -->
-<section class="py-5 text-white mb-5 shadow-sm" style="background: linear-gradient(135deg, #20130b 0%, #3d2314 60%, #683b1d 100%);">
-    <div class="container py-4">
+<!-- Hero Section with JMT Cafe Amber / Deep Roast Aesthetic -->
+<section class="py-5 text-white position-relative overflow-hidden mb-5" 
+         style="background: radial-gradient(circle at 80% 20%, rgba(212, 163, 115, 0.22) 0%, transparent 55%), linear-gradient(135deg, #0f0805 0%, #1c0e07 55%, #381b0a 100%); border-bottom: 1px solid rgba(212, 163, 115, 0.25);">
+    <div class="container py-lg-5 py-4">
         <div class="row align-items-center g-5">
-            <div class="col-lg-7">
-                <span class="badge bg-warning text-dark px-3 py-2 text-uppercase fw-bold mb-3 rounded-pill">
-                    <i class="bi bi-stars"></i> Specialty Grade Coffee
-                </span>
-                <h1 class="display-3 fw-bold mb-3 brand-font">Freshly Roasted.<br />Obsessively Brewed.</h1>
-                <p class="lead mb-4 opacity-75">
-                    Experience rich aromas, single-origin roasts, and crafted espresso drinks made from ethically sourced beans harvested at peak ripeness.
+            
+            <!-- Left Headline & Introduction -->
+            <div class="col-lg-7 reveal-on-scroll">
+                <div class="d-flex flex-wrap align-items-center gap-2 mb-3">
+                    <div class="d-inline-flex align-items-center gap-2 px-3 py-1 rounded-pill" 
+                         style="background: rgba(212, 163, 115, 0.18); border: 1px solid rgba(212, 163, 115, 0.4);">
+                        <i class="bi bi-geo-alt-fill text-warning"></i>
+                        <span class="text-warning small fw-bold text-uppercase" style="letter-spacing: 0.08em;">@JmtCafeConfig.FullAddress</span>
+                    </div>
+                    <!-- Live Highlands Weather & Breeze Dynamic Indicator -->
+                    <div class="ambient-float-pill d-inline-flex align-items-center gap-2 px-3 py-1 rounded-pill"
+                         style="background: rgba(13, 202, 240, 0.15); border: 1px solid rgba(13, 202, 240, 0.35);">
+                        <i class="bi bi-cloud-sun-fill text-warning"></i>
+                        <span class="text-white small fw-semibold">Dalaguete Highlands: <strong class="text-warning">22°C</strong></span>
+                        <span class="opacity-50">•</span>
+                        <i class="bi bi-wind breeze-icon-anim text-info"></i>
+                        <span class="text-info small fw-bold">Fresh Breeze</span>
+                    </div>
+                </div>
+
+                <h1 class="display-3 fw-bold mb-3 brand-font lh-sm">
+                    @JmtCafeConfig.Name.<br />
+                    <span class="fst-italic text-warning" style="font-family: 'Playfair Display', serif;">Dalaguete Highland Stopover.</span>
+                </h1>
+
+                <p class="lead mb-4 text-light opacity-90 pe-lg-5" style="line-height: 1.8;">
+                    Perched in the cool mountain highlands of Tabon, Dalaguete, JMT CAFE is the premier scenic stopover for highway riders, road-trippers, and hikers ascending to Osmeña Peak. Unwind on our breezy open-air rooftop viewing deck with handcrafted barista coffee, giant party burgers, and crisp mountain air.
                 </p>
-                <div class="d-flex flex-wrap gap-3">
-                    <a asp-controller="Shop" asp-action="Index" class="btn btn-warning btn-lg px-4 py-3 fw-bold text-dark rounded-pill shadow-sm">
-                        <i class="bi bi-cup-hot-fill me-2"></i> Explore Our Menu
+
+                <!-- Clean 2-Button Hero Pattern -->
+                <div class="d-flex flex-wrap gap-3 mb-4">
+                    <a href="/menu" class="btn btn-warning btn-lg px-4 py-3 fw-bold text-dark shadow rounded-pill">
+                        <i class="bi bi-book-half me-1"></i> View Food & Drinks Menu
                     </a>
-                    <a asp-controller="Home" asp-action="About" class="btn btn-outline-light btn-lg px-4 py-3 fw-semibold rounded-pill">
-                        Our Story
+                    <a href="#jmtLocationSection" class="btn btn-outline-light btn-lg px-4 py-3 fw-bold rounded-pill">
+                        <i class="bi bi-pin-map-fill me-1"></i> Get Highway Directions
                     </a>
                 </div>
+
+                <!-- Hero Amenities Micro-Badges -->
+                <div class="d-flex flex-wrap align-items-center gap-4 pt-2 text-white-50 small">
+                    <div class="d-flex align-items-center gap-2">
+                        <i class="bi bi-wind text-info fs-5"></i>
+                        <span class="text-white">Mountain Breeze & Deck</span>
+                    </div>
+                    <div class="d-flex align-items-center gap-2">
+                        <i class="bi bi-wifi text-success fs-5"></i>
+                        <span class="text-white">Free High-Speed Wi-Fi</span>
+                    </div>
+                    <div class="d-flex align-items-center gap-2">
+                        <i class="bi bi-clock text-warning fs-5"></i>
+                        <span class="text-white">@JmtCafeConfig.HoursDisplay</span>
+                    </div>
+                    <div class="d-flex align-items-center gap-2">
+                        <i class="bi bi-play-circle-fill text-danger fs-5"></i>
+                        <span class="text-white">Bisayang Explorer Featured</span>
+                    </div>
+                </div>
             </div>
+
+            <!-- Right Starbucks-Style Auto-Sliding Dynamic Showcase Carousel -->
             <div class="col-lg-5 text-center d-none d-lg-block">
-                <img src="https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?auto=format&fit=crop&w=600&q=80" 
-                     alt="Artisanal Pour-Over Coffee" 
-                     class="img-fluid rounded-4 shadow-lg border border-warning border-opacity-25" 
-                     style="max-height: 420px; object-fit: cover;" />
+                <div class="position-relative">
+                    <div class="position-absolute -top-4 -left-4 w-100 h-100 rounded-4" 
+                         style="background: radial-gradient(circle, rgba(212, 163, 115, 0.3) 0%, transparent 70%); filter: blur(36px); z-index: 0;"></div>
+                    
+                    <div class="starbucks-hero-carousel" id="starbucksHeroCarousel" aria-roledescription="carousel" aria-label="JMT Cafe Highlights">
+                        <!-- Accessible Play/Pause Toggle Button (WCAG 2.2.2) -->
+                        <button type="button" class="starbucks-play-pause-btn" id="carouselPlayPauseBtn" onclick="toggleCarouselPlayPause()" aria-label="Pause Carousel" title="Pause Carousel">
+                            <i class="bi bi-pause-fill"></i>
+                        </button>
+
+                        <!-- Slide Navigation Arrows -->
+                        <button class="starbucks-nav-btn starbucks-nav-prev" onclick="prevHeroSlide()" aria-label="Previous Slide">
+                            <i class="bi bi-chevron-left"></i>
+                        </button>
+                        <button class="starbucks-nav-btn starbucks-nav-next" onclick="nextHeroSlide()" aria-label="Next Slide">
+                            <i class="bi bi-chevron-right"></i>
+                        </button>
+
+                        <!-- Slide Track with Real Photography -->
+                        <div class="starbucks-slide-track">
+                            <!-- Slide 1: Giant 10-Inch JMT Burger & Combos -->
+                            <div class="starbucks-slide active" data-slide-index="0">
+                                <img src="/images/jmt/jmt_burger_menu_poster.png" 
+                                     alt="Giant JMT 10-Inch Burger" class="starbucks-slide-img" />
+                                <div class="starbucks-slide-gradient"></div>
+                                <div class="starbucks-overlay-card">
+                                    <div class="d-flex justify-content-between align-items-center mb-1">
+                                        <span class="starbucks-drink-badge">
+                                            <i class="bi bi-fire"></i> GIANT 10" BURGER • ₱879
+                                        </span>
+                                        <button type="button" class="btn btn-warning btn-sm rounded-pill py-0 px-2 fw-bold text-dark shadow-sm small" 
+                                                onclick='openJmtInquiryModal({ id: 1, name: "Giant JMT 10-Inch Burger", price: 879, imageUrl: "/images/jmt/jmt_burger_menu_poster.png", category: "Burgers & Snacks", description: "Packed with pure beef, crispy smoked bacon, lettuce, tomatoes, cheese, and a heap of fries." })'>
+                                            <i class="bi bi-shop me-1"></i>Visit / Inquire
+                                        </button>
+                                    </div>
+                                    <div class="d-flex align-items-center gap-2 mb-1">
+                                        <span class="text-warning small">★★★★★</span>
+                                        <span class="text-white fw-bold small">10-Inch Party Feast (Serves 4–6)</span>
+                                    </div>
+                                    <p class="small text-white-50 mb-0">Packed with pure beef, crispy smoked bacon, lettuce, tomatoes, cheese, and a heap of fries.</p>
+                                    <div class="mt-1 text-warning fw-semibold" style="font-size: 0.72rem;">— @JmtCafeConfig.AddressLine1, @JmtCafeConfig.Municipality</div>
+                                </div>
+                            </div>
+
+                            <!-- Slide 2: Mojito Drinks Menu -->
+                            <div class="starbucks-slide" data-slide-index="1">
+                                <img src="/images/jmt/jmt_mojito_menu.png" 
+                                     alt="Official JMT Mojito Drinks Poster" class="starbucks-slide-img" />
+                                <div class="starbucks-slide-gradient"></div>
+                                <div class="starbucks-overlay-card">
+                                    <div class="d-flex justify-content-between align-items-center mb-1">
+                                        <span class="starbucks-drink-badge">
+                                            <i class="bi bi-cup-straw"></i> FRESH FRUIT MOJITOS • From ₱35
+                                        </span>
+                                        <button type="button" class="btn btn-warning btn-sm rounded-pill py-0 px-2 fw-bold text-dark shadow-sm small" 
+                                                onclick='openJmtInquiryModal({ id: 16, name: "Strawberry Mojito", price: 39, imageUrl: "/images/jmt/jmt_mojito_menu.png", category: "Mojito Drinks", description: "Served ice-cold with real fruit, fresh garden mint, and sparkling effervescence." })'>
+                                            <i class="bi bi-shop me-1"></i>Visit / Inquire
+                                        </button>
+                                    </div>
+                                    <div class="d-flex align-items-center gap-2 mb-1">
+                                        <span class="text-warning small">★★★★★</span>
+                                        <span class="text-white fw-bold small">Blueberry, Strawberry & Lemon Mint</span>
+                                    </div>
+                                    <p class="small text-white-50 mb-0">Served ice-cold with real fruit, fresh garden mint, and sparkling effervescence.</p>
+                                    <div class="mt-1 text-warning fw-semibold" style="font-size: 0.72rem;">— Mountain Highway Refreshment</div>
+                                </div>
+                            </div>
+
+                            <!-- Slide 3: 1pc Chicken Meal w/ Drink -->
+                            <div class="starbucks-slide" data-slide-index="2">
+                                <img src="/images/jmt/jmt_chicken_meal.png" 
+                                     alt="1-Pc Crispy Fried Chicken Meal w/ Drink" class="starbucks-slide-img" />
+                                <div class="starbucks-slide-gradient"></div>
+                                <div class="starbucks-overlay-card">
+                                    <div class="d-flex justify-content-between align-items-center mb-1">
+                                        <span class="starbucks-drink-badge">
+                                            <i class="bi bi-stars"></i> 1-PC CHICKEN MEAL • ₱135
+                                        </span>
+                                        <button type="button" class="btn btn-warning btn-sm rounded-pill py-0 px-2 fw-bold text-dark shadow-sm small" 
+                                                onclick='openJmtInquiryModal({ id: 26, name: "1-Pc Crispy Chicken Meal w/ Drink (Deluxe)", price: 135, imageUrl: "/images/jmt/jmt_chicken_meal.png", category: "Chicken Meal", description: "Golden chicken, hot jasmine rice, savory gravy, and butterfly pea lemon refresher." })'>
+                                            <i class="bi bi-shop me-1"></i>Visit / Inquire
+                                        </button>
+                                    </div>
+                                    <div class="d-flex align-items-center gap-2 mb-1">
+                                        <span class="text-warning small">★★★★★</span>
+                                        <span class="text-white fw-bold small">Crispy Fried Chicken Feast</span>
+                                    </div>
+                                    <p class="small text-white-50 mb-0">Golden chicken, hot jasmine rice, savory gravy, and butterfly pea lemon refresher.</p>
+                                    <div class="mt-1 text-warning fw-semibold" style="font-size: 0.72rem;">— Featured on Bisayang Explorer TV</div>
+                                </div>
+                            </div>
+
+                            <!-- Slide 4: Real JMT Cafe Building & Mountain Terrace Spot -->
+                            <div class="starbucks-slide" data-slide-index="3">
+                                <img src="/images/jmt/jmt_storefront_highlands.jpg" 
+                                     alt="Authentic JMT Cafe 2-Story Building with Barista Latte in Dalaguete Highlands" class="starbucks-slide-img" />
+                                <div class="starbucks-slide-gradient"></div>
+                                <div class="starbucks-overlay-card">
+                                    <div class="d-flex justify-content-between align-items-center mb-1">
+                                        <span class="starbucks-drink-badge">
+                                            <i class="bi bi-geo-alt-fill"></i> REAL JMT CAFE & LATTE
+                                        </span>
+                                        <a href="@JmtCafeConfig.GoogleMapsPlaceUrl" target="_blank" rel="noopener noreferrer"
+                                           class="btn btn-warning btn-sm rounded-pill py-0 px-2 fw-bold text-dark shadow-sm small">
+                                            Google Maps
+                                        </a>
+                                    </div>
+                                    <div class="d-flex align-items-center gap-2 mb-1">
+                                        <span class="text-warning small">★★★★★</span>
+                                        <span class="text-white fw-bold small">Barista Latte & 2-Story Rooftop Deck</span>
+                                    </div>
+                                    <p class="small text-white-50 mb-0">Handcrafted latte art and refreshing coolers! Enjoy the crisp mountain breeze on our open-air rooftop viewing deck.</p>
+                                    <div class="mt-1 text-warning fw-semibold" style="font-size: 0.72rem;">— Tel: @JmtCafeConfig.PhoneDisplay &bull; Roadside Highlands Parking</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Bottom Indicator Pill Track with Dynamic Progress Bar -->
+                        <div class="starbucks-carousel-indicators" style="top: auto; bottom: 12px;">
+                            <div class="starbucks-indicator-pill active" onclick="gotoHeroSlide(0)" title="Giant 10-Inch Burger">
+                                <div class="starbucks-progress-bar"></div>
+                            </div>
+                            <div class="starbucks-indicator-pill" onclick="gotoHeroSlide(1)" title="Fresh Fruit Mojitos">
+                                <div class="starbucks-progress-bar"></div>
+                            </div>
+                            <div class="starbucks-indicator-pill" onclick="gotoHeroSlide(2)" title="1-Pc Chicken Meal">
+                                <div class="starbucks-progress-bar"></div>
+                            </div>
+                            <div class="starbucks-indicator-pill" onclick="gotoHeroSlide(3)" title="Highlands Cafe Spot">
+                                <div class="starbucks-progress-bar"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 </section>
 
 <div class="container">
-    <!-- Value Badges -->
-    <div class="row g-4 text-center mb-5">
-        <div class="col-6 col-md-3">
-            <div class="p-3 bg-white rounded-3 shadow-sm h-100 border">
-                <i class="bi bi-award text-warning fs-1 mb-2 d-block"></i>
-                <h6 class="fw-bold mb-1">Single-Origin</h6>
-                <small class="text-muted">Top 1% harvest beans</small>
-            </div>
-        </div>
-        <div class="col-6 col-md-3">
-            <div class="p-3 bg-white rounded-3 shadow-sm h-100 border">
-                <i class="bi bi-fire text-warning fs-1 mb-2 d-block"></i>
-                <h6 class="fw-bold mb-1">Micro-Roast</h6>
-                <small class="text-muted">Roasted in small batches</small>
-            </div>
-        </div>
-        <div class="col-6 col-md-3">
-            <div class="p-3 bg-white rounded-3 shadow-sm h-100 border">
-                <i class="bi bi-heart text-warning fs-1 mb-2 d-block"></i>
-                <h6 class="fw-bold mb-1">Ethical Trade</h6>
-                <small class="text-muted">Direct farmer partnerships</small>
-            </div>
-        </div>
-        <div class="col-6 col-md-3">
-            <div class="p-3 bg-white rounded-3 shadow-sm h-100 border">
-                <i class="bi bi-truck text-warning fs-1 mb-2 d-block"></i>
-                <h6 class="fw-bold mb-1">Fresh Delivery</h6>
-                <small class="text-muted">Free on orders over $35</small>
-            </div>
-        </div>
-    </div>
-
-    <!-- Category Highlights -->
-    <div class="d-flex justify-content-between align-items-end mb-4">
-        <div>
-            <h2 class="brand-font fw-bold mb-1">Featured Blends & Drinks</h2>
-            <p class="text-muted mb-0">Hand-selected favorites recommended by our head roaster</p>
-        </div>
-        <a asp-controller="Shop" asp-action="Index" class="btn btn-outline-dark rounded-pill fw-semibold btn-sm px-3">
-            View All Menu <i class="bi bi-arrow-right"></i>
-        </a>
-    </div>
-
-    <!-- Product Grid -->
-    <div class="row g-4 mb-5">
-        @foreach (var item in Model)
-        {
-            <div class="col-md-6 col-lg-3">
-                <div class="card card-coffee h-100 d-flex flex-column">
-                    <div class="position-relative">
-                        <img src="@item.ImageUrl" class="card-img-top" alt="@item.Name" style="height: 200px; object-fit: cover;" />
-                        <span class="position-absolute top-0 end-0 m-2 badge bg-dark bg-opacity-75 badge-roast text-warning">
-                            @item.Category
-                        </span>
+    
+    <!-- Trust Deck: Authentic Key Features of JMT Cafe (Scroll Reveal) -->
+    <div class="trust-deck mb-5">
+        <div class="row g-2">
+            <div class="col-lg-3 col-sm-6">
+                <div class="trust-item-box reveal-on-scroll delay-100">
+                    <div class="trust-icon-box" style="background: rgba(13, 202, 240, 0.15); color: #0dcaf0;">
+                        <i class="bi bi-wind breeze-icon-anim"></i>
                     </div>
-                    <div class="card-body d-flex flex-column p-3">
-                        <div class="d-flex justify-content-between align-items-center mb-1">
-                            <span class="badge bg-secondary bg-opacity-10 text-dark small">@item.RoastLevel</span>
-                            <span class="fw-bold fs-5 text-success">@item.Price.ToString("C")</span>
-                        </div>
-                        <h5 class="card-title brand-font fs-6 fw-bold mb-2">
-                            <a asp-controller="Shop" asp-action="Details" asp-route-id="@item.Id" class="text-dark text-decoration-none">
-                                @item.Name
-                            </a>
-                        </h5>
-                        <p class="card-text small text-muted flex-grow-1" style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
-                            @item.Description
-                        </p>
-                        <div class="d-flex gap-2 mt-3 pt-2 border-top">
-                            <a asp-controller="Shop" asp-action="Details" asp-route-id="@item.Id" class="btn btn-outline-secondary btn-sm flex-fill">
-                                Details
-                            </a>
-                            <form asp-controller="Cart" asp-action="AddToCart" method="post" class="flex-fill">
-                                <input type="hidden" name="productId" value="@item.Id" />
-                                <input type="hidden" name="quantity" value="1" />
-                                <input type="hidden" name="returnUrl" value="@Context.Request.Path" />
-                                <button type="submit" class="btn btn-warning btn-sm w-100 fw-semibold text-dark">
-                                    <i class="bi bi-plus-lg"></i> Add
-                                </button>
-                            </form>
-                        </div>
+                    <div>
+                        <div class="fw-bold fs-6">Mountain Breeze & Deck</div>
+                        <small class="text-muted">Fresh air & rooftop view</small>
                     </div>
                 </div>
             </div>
-        }
-    </div>
-
-    <!-- Callout Banner -->
-    <div class="card text-white bg-dark rounded-4 p-4 p-md-5 my-5 shadow" style="background: radial-gradient(circle at 10% 20%, #3d2314 0%, #1f1109 90%);">
-        <div class="row align-items-center">
-            <div class="col-lg-8">
-                <h3 class="brand-font fw-bold mb-2 text-warning">Want Coffee Delivered Every Week?</h3>
-                <p class="mb-0 text-white-50">Join our subscription program for free deliveries, exclusive micro-lots, and customized grinding tailored to your espresso machine or French press.</p>
+            <div class="col-lg-3 col-sm-6">
+                <div class="trust-item-box reveal-on-scroll delay-200">
+                    <div class="trust-icon-box" style="background: rgba(25, 135, 84, 0.15); color: #198754;">
+                        <i class="bi bi-wifi"></i>
+                    </div>
+                    <div>
+                        <div class="fw-bold fs-6">Free Fast Wi-Fi</div>
+                        <small class="text-muted">Browse, study & connect</small>
+                    </div>
+                </div>
             </div>
-            <div class="col-lg-4 text-lg-end mt-3 mt-lg-0">
-                <a asp-controller="Shop" asp-action="Index" class="btn btn-warning btn-lg fw-bold text-dark rounded-pill px-4">
-                    Explore Subscription Beans
-                </a>
+            <div class="col-lg-3 col-sm-6">
+                <div class="trust-item-box reveal-on-scroll delay-300">
+                    <div class="trust-icon-box" style="background: rgba(220, 53, 69, 0.15); color: #dc3545;">
+                        <i class="bi bi-bicycle"></i>
+                    </div>
+                    <div>
+                        <div class="fw-bold fs-6">Local Delivery</div>
+                        <small class="text-muted">Message on Messenger to order</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-sm-6">
+                <div class="trust-item-box reveal-on-scroll delay-400">
+                    <div class="trust-icon-box" style="background: rgba(255, 193, 7, 0.15); color: #b8860b;">
+                        <i class="bi bi-p-square-fill"></i>
+                    </div>
+                    <div>
+                        <div class="fw-bold fs-6">Roadside Parking</div>
+                        <small class="text-muted">Easy car & motorbike access</small>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
+
+    <!-- Elevated Highland Stopover Travel Times Widget (Wayfinding Stopover Conversion) -->
+    <section class="card border-0 shadow-sm rounded-4 p-4 mb-5 bg-white reveal-on-scroll">
+        <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3">
+            <div>
+                <span class="badge bg-warning text-dark fw-bold rounded-pill px-3 py-1 small me-1">Scenic Wayfinding Guide</span>
+                <h4 class="brand-font fw-bold text-dark mb-0 d-inline-block fs-5">Highland Stopover Travel Times to JMT Cafe</h4>
+            </div>
+            <small class="text-muted"><i class="bi bi-compass-fill text-warning me-1"></i>Scenic Mountain Highway Route</small>
+        </div>
+
+        <div class="row g-3">
+            <div class="col-md-4">
+                <div class="travel-route-card active">
+                    <div class="d-flex align-items-center justify-content-between mb-2">
+                        <span class="fw-bold text-dark small"><i class="bi bi-car-front-fill text-warning me-1"></i>From Poblacion</span>
+                        <span class="badge bg-warning text-dark fw-bold rounded-pill" style="font-size: 0.7rem;">~15 Mins (8.5 km)</span>
+                    </div>
+                    <p class="small text-secondary mb-0" style="line-height: 1.6;">
+                        Drive inland from Dalaguete Town Proper along the Dalaguete–Mantalongon Highway. JMT Cafe is the friendly orange 2-story spot on the right near Tabon Basketball Court.
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="travel-route-card">
+                    <div class="d-flex align-items-center justify-content-between mb-2">
+                        <span class="fw-bold text-dark small"><i class="bi bi-triangle-fill text-success me-1"></i>To / From Osmeña Peak</span>
+                        <span class="badge bg-success text-white fw-bold rounded-pill" style="font-size: 0.7rem;">~20 Mins (11 km)</span>
+                    </div>
+                    <p class="small text-secondary mb-0" style="line-height: 1.6;">
+                        The ultimate pre-hike fuel and post-trek celebration stopover! Stop by for giant burgers, hot meals, and iced frappes on your way to or from Cebu's highest summit.
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="travel-route-card">
+                    <div class="d-flex align-items-center justify-content-between mb-2">
+                        <span class="fw-bold text-dark small"><i class="bi bi-bus-front-fill text-primary me-1"></i>From Cebu City</span>
+                        <span class="badge bg-primary text-white fw-bold rounded-pill" style="font-size: 0.7rem;">~2.5 Hours</span>
+                    </div>
+                    <p class="small text-secondary mb-0" style="line-height: 1.6;">
+                        Take any South-bound bus from Cebu South Bus Terminal to Dalaguete proper. From the junction, convenient habal-habal motorbikes and tricycles take you up to Purok 5 Tabon.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- The Barista Coffee Experience & Wall Posters Spotlight (Reveal) -->
+    <div class="card border-0 shadow-lg rounded-4 overflow-hidden mb-5 bg-white reveal-on-scroll">
+        <div class="row g-0 align-items-center">
+            <div class="col-lg-6 p-4 p-md-5 bg-dark text-white" style="background: linear-gradient(135deg, #180e07 0%, #291409 100%) !important;">
+                <div class="d-inline-flex align-items-center gap-2 px-3 py-1 rounded-pill mb-3" style="background: rgba(255,193,7,0.15); border: 1px solid rgba(255,193,7,0.3);">
+                    <i class="bi bi-cup-hot-fill text-warning"></i>
+                    <span class="text-warning small fw-bold text-uppercase">The JMT Barista Experience</span>
+                </div>
+                <h2 class="brand-font display-6 fw-bold mb-3 text-white">Handcrafted Coffee on the Mountain Highway</h2>
+                <p class="text-white-50 lead fs-6 mb-4" style="line-height: 1.8;">
+                    Every cup at JMT Cafe is prepared fresh: from delicate swan, tulip, and rosetta micro-foam latte art to authentic <em>Vietnamese Egg Coffee (₱65)</em> with rich golden egg custard, iced Spanish lattes (₱45), and heart-crema Americanos (₱39).
+                </p>
+                <div class="d-flex flex-wrap gap-2 mb-4">
+                    <span class="badge bg-white bg-opacity-10 text-warning px-3 py-2 rounded-pill"><i class="bi bi-palette-fill me-1"></i> Artisan Latte Art</span>
+                    <span class="badge bg-white bg-opacity-10 text-warning px-3 py-2 rounded-pill"><i class="bi bi-cup-hot-fill me-1"></i> Vietnamese Egg Coffee (₱65)</span>
+                    <span class="badge bg-white bg-opacity-10 text-warning px-3 py-2 rounded-pill"><i class="bi bi-stars me-1"></i> Spanish Latte (₱45)</span>
+                </div>
+                <div class="d-flex flex-wrap gap-2">
+                    <a href="/menu?category=Coffee+Drinks" class="btn btn-warning rounded-pill fw-bold text-dark px-4 py-2 shadow-sm d-inline-flex align-items-center gap-2">
+                        <i class="bi bi-cup-hot"></i> Explore Coffee Menu
+                    </a>
+                    <a href="/about" class="btn btn-outline-light rounded-pill fw-semibold px-4 py-2">
+                        Our Cafe Story →
+                    </a>
+                </div>
+            </div>
+            <div class="col-lg-6 p-4 text-center bg-light">
+                <div class="position-relative rounded-4 overflow-hidden shadow" style="border: 2px solid #d4a373;">
+                    <img src="/images/jmt/jmt_coffee_clock.png" alt="The 12-Cup Barista Coffee Clock at JMT Cafe" class="img-fluid w-100" style="max-height: 420px; object-fit: cover;" />
+                    <div class="position-absolute bottom-0 start-0 w-100 p-2 text-white text-center" style="background: linear-gradient(to top, rgba(0,0,0,0.85), transparent);">
+                        <small class="fw-bold"><i class="bi bi-camera-fill me-1"></i> Handcrafted Barista Latte Art Showcase</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Explore Menu by Category (6 Visual Dining Tiles) -->
+    <section class="mb-5 reveal-on-scroll">
+        <div class="d-flex flex-wrap justify-content-between align-items-end gap-2 mb-3">
+            <div>
+                <span class="badge bg-warning text-dark px-3 py-1 fw-bold rounded-pill text-uppercase small mb-2">
+                    <i class="bi bi-grid-3x3-gap-fill me-1"></i> Full Menu Variety
+                </span>
+                <h2 class="brand-font display-6 fw-bold mb-1">Browse Menu by Category</h2>
+                <p class="text-muted mb-0">From flame-grilled party burgers to artisan barista lattes, rice meals & chilled fruit mojitos</p>
+            </div>
+            <a href="/menu" class="btn btn-outline-dark rounded-pill fw-semibold px-3 py-2 small shadow-xs">
+                View All 38 Items <i class="bi bi-arrow-right ms-1"></i>
+            </a>
+        </div>
+
+        <div class="row g-3">
+            @foreach (var catDef in JmtCafeConfig.CategoryDefinitions)
+            {
+                <div class="col-6 col-md-4 col-lg-2">
+                    <a href="/menu#@catDef.AnchorId" class="category-overview-card" 
+                       style="display: flex; flex-direction: column; height: 100%; border-radius: 14px; overflow: hidden; border: 1.5px solid rgba(212, 163, 115, 0.35); background: #ffffff; text-decoration: none; box-shadow: 0 2px 8px rgba(0,0,0,0.06); transition: transform 0.2s ease, box-shadow 0.2s ease;"
+                       title="Browse @catDef.DisplayName">
+                        <div class="category-overview-img-wrap" style="height: 105px; width: 100%; overflow: hidden; position: relative; background: #221207; flex-shrink: 0;">
+                            <img src="@catDef.CoverImageUrl" alt="@catDef.DisplayName" class="w-100 d-block" style="width: 100% !important; height: 105px !important; max-height: 105px !important; object-fit: cover !important; display: block;" loading="lazy" />
+                            <div class="category-overview-overlay" style="position: absolute; inset: 0; background: linear-gradient(to top, rgba(14, 8, 4, 0.85) 0%, rgba(14, 8, 4, 0.15) 60%, transparent 100%); display: flex; flex-direction: column; justify-content: flex-end; padding: 6px 8px;">
+                                <span class="badge @catDef.BadgeClass rounded-pill align-self-start fw-bold" style="font-size: 0.65rem;">
+                                    @catDef.PriceRange
+                                </span>
+                            </div>
+                        </div>
+                        <div class="category-overview-body text-center p-2" style="padding: 8px 6px; text-align: center; background: #ffffff; flex-grow: 1; display: flex; flex-direction: column; justify-content: center;">
+                            <div class="fw-bold text-dark text-truncate" style="font-size: 0.82rem; line-height: 1.2;">
+                                <i class="bi @catDef.Icon text-warning me-1"></i> @catDef.ShortName
+                            </div>
+                            <small class="text-muted d-block text-truncate mt-1" style="font-size: 0.68rem;">
+                                Explore Section →
+                            </small>
+                        </div>
+                    </a>
+                </div>
+            }
+        </div>
+    </section>
+
+    <!-- Curated Best Sellers (8 Items, Not 38 Duplicate Cards) -->
+    <section id="jmtMenuSection" class="mb-5 pt-3">
+        <div class="d-flex flex-wrap justify-content-between align-items-end gap-3 mb-4">
+            <div>
+                <span class="badge bg-warning text-dark px-3 py-1 fw-bold rounded-pill text-uppercase small mb-2">
+                    <i class="bi bi-star-fill me-1"></i> Customer Favorites
+                </span>
+                <h2 class="brand-font display-6 fw-bold mb-1">Popular Best Sellers</h2>
+                <p class="text-muted mb-0">Prepared fresh in Dalaguete. Tap any item to view details or directions!</p>
+            </div>
+            <div class="d-flex gap-2">
+                <a href="/menu" class="btn btn-warning rounded-pill fw-bold text-dark px-4 py-2 shadow-sm">
+                    View Full 38-Item Menu <i class="bi bi-arrow-right ms-1"></i>
+                </a>
+            </div>
+        </div>
+
+        <!-- 8 Best Seller Product Cards (CSS Grid Equal Height with Living Hover) -->
+        <div class="row g-4 mb-4">
+            @{ var cardIdx = 0; }
+            @foreach (var item in Model)
+            {
+                cardIdx++;
+                <div class="col-md-6 col-lg-3 reveal-on-scroll delay-@((cardIdx % 4) * 100)">
+                    <div class="jmt-product-card" 
+                         onclick='openJmtInquiryModal({ id: @item.Id, name: "@item.Name.Replace("\"", "\\\"")", price: @item.Price, imageUrl: "@item.ImageUrl", category: "@item.Category", description: "@item.Description.Replace("\"", "\\\"")" })'
+                         role="button" tabindex="0" aria-label="View details for @item.Name">
+                        
+                        <!-- Thumbnail Wrapper with Badges or Verification Card -->
+                        <div style="aspect-ratio: 4/3; overflow: hidden; position: relative;">
+                            @if (!string.IsNullOrEmpty(item.ImageUrl))
+                            {
+                                <img src="@item.ImageUrl" alt="@item.Name" loading="lazy" style="width: 100%; height: 100%; object-fit: cover;" />
+                                
+                                <!-- Category Badge -->
+                                <div class="position-absolute top-0 start-0 m-2 d-flex flex-column gap-1">
+                                    <span class="badge bg-dark bg-opacity-75 text-warning fw-semibold rounded-pill px-2 py-1" style="font-size: 0.68rem;">
+                                        @item.Category
+                                    </span>
+                                </div>
+
+                                <!-- Price Pill Badge (No trailing .00) -->
+                                <div class="position-absolute bottom-0 end-0 m-2">
+                                    <span class="badge bg-warning text-dark fw-bold rounded-pill px-3 py-1 fs-6 shadow-sm">
+                                        ₱@item.Price.ToString("N0")
+                                    </span>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="jmt-no-photo-card">
+                                    <div class="d-flex justify-content-between align-items-center w-100">
+                                        <span class="badge bg-dark bg-opacity-75 text-warning fw-semibold rounded-pill px-2 py-1" style="font-size: 0.68rem;">
+                                            @item.Category
+                                        </span>
+                                        <span class="jmt-no-photo-badge">
+                                            <i class="bi bi-shield-check text-warning"></i> Authentic Menu
+                                        </span>
+                                    </div>
+
+                                    <div class="text-center my-auto py-1">
+                                        <div class="no-photo-icon-circle">
+                                            <i class="bi bi-camera"></i>
+                                        </div>
+                                        <div class="no-photo-title">Photo on FB Page</div>
+                                        <div class="no-photo-subtext">To view real photos of @item.Name, check our Facebook page!</div>
+                                        <a href="@JmtCafeConfig.FacebookPageUrl" target="_blank" rel="noopener noreferrer" 
+                                           class="no-photo-fb-link" onclick="event.stopPropagation();">
+                                            <i class="bi bi-facebook"></i>
+                                            <span>View on FB Page</span>
+                                        </a>
+                                    </div>
+
+                                    <div class="d-flex justify-content-between align-items-center w-100 pt-1" style="border-top: 1px dashed rgba(212, 163, 115, 0.3);">
+                                        <span class="text-white-50" style="font-size: 0.68rem;">Verified Onsite</span>
+                                        <span class="badge bg-warning text-dark fw-bold rounded-pill px-2 py-1" style="font-size: 0.72rem;">
+                                            ₱@item.Price.ToString("N0")
+                                        </span>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+
+                        <!-- Card Body -->
+                        <div class="jmt-card-body">
+                            <h3 class="brand-font fs-6 fw-bold mb-2 text-dark">
+                                @item.Name
+                            </h3>
+
+                            <p class="small text-muted mb-3" style="line-height: 1.5; height: 42px; overflow: hidden;">
+                                @(item.Description.Length > 85 ? item.Description.Substring(0, 82) + "..." : item.Description)
+                            </p>
+
+                            <!-- Tasting Chips -->
+                            @if (item.TastingNotes != null && item.TastingNotes.Any())
+                            {
+                                <div class="d-flex flex-wrap gap-1 mb-2">
+                                    @foreach (var note in item.TastingNotes.Take(2))
+                                    {
+                                        <span class="jmt-tasting-chip">@note</span>
+                                    }
+                                </div>
+                            }
+
+                            <!-- Card Footer with Clean Action Hint -->
+                            <div class="jmt-card-action-hint">
+                                <span class="action-tag"><i class="bi bi-eye-fill text-warning"></i> Tap for details</span>
+                                <span class="text-warning fw-bold">View &rarr;</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+
+        <!-- Full Menu CTA Card -->
+        <div class="card border-0 shadow-sm rounded-4 p-4 text-center my-4" style="background: linear-gradient(135deg, #fbf7f2 0%, #ede3d4 100%); border: 1.5px solid rgba(212, 163, 115, 0.4) !important;">
+            <div class="d-flex flex-column flex-md-row align-items-center justify-content-between gap-3 text-md-start">
+                <div>
+                    <h5 class="brand-font fw-bold text-dark mb-1">Looking for our complete catalog?</h5>
+                    <p class="text-secondary small mb-0">We have 38 authentic items: budget silog rice meals, multi-burger party platters, large 16oz fruit shakes, and espresso drinks.</p>
+                </div>
+                <a href="/menu" class="btn btn-warning btn-lg px-4 py-2 rounded-pill fw-bold text-dark shadow-sm text-nowrap">
+                    Explore Full 38-Item Menu <i class="bi bi-arrow-right ms-1"></i>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Official Location & Wayfinding Section -->
+    <section id="jmtLocationSection" class="card border-0 shadow-lg rounded-4 overflow-hidden mb-5 bg-white">
+        <div class="p-4 p-md-5 border-bottom" style="background: linear-gradient(135deg, #180e07 0%, #2f190c 100%); color: #ffffff;">
+            <div class="row align-items-center">
+                <div class="col-lg-8">
+                    <div class="d-flex flex-wrap gap-2 align-items-center mb-2">
+                        <span class="badge bg-warning text-dark px-3 py-1 fw-bold rounded-pill">
+                            <i class="bi bi-geo-alt-fill me-1"></i> Official Location & Directions
+                        </span>
+                        <span class="badge bg-white bg-opacity-15 text-warning border border-warning border-opacity-25 px-3 py-1 fw-semibold rounded-pill small">
+                            <i class="bi bi-compass-fill me-1"></i> GPS: @JmtCafeConfig.CoordinatesString
+                        </span>
+                        <span class="badge bg-white bg-opacity-15 text-info border border-info border-opacity-25 px-3 py-1 fw-semibold rounded-pill small">
+                            <i class="bi bi-triangle-fill me-1"></i> Elevation: ~650m ASL • Cool Dalaguete Highlands
+                        </span>
+                    </div>
+                    <h3 class="brand-font display-6 fw-bold mb-2 text-white">Find JMT CAFE in @JmtCafeConfig.AddressLine1, Dalaguete</h3>
+                    <p class="lead fs-6 text-white-50 mb-0" style="line-height: 1.7;">
+                        Strategically located in the picturesque highlands of <strong>Barangay Tabon, Dalaguete, Cebu</strong> near the <strong>Tabon Basketball Court</strong> and <strong>Purok 6 Mini Mart</strong> along the scenic highway towards Osmeña Peak.
+                    </p>
+                </div>
+                <div class="col-lg-4 text-lg-end mt-4 mt-lg-0 d-flex flex-column gap-2 justify-content-lg-end">
+                    <a href="@JmtCafeConfig.GoogleMapsPlaceUrl" target="_blank" rel="noopener noreferrer" 
+                       class="btn btn-warning btn-lg px-4 py-3 fw-bold text-dark shadow rounded-pill d-inline-flex align-items-center justify-content-center gap-2">
+                        <i class="bi bi-geo-alt-fill text-danger fs-5"></i>
+                        <span>Get Directions on Google Maps</span>
+                    </a>
+                    <small class="text-white-50 text-center"><i class="bi bi-compass me-1"></i> Coordinates: @JmtCafeConfig.CoordinatesString</small>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-0">
+            <!-- Left: Interactive Dual Map Viewer -->
+            <div class="col-lg-8 border-end">
+                <!-- Map Navigation Tabs -->
+                <div class="bg-light p-2 border-bottom d-flex align-items-center justify-content-between flex-wrap gap-2">
+                    <ul class="nav nav-pills gap-1" id="mapViewerTabs" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active rounded-pill fw-bold small py-1 px-3" id="gmaps-tab" data-bs-toggle="pill" data-bs-target="#gmaps-pane" type="button" role="tab">
+                                <i class="bi bi-google me-1 text-danger"></i> Google Maps Embed
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link rounded-pill fw-bold small py-1 px-3 text-dark" id="osm-tab" data-bs-toggle="pill" data-bs-target="#osm-pane" type="button" role="tab" onclick="refreshJmtOsm()">
+                                <i class="bi bi-map-fill me-1 text-success"></i> OpenStreetMap (Interactive Map)
+                            </button>
+                        </li>
+                    </ul>
+                    <a href="@JmtCafeConfig.GoogleMapsPlaceUrl" target="_blank" rel="noopener noreferrer" class="small fw-bold text-decoration-none text-primary pe-2">
+                        <i class="bi bi-box-arrow-up-right me-1"></i> Fullscreen Map
+                    </a>
+                </div>
+
+                <div class="tab-content" id="mapViewerTabContent">
+                    <!-- Tab 1: Google Maps Interactive Embed -->
+                    <div class="tab-pane fade show active" id="gmaps-pane" role="tabpanel">
+                        <iframe src="@JmtCafeConfig.GoogleMapsEmbedUrl" 
+                                width="100%" height="470" style="border:0; display: block;" allowfullscreen="" loading="lazy" 
+                                referrerpolicy="no-referrer-when-downgrade" title="Google Maps JMT CAFE Location"></iframe>
+                    </div>
+
+                    <!-- Tab 2: OpenStreetMap Leaflet Container -->
+                    <div class="tab-pane fade" id="osm-pane" role="tabpanel">
+                        <div id="jmtOpenStreetMap" style="width: 100%; height: 470px; z-index: 1;"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right: Real Cafe Storefront Photograph & Verified Location Details -->
+            <div class="col-lg-4 p-4 d-flex flex-column justify-content-between bg-light">
+                <div>
+                    <!-- Authentic Cafe Storefront Photo in Dalaguete Highlands -->
+                    <div class="position-relative rounded-3 overflow-hidden shadow-sm mb-3" style="border: 2px solid #d4a373;">
+                        <img src="/images/jmt/jmt_storefront_highlands.jpg" alt="JMT Cafe Storefront and Scenic Terrace in Dalaguete Highlands" class="w-100" style="height: 180px; object-fit: cover;" />
+                        <div class="position-absolute bottom-0 start-0 w-100 p-2 text-white" style="background: linear-gradient(to top, rgba(0,0,0,0.85), transparent);">
+                            <div class="fw-bold small"><i class="bi bi-camera-fill me-1"></i> Authentic Storefront</div>
+                            <div style="font-size: 0.72rem;" class="text-white-50">Highlands of Barangay Tabon, Dalaguete</div>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <h5 class="brand-font fw-bold mb-0 text-dark">
+                            <i class="bi bi-shop text-warning me-1"></i> @JmtCafeConfig.Name
+                        </h5>
+                        <a href="@JmtCafeConfig.GoogleMapsPlaceUrl" target="_blank" rel="noopener noreferrer" class="badge bg-warning text-dark text-decoration-none fw-bold">
+                            <i class="bi bi-star-fill me-1 text-dark"></i> Verified on Google
+                        </a>
+                    </div>
+                    
+                    <div class="mb-2 pb-2 border-bottom">
+                        <div class="text-secondary small fw-bold text-uppercase" style="font-size: 0.72rem;">Exact Address</div>
+                        <div class="fw-bold text-dark small">@JmtCafeConfig.FullAddress</div>
+                        <div class="text-muted small">Plus Code: <strong>@JmtCafeConfig.PlusCode</strong></div>
+                        <div class="text-secondary small mt-1"><i class="bi bi-signpost-2 text-warning me-1"></i> @JmtCafeConfig.Landmark</div>
+                    </div>
+
+                    <div class="mb-2 pb-2 border-bottom">
+                        <div class="text-secondary small fw-bold text-uppercase" style="font-size: 0.72rem;">Contact & Hours</div>
+                        <div class="fw-bold text-success small"><i class="bi bi-telephone-fill me-1"></i> @JmtCafeConfig.PhoneDisplay</div>
+                        <div class="text-dark small"><i class="bi bi-clock-fill text-warning me-1"></i> <strong>@JmtCafeConfig.HoursDisplay</strong></div>
+                    </div>
+
+                    <div class="mb-3">
+                        <div class="text-secondary small fw-bold text-uppercase mb-1" style="font-size: 0.72rem;">Amenities</div>
+                        <div class="d-flex flex-wrap gap-1">
+                            <span class="badge bg-white text-dark border shadow-xs"><i class="bi bi-wind text-info me-1"></i>Mountain Breeze</span>
+                            <span class="badge bg-white text-dark border shadow-xs"><i class="bi bi-building text-warning me-1"></i>Rooftop Deck</span>
+                            <span class="badge bg-white text-dark border shadow-xs"><i class="bi bi-wifi text-success me-1"></i>Free Wi-Fi</span>
+                            <span class="badge bg-white text-dark border shadow-xs"><i class="bi bi-bag-check text-warning me-1"></i>Takeout</span>
+                            <span class="badge bg-white text-dark border shadow-xs"><i class="bi bi-p-square-fill text-primary me-1"></i>Roadside Parking</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="d-flex flex-column gap-2 pt-2 border-top">
+                    <a href="@JmtCafeConfig.GoogleMapsPlaceUrl" target="_blank" rel="noopener noreferrer" 
+                       class="btn btn-warning rounded-pill fw-bold py-2 shadow-sm text-dark d-flex align-items-center justify-content-center gap-2">
+                        <i class="bi bi-geo-alt-fill text-danger"></i>
+                        <span>Get Directions on Google Maps</span>
+                    </a>
+                    <a href="@JmtCafeConfig.PhoneTelLink" class="btn btn-outline-dark rounded-pill fw-bold py-2 small d-flex align-items-center justify-content-center gap-2">
+                        <i class="bi bi-telephone-fill text-success"></i>
+                        <span>Call @JmtCafeConfig.PhoneDisplay</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+
 </div>
+
+@section Scripts {
+    <!-- Leaflet JS & CSS for Free OpenStreetMap -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
+    <script>
+        // Starbucks-Style Dynamic Auto-Sliding Hero Carousel
+        let currentSlide = 0;
+        const totalSlides = 4;
+        let slideTimer = null;
+        let isCarouselPaused = false;
+        const slideDuration = 4000;
+
+        function showHeroSlide(idx) {
+            currentSlide = (idx + totalSlides) % totalSlides;
+            const slides = document.querySelectorAll('.starbucks-slide');
+            const indicators = document.querySelectorAll('.starbucks-indicator-pill');
+            
+            slides.forEach((slide, i) => {
+                slide.classList.toggle('active', i === currentSlide);
+            });
+            indicators.forEach((ind, i) => {
+                ind.classList.toggle('active', i === currentSlide);
+            });
+            
+            // Restart progress bar animation
+            const activeBar = document.querySelector('.starbucks-indicator-pill.active .starbucks-progress-bar');
+            if (activeBar && !isCarouselPaused) {
+                activeBar.style.animation = 'none';
+                void activeBar.offsetWidth;
+                activeBar.style.animation = 'slideTimerFill 4s linear forwards';
+            }
+        }
+
+        function nextHeroSlide() {
+            showHeroSlide(currentSlide + 1);
+        }
+
+        function prevHeroSlide() {
+            showHeroSlide(currentSlide - 1);
+        }
+
+        function gotoHeroSlide(idx) {
+            showHeroSlide(idx);
+            resetSlideTimer();
+        }
+
+        function startSlideTimer() {
+            if (isCarouselPaused) return;
+            stopSlideTimer();
+            slideTimer = setInterval(nextHeroSlide, slideDuration);
+        }
+
+        function stopSlideTimer() {
+            if (slideTimer) {
+                clearInterval(slideTimer);
+                slideTimer = null;
+            }
+        }
+
+        function resetSlideTimer() {
+            if (!isCarouselPaused) {
+                startSlideTimer();
+            }
+        }
+
+        window.toggleCarouselPlayPause = function() {
+            isCarouselPaused = !isCarouselPaused;
+            const btn = document.getElementById('carouselPlayPauseBtn');
+            if (isCarouselPaused) {
+                stopSlideTimer();
+                if (btn) {
+                    btn.innerHTML = '<i class="bi bi-play-fill"></i>';
+                    btn.setAttribute('aria-label', 'Play Carousel');
+                    btn.title = 'Play Carousel';
+                }
+            } else {
+                startSlideTimer();
+                if (btn) {
+                    btn.innerHTML = '<i class="bi bi-pause-fill"></i>';
+                    btn.setAttribute('aria-label', 'Pause Carousel');
+                    btn.title = 'Pause Carousel';
+                }
+            }
+        };
+
+        // Keyboard Controls (WCAG Arrow navigation)
+        document.addEventListener('keydown', (e) => {
+            const carousel = document.getElementById('starbucksHeroCarousel');
+            if (!carousel) return;
+            if (e.key === 'ArrowLeft') {
+                prevHeroSlide();
+                resetSlideTimer();
+            } else if (e.key === 'ArrowRight') {
+                nextHeroSlide();
+                resetSlideTimer();
+            }
+        });
+
+        // Initialize OpenStreetMap for JMT Cafe with Verified Coordinates
+        let jmtLeafletMap = null;
+        function initJmtMap() {
+            const mapEl = document.getElementById('jmtOpenStreetMap');
+            if (!mapEl || jmtLeafletMap) return;
+
+            const jmtCoords = [@JmtCafeConfig.Latitude, @JmtCafeConfig.Longitude];
+
+            jmtLeafletMap = L.map('jmtOpenStreetMap', {
+                zoomControl: true,
+                scrollWheelZoom: false
+            }).setView(jmtCoords, 17);
+
+            L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+                maxZoom: 19
+            }).addTo(jmtLeafletMap);
+
+            const jmtIcon = L.divIcon({
+                className: 'custom-leaflet-marker',
+                html: `
+                    <div style="position: relative; width: 44px; height: 44px;">
+                        <div class="courier-pulse-ring" style="border-color: #ffc107; background: rgba(255,193,7,0.25);"></div>
+                        <div class="location-marker-pin shadow" style="background: #180e07; border: 2.5px solid #ffc107; color: #ffc107; width: 44px; height: 44px; font-size: 1.25rem;">
+                            <i class="bi bi-cup-hot-fill"></i>
+                        </div>
+                    </div>
+                `,
+                iconSize: [44, 44],
+                iconAnchor: [22, 22]
+            });
+
+            const marker = L.marker(jmtCoords, { icon: jmtIcon }).addTo(jmtLeafletMap);
+            marker.bindPopup(`
+                <div style="font-family: 'Plus Jakarta Sans', sans-serif; min-width: 240px; padding: 4px;">
+                    <div style="font-weight: 800; font-size: 1.05rem; color: #150b06; margin-bottom: 2px;">
+                        <i class="bi bi-shop text-warning me-1"></i> @JmtCafeConfig.Name
+                    </div>
+                    <div style="font-size: 0.85rem; color: #555; margin-bottom: 4px;">
+                        @JmtCafeConfig.AddressLine1, @JmtCafeConfig.Municipality, 6022 Cebu
+                    </div>
+                    <div style="font-size: 0.78rem; color: #666; margin-bottom: 6px;">
+                        @JmtCafeConfig.Landmark
+                    </div>
+                    <div style="font-size: 0.78rem; background: #fff8e7; border: 1px solid #ffe08a; padding: 4px 8px; border-radius: 6px; color: #b8860b; font-weight: 700; margin-bottom: 8px;">
+                        Mountain Breeze • Rooftop Deck • Free Wi-Fi • @JmtCafeConfig.HoursShort
+                    </div>
+                    <a href="@JmtCafeConfig.GoogleMapsPlaceUrl" target="_blank" 
+                       style="display: block; text-align: center; background: #180e07; color: #fff; padding: 6px 12px; border-radius: 20px; text-decoration: none; font-weight: 700; font-size: 0.78rem;">
+                        Open Google Maps
+                    </a>
+                </div>
+            `).openPopup();
+        }
+
+        window.refreshJmtOsm = function() {
+            setTimeout(() => {
+                initJmtMap();
+                if (jmtLeafletMap) {
+                    jmtLeafletMap.invalidateSize();
+                }
+            }, 250);
+        };
+
+        // Initialize carousel and map on DOM load
+        document.addEventListener('DOMContentLoaded', () => {
+            // Respect prefers-reduced-motion
+            if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                isCarouselPaused = true;
+                const btn = document.getElementById('carouselPlayPauseBtn');
+                if (btn) btn.innerHTML = '<i class="bi bi-play-fill"></i>';
+            } else {
+                startSlideTimer();
+            }
+
+            const carousel = document.getElementById('starbucksHeroCarousel');
+            if (carousel) {
+                carousel.addEventListener('mouseenter', stopSlideTimer);
+                carousel.addEventListener('mouseleave', () => {
+                    if (!isCarouselPaused) startSlideTimer();
+                });
+            }
+            initJmtMap();
+        });
+    </script>
+}

@@ -1,119 +1,167 @@
-@inject ICartService CartService
+@using LusiTrack.Services
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - LusiTrack Coffee Roasters</title>
+    <title>@ViewData["Title"] - @JmtCafeConfig.Name Dalaguete Cebu</title>
+    <meta name="description" content="JMT CAFE located at @JmtCafeConfig.FullAddress. Savor our famous 10-inch party burger, crispy chicken meals with signature drinks, flame-grilled burger combos, handcrafted fruit mojitos, and authentic barista coffee." />
+    <meta name="keywords" content="JMT Cafe, Dalaguete cafe, Purok 5 Tabon, Bisayang Explorer TV, Cebu food trip, Dalaguete chicken meal, Dalaguete burger, Cebu coffee shop, Osmeña Peak stopover" />
+    <meta name="theme-color" content="#231709" />
+
+    <!-- Open Graph / Social Media Meta Tags -->
+    <meta property="og:type" content="restaurant" />
+    <meta property="og:title" content="@ViewData["Title"] - @JmtCafeConfig.Name Dalaguete" />
+    <meta property="og:description" content="Handcrafted coffee, fruit mojitos from ₱35, crispy chicken meals from ₱79, and giant 10-inch burgers at @JmtCafeConfig.FullAddress." />
+    <meta property="og:image" content="~/images/jmt/jmt_storefront_highlands.jpg" />
+    <meta property="og:url" content="https://jmtcafe.ph" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="@ViewData["Title"] - @JmtCafeConfig.Name" />
+    <meta name="twitter:description" content="Dalaguete's premier food and coffee spot in Purok 5 Tabon, Cebu." />
+    <meta name="twitter:image" content="~/images/jmt/jmt_storefront_highlands.jpg" />
+
+    <!-- Favicon & Touch Icons -->
+    <link rel="icon" type="image/svg+xml" href="~/favicon.svg" />
+    <link rel="apple-touch-icon" href="~/favicon.svg" />
+    <link rel="manifest" href="~/site.webmanifest" />
+    
+    <!-- CSS Dependencies -->
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="~/app.css" />
-    <style>
-        :root {
-            --coffee-primary: #3d2314;
-            --coffee-secondary: #c29979;
-            --coffee-accent: #d48b52;
-            --coffee-bg: #faf7f2;
-            --coffee-dark: #20130b;
-        }
-        body {
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            background-color: var(--coffee-bg);
-            color: #2b2523;
-        }
-        h1, h2, h3, .brand-font {
-            font-family: 'Playfair Display', serif;
-        }
-        .navbar-coffee {
-            background-color: var(--coffee-dark);
-            border-bottom: 2px solid var(--coffee-accent);
-        }
-        .btn-coffee {
-            background-color: var(--coffee-accent);
-            color: #fff;
-            border-radius: 8px;
-            font-weight: 600;
-            padding: 8px 18px;
-            transition: all 0.2s ease;
-        }
-        .btn-coffee:hover {
-            background-color: #be753d;
-            color: #fff;
-        }
-        .btn-outline-coffee {
-            border: 2px solid var(--coffee-accent);
-            color: var(--coffee-dark);
-            border-radius: 8px;
-            font-weight: 600;
-        }
-        .btn-outline-coffee:hover {
-            background-color: var(--coffee-accent);
-            color: #fff;
-        }
-        .card-coffee {
-            border: none;
-            border-radius: 14px;
-            box-shadow: 0 4px 18px rgba(0,0,0,0.06);
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-            overflow: hidden;
-            background-color: #fff;
-        }
-        .card-coffee:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 10px 24px rgba(0,0,0,0.12);
-        }
-        .badge-roast {
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            padding: 4px 8px;
-            border-radius: 6px;
-        }
-    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;0,800;1,400;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="~/app.css" asp-append-version="true" />
+
+    <!-- JSON-LD Structured Data for Local Business / Restaurant SEO -->
+    <script type="application/ld+json">
+    {
+      "@@context": "https://schema.org",
+      "@@type": "CafeOrCoffeeShop",
+      "name": "@JmtCafeConfig.Name",
+      "description": "Artisan coffee, fresh fruit mojitos, giant burgers, and chicken meals in the scenic highlands of Dalaguete, Cebu.",
+      "image": "/images/jmt/jmt_storefront_highlands.jpg",
+      "telephone": "@JmtCafeConfig.PhoneInternational",
+      "address": {
+        "@@type": "PostalAddress",
+        "streetAddress": "@JmtCafeConfig.AddressLine1",
+        "addressLocality": "@JmtCafeConfig.Municipality",
+        "addressRegion": "@JmtCafeConfig.Province",
+        "postalCode": "@JmtCafeConfig.PostalCode",
+        "addressCountry": "PH"
+      },
+      "geo": {
+        "@@type": "GeoCoordinates",
+        "latitude": @JmtCafeConfig.Latitude,
+        "longitude": @JmtCafeConfig.Longitude
+      },
+      "url": "https://jmtcafe.ph",
+      "openingHoursSpecification": {
+        "@@type": "OpeningHoursSpecification",
+        "dayOfWeek": [
+          "Monday",
+          "Tuesday",
+          "Wednesday",
+          "Thursday",
+          "Friday",
+          "Saturday",
+          "Sunday"
+        ],
+        "opens": "09:00",
+        "closes": "22:00"
+      },
+      "priceRange": "₱35 - ₱879",
+      "servesCuisine": ["Filipino", "Comfort Food", "Burgers", "Coffee", "Shakes"],
+      "sameAs": [
+        "@JmtCafeConfig.FacebookPageUrl",
+        "@JmtCafeConfig.BisayangExplorerUrl"
+      ]
+    }
+    </script>
 </head>
 <body class="d-flex flex-column min-vh-100">
-    <header>
-        <nav class="navbar navbar-expand-lg navbar-dark navbar-coffee sticky-top shadow-sm py-3">
-            <div class="container">
-                <a class="navbar-brand d-flex align-items-center gap-2 brand-font fs-3" asp-controller="Home" asp-action="Index">
-                    <i class="bi bi-cup-hot-fill text-warning"></i>
-                    <span>LusiTrack <span class="fs-6 text-warning text-uppercase fw-bold">Coffee</span></span>
+    <!-- Top Reading Scroll Progress Bar -->
+    <div id="scrollProgressBar" aria-hidden="true"></div>
+
+    <!-- Top Announcement Bar: Clean, compact dual-metric bar -->
+    <div class="announcement-bar d-none d-md-block">
+        <div class="container d-flex justify-content-between align-items-center flex-nowrap">
+            <div class="text-truncate me-3 d-flex align-items-center gap-2">
+                <span class="text-warning fw-semibold"><i class="bi bi-clock-history me-1"></i> Open Daily: @JmtCafeConfig.HoursDisplay • @JmtCafeConfig.AddressLine1, @JmtCafeConfig.Municipality</span>
+            </div>
+            <div class="d-flex gap-3 align-items-center flex-shrink-0 text-nowrap">
+                <!-- Dynamic Real-Time Cafe Operating Status Widget -->
+                <span id="liveCafeStatusPill" class="live-status-pill">
+                    <span class="live-beacon-dot"></span>
+                    <span id="liveStatusText">OPEN NOW • Closes 10 PM</span>
+                </span>
+                <span class="opacity-50">|</span>
+                <a href="@JmtCafeConfig.PhoneTelLink" class="text-light text-decoration-none small">
+                    <i class="bi bi-telephone-fill text-warning me-1"></i> @JmtCafeConfig.PhoneDisplay
                 </a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain" aria-controls="navbarMain"
+                <span class="opacity-50">|</span>
+                <a href="@JmtCafeConfig.FacebookPageUrl" target="_blank" rel="noopener noreferrer" class="text-warning text-decoration-none fw-semibold">
+                    <i class="bi bi-facebook me-1"></i> Official Facebook
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Navigation Header -->
+    <header class="sticky-top">
+        <nav class="navbar navbar-expand-lg navbar-dark navbar-coffee py-3">
+            <div class="container">
+                <!-- Brand Emblem with subtle coffee steam animation -->
+                <a class="navbar-brand brand-font" href="/">
+                    <i class="bi bi-cup-hot-fill text-warning fs-3 coffee-steam-fx"></i>
+                    <span class="d-flex flex-column lh-1">
+                        <span class="fw-bold tracking-tight">@JmtCafeConfig.Name</span>
+                        <span class="brand-badge text-uppercase mt-1" style="letter-spacing: 0.12em;">@JmtCafeConfig.AddressLine1, @JmtCafeConfig.Municipality</span>
+                    </span>
+                </a>
+
+                <button class="navbar-toggler border-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain" aria-controls="navbarMain"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
+
                 <div class="collapse navbar-collapse" id="navbarMain">
-                    <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4 gap-2">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4 gap-1">
                         <li class="nav-item">
-                            <a class="nav-link text-light fw-semibold" asp-controller="Home" asp-action="Index">Home</a>
+                            <a class="nav-link @(ViewContext.RouteData.Values["Action"]?.ToString() == "Index" && ViewContext.RouteData.Values["Controller"]?.ToString() == "Home" ? "active" : "")" 
+                               href="/">Home</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-light fw-semibold" asp-controller="Shop" asp-action="Index">Coffee Menu</a>
+                            <a class="nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Shop" ? "active" : "")" 
+                               href="/menu">Food & Drinks Menu</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-light fw-semibold" asp-controller="Home" asp-action="About">Our Story</a>
+                            <a class="nav-link @(ViewContext.RouteData.Values["Action"]?.ToString() == "About" ? "active" : "")" 
+                               href="/about">Our Story</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-light fw-semibold" asp-controller="Home" asp-action="Contact">Contact</a>
+                            <a class="nav-link @(ViewContext.RouteData.Values["Action"]?.ToString() == "Contact" ? "active" : "")" 
+                               href="/contact">
+                                <i class="bi bi-geo-alt-fill text-warning me-1"></i> Find Us
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link @(ViewContext.RouteData.Values["Action"]?.ToString() == "Franchise" ? "active" : "")" 
+                               href="/franchise">Events & Catering</a>
                         </li>
                     </ul>
-                    <div class="d-flex align-items-center gap-3">
-                        <a class="btn btn-outline-light position-relative px-3 py-2 rounded-pill" asp-controller="Cart" asp-action="Index">
-                            <i class="bi bi-bag-heart-fill me-1 text-warning"></i>
-                            <span class="fw-semibold">Cart</span>
-                            @{
-                                var cartCount = CartService.GetTotalItemCount();
-                            }
-                            @if (cartCount > 0)
-                            {
-                                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                                    @cartCount
-                                </span>
-                            }
+
+                    <!-- Action Controls: Visit Us & Inquire on Facebook -->
+                    <div class="d-flex align-items-center gap-2">
+                        <a href="@JmtCafeConfig.GoogleMapsPlaceUrl" target="_blank" rel="noopener noreferrer" 
+                           class="btn btn-outline-warning btn-sm rounded-pill px-3 py-2 fw-semibold d-flex align-items-center gap-2">
+                            <i class="bi bi-pin-map-fill text-warning"></i>
+                            <span>Visit Our Cafe</span>
+                        </a>
+                        <a href="@JmtCafeConfig.FacebookPageUrl" target="_blank" rel="noopener noreferrer" 
+                           class="btn btn-warning btn-sm rounded-pill fw-bold text-dark px-3 py-2 shadow-sm d-flex align-items-center gap-2">
+                            <i class="bi bi-facebook fs-6"></i>
+                            <span class="d-none d-xl-inline">Inquire on</span> Facebook
                         </a>
                     </div>
                 </div>
@@ -121,76 +169,215 @@
         </nav>
     </header>
 
+    <!-- Global Toast Alerts from TempData -->
     @if (TempData["SuccessMessage"] != null)
     {
         <div class="container mt-3">
-            <div class="alert alert-success alert-dismissible fade show d-flex align-items-center gap-2 shadow-sm" role="alert">
-                <i class="bi bi-check-circle-fill text-success fs-5"></i>
-                <div>@TempData["SuccessMessage"]</div>
+            <div class="alert alert-success alert-dismissible fade show d-flex align-items-center gap-3 shadow-sm rounded-4 border-0 p-3" role="alert" style="background: #eef9f1; color: #1e6b36;">
+                <i class="bi bi-check-circle-fill fs-4 text-success"></i>
+                <div class="fw-semibold">@TempData["SuccessMessage"]</div>
                 <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
         </div>
     }
 
-    @if (TempData["ErrorMessage"] != null)
-    {
-        <div class="container mt-3">
-            <div class="alert alert-danger alert-dismissible fade show d-flex align-items-center gap-2 shadow-sm" role="alert">
-                <i class="bi bi-exclamation-triangle-fill text-danger fs-5"></i>
-                <div>@TempData["ErrorMessage"]</div>
-                <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-        </div>
-    }
+    <!-- Toast Notification Container for Instant Feedback -->
+    <div id="cartToastContainer"></div>
 
-    <main role="main" class="flex-grow-1 pb-5">
+    <!-- Main Content Body -->
+    <main role="main" class="flex-grow-1">
         @RenderBody()
     </main>
 
-    <footer class="bg-dark text-white-50 py-5 mt-auto border-top border-secondary">
+    <!-- Floating Visit JMT Cafe & Directions Pill (Desktop & Tablet) -->
+    <a href="@JmtCafeConfig.GoogleMapsPlaceUrl" target="_blank" rel="noopener noreferrer" 
+       class="floating-visit-btn d-none d-md-flex" aria-label="Visit JMT Cafe in Tabon, Dalaguete &bull; Get Directions">
+        <i class="bi bi-pin-map-fill fs-5 text-warning"></i>
+        <div class="d-flex flex-column text-start lh-1">
+            <span class="fw-bold text-white">Visit JMT Cafe</span>
+            <small class="text-warning opacity-90 mt-1" style="font-size: 0.72rem;">Tabon, Dalaguete &bull; Open 9AM–10PM</small>
+        </div>
+    </a>
+
+    <!-- Mobile Sticky Action Bar (Fixed to bottom on mobile devices) -->
+    <div class="mobile-sticky-action-bar d-md-none" role="navigation" aria-label="Quick Mobile Actions">
+        <a href="@JmtCafeConfig.PhoneTelLink" class="mobile-bar-btn" aria-label="Call JMT Cafe">
+            <i class="bi bi-telephone-fill text-success"></i>
+            <span>Call</span>
+        </a>
+        <a href="@JmtCafeConfig.GoogleMapsPlaceUrl" target="_blank" rel="noopener noreferrer" class="mobile-bar-btn" aria-label="Visit JMT Cafe on Google Maps">
+            <i class="bi bi-geo-alt-fill text-danger"></i>
+            <span>Visit Us</span>
+        </a>
+        <a href="/menu" class="mobile-bar-btn" aria-label="Browse Food & Drinks Menu">
+            <i class="bi bi-book-half text-warning"></i>
+            <span>Menu</span>
+        </a>
+        <a href="@JmtCafeConfig.FacebookPageUrl" target="_blank" rel="noopener noreferrer" class="mobile-bar-btn" aria-label="Inquire on Official Facebook">
+            <i class="bi bi-facebook text-primary"></i>
+            <span>Inquire</span>
+        </a>
+    </div>
+
+    <!-- Luxury Multi-Column Footer -->
+    <footer class="footer-luxury py-5 mt-auto">
         <div class="container">
-            <div class="row g-4">
+            <div class="row g-4 mb-4">
+                <!-- Column 1: Brand & Philosophy -->
                 <div class="col-lg-4 col-md-6">
-                    <h5 class="text-white brand-font mb-3 d-flex align-items-center gap-2">
-                        <i class="bi bi-cup-hot-fill text-warning"></i> LusiTrack Coffee
-                    </h5>
-                    <p class="small">
-                        Artisanal specialty coffee roasted in small batches, delivered freshly to your doorstep. Experience the aroma and flavor of ethically sourced single-origin beans.
+                    <div class="d-flex align-items-center gap-2 mb-3">
+                        <i class="bi bi-cup-hot-fill text-warning fs-3"></i>
+                        <span class="brand-font fs-4 fw-bold text-white">@JmtCafeConfig.Name</span>
+                    </div>
+                    <p class="small text-secondary mb-3 pe-lg-4" style="color: #b0a49d !important; line-height: 1.7;">
+                        Dalaguete's welcoming comfort food and drink destination in Southern Cebu. Serving signature 10-inch celebration burgers, crispy chicken meals, French fries, decadent frappes, handcrafted barista coffee, and refreshing fruit coolers.
                     </p>
-                </div>
-                <div class="col-lg-2 col-md-6">
-                    <h6 class="text-white text-uppercase small fw-bold mb-3">Quick Links</h6>
-                    <ul class="list-unstyled small">
-                        <li class="mb-2"><a asp-controller="Home" asp-action="Index" class="text-white-50 text-decoration-none">Home</a></li>
-                        <li class="mb-2"><a asp-controller="Shop" asp-action="Index" class="text-white-50 text-decoration-none">Shop Menu</a></li>
-                        <li class="mb-2"><a asp-controller="Cart" asp-action="Index" class="text-white-50 text-decoration-none">Shopping Cart</a></li>
-                        <li class="mb-2"><a asp-controller="Home" asp-action="About" class="text-white-50 text-decoration-none">About Us</a></li>
-                    </ul>
-                </div>
-                <div class="col-lg-3 col-md-6">
-                    <h6 class="text-white text-uppercase small fw-bold mb-3">Roastery Hours</h6>
-                    <p class="small mb-1"><strong class="text-white">Mon – Fri:</strong> 6:30 AM – 7:00 PM</p>
-                    <p class="small mb-1"><strong class="text-white">Sat – Sun:</strong> 7:30 AM – 6:00 PM</p>
-                    <p class="small text-warning"><i class="bi bi-geo-alt-fill"></i> Specialty Coffee District</p>
-                </div>
-                <div class="col-lg-3 col-md-6">
-                    <h6 class="text-white text-uppercase small fw-bold mb-3">Stay Connected</h6>
-                    <p class="small">Get 10% off your first coffee order by joining our brew club.</p>
-                    <div class="input-group input-group-sm">
-                        <input type="email" class="form-control" placeholder="Your email address" />
-                        <button class="btn btn-warning fw-semibold" type="button">Join</button>
+                    <div class="d-flex gap-3 fs-5">
+                        <a href="@JmtCafeConfig.FacebookPageUrl" target="_blank" rel="noopener noreferrer" class="text-white-50 hover-gold" aria-label="Official JMT Cafe Facebook Page" title="Official JMT Cafe Facebook Page"><i class="bi bi-facebook"></i></a>
+                        <a href="@JmtCafeConfig.BisayangExplorerUrl" target="_blank" rel="noopener noreferrer" class="text-white-50 hover-gold" aria-label="Bisayang Explorer TV Feature Video" title="Bisayang Explorer TV Feature"><i class="bi bi-play-circle-fill"></i></a>
+                        <a href="@JmtCafeConfig.GoogleMapsPlaceUrl" target="_blank" rel="noopener noreferrer" class="text-white-50 hover-gold" aria-label="View Location on Google Maps" title="Location on Google Maps"><i class="bi bi-geo-alt-fill"></i></a>
+                        <a href="@JmtCafeConfig.PhoneTelLink" class="text-white-50 hover-gold" aria-label="Call JMT Cafe Phone" title="Call Cafe"><i class="bi bi-telephone-fill"></i></a>
                     </div>
                 </div>
+
+                <!-- Column 2: JMT Cafe Menu Highlights -->
+                <div class="col-lg-3 col-6">
+                    <div class="footer-heading">Menu Highlights</div>
+                    <ul class="list-unstyled">
+                        <li><a href="/menu?category=Burgers+%26+Snacks" class="footer-link">Giant 10" JMT Burger (₱879)</a></li>
+                        <li><a href="/menu?category=Burgers+%26+Snacks" class="footer-link">Bacon Burger Combo (₱170)</a></li>
+                        <li><a href="/menu?category=Burgers+%26+Snacks" class="footer-link">Buy 1 Take 1 Classic Burger (₱65)</a></li>
+                        <li><a href="/menu?category=Silog+%26+Rice+Meals" class="footer-link">1-Pc Chicken Meal w/ Drink (₱135)</a></li>
+                        <li><a href="/menu?category=Mojito+Drinks" class="footer-link">Fresh Fruit Mojitos (From ₱35)</a></li>
+                        <li><a href="/menu" class="footer-link text-warning fw-semibold">View All 38 Offerings →</a></li>
+                    </ul>
+                </div>
+
+                <!-- Column 3: Visit & Connect -->
+                <div class="col-lg-2 col-6">
+                    <div class="footer-heading">Explore & Learn</div>
+                    <ul class="list-unstyled">
+                        <li><a href="/contact" class="footer-link text-warning fw-semibold"><i class="bi bi-geo-alt me-1"></i> Map & Directions</a></li>
+                        <li><a href="/about" class="footer-link">Our Cafe & Story</a></li>
+                        <li><a href="/franchise" class="footer-link">Events & Catering</a></li>
+                        <li><a href="/privacy" class="footer-link">Privacy Statement</a></li>
+                        <li><a href="@JmtCafeConfig.PhoneTelLink" class="footer-link text-warning"><i class="bi bi-telephone me-1"></i> @JmtCafeConfig.PhoneDisplay</a></li>
+                    </ul>
+                </div>
+
+                <!-- Column 4: Location & Service -->
+                <div class="col-lg-3 col-md-6">
+                    <div class="footer-heading">Location & Service</div>
+                    <div class="small text-secondary mb-3" style="color: #b0a49d !important; line-height: 1.6;">
+                        <div class="text-white fw-bold"><i class="bi bi-pin-map-fill text-warning me-1"></i> @JmtCafeConfig.FullAddress</div>
+                        <div class="mt-1 text-white-50">Landmark: @JmtCafeConfig.Landmark</div>
+                        <div class="mt-2"><i class="bi bi-telephone text-warning me-1"></i> Mobile: <strong>@JmtCafeConfig.PhoneDisplay</strong></div>
+                        <div class="mt-1"><i class="bi bi-clock text-warning me-1"></i> <strong>@JmtCafeConfig.HoursDisplay</strong></div>
+                        <div class="mt-1"><i class="bi bi-bicycle text-warning me-1"></i> <strong>Delivery Available</strong> (Via Messenger)</div>
+                        <div class="mt-1"><i class="bi bi-wind text-info me-1"></i> Fresh Mountain Breeze • Rooftop Deck</div>
+                        <div class="mt-1"><i class="bi bi-wifi text-success me-1"></i> Free High-Speed Wi-Fi</div>
+                    </div>
+                    <a href="@JmtCafeConfig.GoogleMapsPlaceUrl" target="_blank" rel="noopener noreferrer" class="btn btn-warning btn-sm rounded-pill fw-bold text-dark px-3 py-1">
+                        <i class="bi bi-pin-map-fill me-1"></i> Open in Google Maps
+                    </a>
+                </div>
             </div>
-            <hr class="my-4 border-secondary opacity-25" />
-            <div class="d-flex flex-wrap justify-content-between align-items-center small">
-                <span>&copy; @DateTime.Now.Year LusiTrack Coffee Roasters. All rights reserved.</span>
-                <span>Crafted with ASP.NET Core (.NET 10 MVC)</span>
+
+            <hr class="border-secondary opacity-25 my-4" />
+
+            <!-- Bottom Legal Bar -->
+            <div class="d-flex flex-wrap justify-content-between align-items-center small text-secondary" style="color: #8c827b !important;">
+                <div>
+                    &copy; @DateTime.Now.Year @JmtCafeConfig.Name • @JmtCafeConfig.FullAddress • Tel: @JmtCafeConfig.PhoneDisplay
+                </div>
+                <div class="d-flex gap-3 mt-2 mt-sm-0">
+                    <a href="/privacy" class="text-secondary text-decoration-none">Privacy Policy (RA 10173)</a>
+                    <span>•</span>
+                    <a href="/franchise" class="text-secondary text-decoration-none">Events & Catering</a>
+                    <span>•</span>
+                    <span>Open-Air Mountain Deck</span>
+                    <span>•</span>
+                    <span>Fresh Mountain Breeze</span>
+                    <span>•</span>
+                    <span>Free Wi-Fi</span>
+                </div>
             </div>
         </div>
     </footer>
 
+    <!-- Shared JMT Cafe Inquiry & Quick View Modal -->
+    @await Html.PartialAsync("_JmtInquiryModal")
+
+    <!-- Core Scripts -->
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // ==========================================================================
+        // Living UI Dynamic Interactions Engine
+        // ==========================================================================
+
+        // 1. Reading Scroll Progress Bar
+        window.addEventListener('scroll', () => {
+            const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+            const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const scrolled = (height > 0) ? (winScroll / height) * 100 : 0;
+            const bar = document.getElementById('scrollProgressBar');
+            if (bar) bar.style.width = scrolled + '%';
+        }, { passive: true });
+
+        // 2. Real-Time Philippine Standard Time & Dynamic Cafe Operating Status
+        function updateLiveOperatingStatus() {
+            const now = new Date();
+            const utc = now.getTime() + (now.getTimezoneOffset() * 60000);
+            const pht = new Date(utc + (3600000 * 8)); // UTC+8 Philippine Standard Time
+            
+            const hours = pht.getHours();
+            const minutes = pht.getMinutes();
+            // JMT Cafe Operating Hours: 9:00 AM (09:00) to 10:00 PM (22:00)
+            const isOpen = (hours >= 9 && hours < 22);
+            
+            const pill = document.getElementById('liveCafeStatusPill');
+            const text = document.getElementById('liveStatusText');
+            const clock = document.getElementById('livePhtClock');
+
+            if (pill && text) {
+                if (isOpen) {
+                    pill.className = 'live-status-pill';
+                    text.innerText = 'OPEN NOW • Closes 10:00 PM';
+                } else {
+                    pill.className = 'live-status-pill closed';
+                    text.innerText = 'OPENS 9:00 AM • Tabon Highlands';
+                }
+            }
+
+            if (clock) {
+                const ampm = hours >= 12 ? 'PM' : 'AM';
+                const h12 = hours % 12 || 12;
+                const minPad = minutes < 10 ? '0' + minutes : minutes;
+                clock.innerHTML = `<i class="bi bi-clock-history text-warning me-1"></i>${h12}:${minPad} ${ampm} PHT`;
+            }
+        }
+
+        // 3. Scroll Reveal Entrance Animations via IntersectionObserver
+        document.addEventListener('DOMContentLoaded', () => {
+            updateLiveOperatingStatus();
+            setInterval(updateLiveOperatingStatus, 25000);
+
+            if ('IntersectionObserver' in window) {
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            entry.target.classList.add('is-revealed');
+                        }
+                    });
+                }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+
+                document.querySelectorAll('.reveal-on-scroll').forEach(el => observer.observe(el));
+            } else {
+                document.querySelectorAll('.reveal-on-scroll').forEach(el => el.classList.add('is-revealed'));
+            }
+        });
+    </script>
+
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

@@ -7,10 +7,12 @@ namespace LusiTrack.Controllers;
 public class CheckoutController : Controller
 {
     private readonly ICartService _cartService;
+    private readonly IOrderService _orderService;
 
-    public CheckoutController(ICartService cartService)
+    public CheckoutController(ICartService cartService, IOrderService orderService)
     {
         _cartService = cartService;
+        _orderService = orderService;
     }
 
     [HttpGet]
@@ -19,7 +21,7 @@ public class CheckoutController : Controller
         var cart = _cartService.GetCart();
         if (!cart.Items.Any())
         {
-            TempData["ErrorMessage"] = "Your cart is empty. Please add some coffee items before checking out!";
+            TempData["ErrorMessage"] = "Your tray is empty. Please select menu items before checking out!";
             return RedirectToAction("Index", "Shop");
         }
 
@@ -27,7 +29,14 @@ public class CheckoutController : Controller
         var model = new OrderModel
         {
             Items = cart.Items,
-            TotalAmount = cart.GrandTotal
+            Subtotal = cart.Subtotal,
+            DeliveryFee = cart.ShippingFee,
+            DiscountAmount = cart.DiscountAmount,
+            TotalAmount = cart.GrandTotal,
+            FulfillmentType = cart.IsPickup ? "Pickup" : "Delivery",
+            Address = cart.IsPickup ? "Pickup at JMT CAFE Counter, Purok 5 Tabon, Dalaguete" : "Purok 5 Tabon, Dalaguete, Cebu",
+            City = "Dalaguete",
+            PostalCode = "6022"
         };
 
         return View(model);
@@ -40,39 +49,57 @@ public class CheckoutController : Controller
         var cart = _cartService.GetCart();
         if (!cart.Items.Any())
         {
+            TempData["ErrorMessage"] = "Your tray is empty. Please select menu items before checking out!";
             return RedirectToAction("Index", "Shop");
         }
 
         if (!ModelState.IsValid)
         {
             ViewBag.Cart = cart;
-            model.Items = cart.Items;
-            model.TotalAmount = cart.GrandTotal;
             return View("Index", model);
         }
 
-        // Attach cart items and calculate final total
+        // Attach cart items and calculate final breakdown
         model.Items = cart.Items.ToList();
-        model.TotalAmount = cart.GrandTotal;
+        model.Subtotal = cart.Subtotal;
+        model.DeliveryFee = model.FulfillmentType == "Pickup" ? 0m : cart.ShippingFee;
+        model.DiscountAmount = cart.DiscountAmount;
+        model.TotalAmount = Math.Max(0, model.Subtotal + Math.Round(model.Subtotal * 0.05m, 2) + model.DeliveryFee - model.DiscountAmount);
         model.OrderDate = DateTime.Now;
+        model.OrderStatus = "Preparing";
+        model.PaymentMethod = "GCash";
+        model.PaymentStatus = "Paid (GCash Verified)";
+        if (string.IsNullOrWhiteSpace(model.GCashReferenceNumber))
+        {
+            model.GCashReferenceNumber = $"9832{Random.Shared.Next(1000000, 9999999)}";
+        }
 
-        // Clear the cart after successful order placement
+        // Save order via service (deducts inventory, records timeline)
+        var createdOrder = _orderService.CreateOrder(model);
+
+        // Clear the cart
         _cartService.Clear();
 
-        // Pass order details to confirmation via TempData or session
-        TempData["LastOrderId"] = model.OrderId;
-        TempData["CustomerName"] = model.CustomerName;
-        TempData["TotalPaid"] = model.TotalAmount.ToString("C");
-
-        return RedirectToAction("Confirmation", new { orderId = model.OrderId });
+        TempData["SuccessMessage"] = $"Order {createdOrder.OrderId} placed successfully!";
+        return RedirectToAction("Confirmation", new { orderId = createdOrder.OrderId });
     }
 
     [HttpGet]
     public IActionResult Confirmation(string orderId)
     {
-        ViewBag.OrderId = orderId;
-        ViewBag.CustomerName = TempData["CustomerName"] ?? "Valued Customer";
-        ViewBag.TotalPaid = TempData["TotalPaid"] ?? "$0.00";
-        return View();
+        if (string.IsNullOrWhiteSpace(orderId))
+        {
+            return RedirectToAction("Index", "Shop");
+        }
+
+        var order = _orderService.GetOrderById(orderId);
+        if (order == null)
+        {
+            TempData["ErrorMessage"] = $"Order #{orderId} could not be found.";
+            return RedirectToAction("Index", "Shop");
+        }
+
+        return View(order);
     }
 }
+

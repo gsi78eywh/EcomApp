@@ -13,6 +13,7 @@ public static class ServiceCollectionExtensions
         services.AddHttpContextAccessor();
         services.AddSingleton<ICoffeeCatalogService, CoffeeCatalogService>();
         services.AddScoped<ICartService, SessionCartService>();
+        services.AddSingleton<IOrderService, OrderService>();
 
         return services;
     }
