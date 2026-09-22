@@ -6,6 +6,50 @@
     var basePrice = Model.Price;
 }
 
+@functions {
+    public static string GetShowcaseTheme(string category)
+    {
+        return category switch
+        {
+            "Burgers & Snacks" => "burger",
+            "Mojito Drinks" => "mojito",
+            "Coffee Drinks" => "coffee",
+            "Silog & Rice Meals" => "silog",
+            "Juice & Shakes" => "shake",
+            "Beer & Beverages (18+)" => "beer",
+            _ => "default"
+        };
+    }
+
+    public static string GetCategoryEmoji(string category)
+    {
+        return category switch
+        {
+            "Burgers & Snacks" => "🍔",
+            "Mojito Drinks" => "🍹",
+            "Coffee Drinks" => "☕",
+            "Silog & Rice Meals" => "🍳",
+            "Juice & Shakes" => "🥤",
+            "Beer & Beverages (18+)" => "🍺",
+            _ => "✨"
+        };
+    }
+
+    public static string GetCategoryWatermarkIcon(string category)
+    {
+        return category switch
+        {
+            "Burgers & Snacks" => "bi bi-fire",
+            "Mojito Drinks" => "bi bi-droplet-half",
+            "Coffee Drinks" => "bi bi-cup-hot",
+            "Silog & Rice Meals" => "bi bi-egg-fried",
+            "Juice & Shakes" => "bi bi-cup-straw",
+            "Beer & Beverages (18+)" => "bi bi-cup",
+            _ => "bi bi-stars"
+        };
+    }
+}
+
 <div class="container py-4">
     <!-- Breadcrumb Navigation -->
     <nav aria-label="breadcrumb" class="mb-4">
@@ -36,29 +80,50 @@
                 }
                 else
                 {
-                    <div class="jmt-no-photo-details-hero d-flex flex-column justify-content-center align-items-center p-4 p-md-5 text-center text-white h-100" style="min-height: 440px;">
-                        <span class="badge bg-warning bg-opacity-10 text-warning border border-warning border-opacity-25 rounded-pill px-3 py-2 fw-bold small mb-3">
-                            <i class="bi bi-shield-check me-1"></i>100% Authentic Menu • No AI Imagery
-                        </span>
-                        <div class="no-photo-icon-circle mb-3" style="width: 68px; height: 68px; font-size: 2rem;">
-                            <i class="bi bi-camera"></i>
+                    <div class="jmt-menu-item-showcase jmt-showcase-@GetShowcaseTheme(Model.Category) d-flex flex-column justify-content-between p-4 p-md-5 h-100" style="min-height: 440px;">
+                        <!-- Category Watermark Icon -->
+                        <div class="showcase-watermark-icon" style="font-size: 11rem; right: -20px; bottom: -20px;">
+                            <i class="@GetCategoryWatermarkIcon(Model.Category)"></i>
                         </div>
-                        <h3 class="brand-font fw-bold text-white mb-2">Authentic Photo Pending</h3>
-                        <p class="text-white-50 small mb-4" style="max-width: 420px; line-height: 1.6;">
-                            We believe in 100% honesty: we don't display AI-generated photos so you always get the real deal! To view live photos of our freshly prepared <strong>@Model.Name</strong>, daily specials, and counter updates, please check our official Facebook page.
-                        </p>
-                        <div class="d-flex flex-column gap-2 w-100" style="max-width: 320px;">
-                            <a href="@JmtCafeConfig.FacebookPageUrl" target="_blank" rel="noopener noreferrer" 
-                               class="btn btn-primary rounded-pill py-2 px-3 fw-bold shadow-sm d-flex align-items-center justify-content-center gap-2"
-                               style="background: #1877f2; border-color: #1877f2;">
-                                <i class="bi bi-facebook fs-5"></i>
-                                <span>View Real Photos on Facebook</span>
-                                <i class="bi bi-box-arrow-up-right small"></i>
-                            </a>
-                            <a href="@JmtCafeConfig.GoogleMapsPlaceUrl" target="_blank" rel="noopener noreferrer" 
-                               class="btn btn-outline-warning rounded-pill py-2 px-3 fw-semibold small text-white">
-                                <i class="bi bi-geo-alt-fill text-warning me-1"></i>Visit Cafe Onsite
-                            </a>
+
+                        <!-- Top Header in Hero -->
+                        <div class="d-flex justify-content-between align-items-center w-100 position-relative z-2">
+                            <span class="badge bg-black bg-opacity-60 text-warning fw-semibold rounded-pill px-3 py-2 fs-6" style="border: 1px solid rgba(212, 163, 115, 0.4);">
+                                @GetCategoryEmoji(Model.Category) @Model.Category
+                            </span>
+                            <span class="showcase-hallmark-stamp px-3 py-1">
+                                <i class="bi bi-patch-check-fill text-warning"></i> Authentic Dalaguete Recipe
+                            </span>
+                        </div>
+
+                        <!-- Center Hero Name Showcase -->
+                        <div class="showcase-hero-center text-center my-auto py-3 position-relative z-2">
+                            <div class="showcase-badge-sub text-warning fw-semibold mb-2" style="font-size: 0.8rem; letter-spacing: 0.12em;">
+                                JMT CAFE SIGNATURE SPECIALTY
+                            </div>
+                            <h2 class="display-5 brand-font fw-bold text-white mb-2">
+                                @Model.Name
+                            </h2>
+                            @if (Model.TastingNotes != null && Model.TastingNotes.Any())
+                            {
+                                <div class="d-flex flex-wrap justify-content-center gap-2 mb-3">
+                                    @foreach (var note in Model.TastingNotes)
+                                    {
+                                        <span class="showcase-feature-tag px-3 py-1 fs-6">@note</span>
+                                    }
+                                </div>
+                            }
+                        </div>
+
+                        <!-- Bottom Strip in Hero -->
+                        <div class="d-flex justify-content-between align-items-center w-100 pt-3 showcase-footer-border position-relative z-2">
+                            <div class="d-flex align-items-center gap-2 text-white-50 small">
+                                <i class="bi bi-geo-alt-fill text-warning"></i>
+                                <span>Purok 5, Tabon, Dalaguete, Cebu</span>
+                            </div>
+                            <span class="badge bg-warning text-dark fw-bold rounded-pill px-4 py-2 fs-5 shadow-sm">
+                                ₱@basePrice.ToString("N0")
+                            </span>
                         </div>
                     </div>
                 }
@@ -329,10 +394,25 @@
                             }
                             else
                             {
-                                <div class="jmt-no-photo-card p-2 text-center d-flex flex-column justify-content-center align-items-center">
-                                    <i class="bi bi-camera text-warning fs-5 mb-1"></i>
-                                    <span class="text-white small fw-bold">Authentic Photo Pending</span>
-                                    <small class="text-white-50" style="font-size: 0.68rem;">View on Facebook Page</small>
+                                <div class="jmt-menu-item-showcase jmt-showcase-@GetShowcaseTheme(rel.Category)">
+                                    <div class="showcase-watermark-icon"><i class="@GetCategoryWatermarkIcon(rel.Category)"></i></div>
+                                    <div class="d-flex justify-content-between align-items-center w-100 position-relative z-2">
+                                        <span class="badge bg-black bg-opacity-60 text-warning fw-semibold rounded-pill px-2 py-1" style="font-size: 0.65rem;">
+                                            @GetCategoryEmoji(rel.Category) @rel.Category
+                                        </span>
+                                        <span class="showcase-hallmark-stamp" style="font-size: 0.62rem;">
+                                            <i class="bi bi-patch-check-fill text-warning"></i> Authentic
+                                        </span>
+                                    </div>
+                                    <div class="showcase-hero-center text-center my-auto py-1 position-relative z-2 w-100">
+                                        <h5 class="showcase-menu-title brand-font fw-bold text-white mb-1 px-1" style="font-size: 0.95rem;">
+                                            @rel.Name
+                                        </h5>
+                                    </div>
+                                    <div class="d-flex justify-content-between align-items-center w-100 pt-1 showcase-footer-border position-relative z-2">
+                                        <span class="showcase-origin-text" style="font-size: 0.65rem;">Dalaguete</span>
+                                        <span class="badge bg-warning text-dark fw-bold rounded-pill px-2 py-1" style="font-size: 0.72rem;">₱@rel.Price.ToString("N0")</span>
+                                    </div>
                                 </div>
                             }
                         </div>

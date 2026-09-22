@@ -2,12 +2,13 @@
     ViewData["Title"] = "Manager Authorization | JMT CAFE Operations";
     var returnUrl = ViewBag.ReturnUrl as string ?? "";
     var errorMessage = ViewBag.ErrorMessage as string ?? "";
+    var showHint = ViewBag.ShowHint as bool? ?? false;
 }
 
 <div class="container py-5">
     <div class="row justify-content-center">
         <div class="col-md-6 col-lg-5">
-            <div class="card border-0 shadow-lg rounded-4 overflow-hidden bg-white">
+            <div class="card border-0 shadow-lg rounded-4 overflow-hidden bg-white" style="border: 1px solid rgba(41, 24, 14, 0.08);">
                 <div class="p-4 text-center" style="background: linear-gradient(135deg, var(--coffee-950) 0%, var(--coffee-900) 100%); color: var(--gold-300);">
                     <div class="d-inline-flex p-3 rounded-circle bg-white bg-opacity-10 mb-3">
                         <i class="bi bi-shield-lock-fill display-5 text-warning"></i>
@@ -30,7 +31,7 @@
                         <input type="hidden" name="returnUrl" value="@returnUrl" />
 
                         <div class="mb-4">
-                            <label class="form-label fw-bold small text-muted text-uppercase">Manager Passcode / PIN</label>
+                            <label class="form-label fw-bold small text-muted text-uppercase" style="letter-spacing: 0.05em;">Manager Passcode / PIN</label>
                             <div class="input-group">
                                 <span class="input-group-text bg-light border-end-0 rounded-start-pill ps-3 text-muted">
                                     <i class="bi bi-key-fill text-warning"></i>
@@ -38,12 +39,15 @@
                                 <input type="password" name="passcode" class="form-control bg-light border-start-0 rounded-end-pill py-3" 
                                        placeholder="Enter staff security PIN..." required autofocus autocomplete="current-password" />
                             </div>
-                            <div class="form-text small text-muted mt-2">
-                                <i class="bi bi-info-circle me-1"></i>Default store operations PIN: <code class="fw-bold text-dark">JMT2026</code>
-                            </div>
+                            @if (showHint)
+                            {
+                                <div class="form-text small text-muted mt-2">
+                                    <i class="bi bi-info-circle me-1"></i>Development PIN: <code class="fw-bold text-dark">JMT2026</code>
+                                </div>
+                            }
                         </div>
 
-                        <button type="submit" class="btn btn-warning w-100 py-3 rounded-pill fw-bold text-dark shadow-sm">
+                        <button type="submit" class="btn btn-gold w-100 py-3 rounded-pill fw-bold text-dark shadow-sm">
                             <i class="bi bi-unlock-fill me-2"></i> Unlock Dashboard
                         </button>
                     </form>

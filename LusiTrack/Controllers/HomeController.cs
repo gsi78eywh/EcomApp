@@ -10,10 +10,12 @@ namespace LusiTrack.Controllers;
 public class HomeController : Controller
 {
     private readonly ICoffeeCatalogService _catalogService;
+    private readonly IConfiguration _configuration;
 
-    public HomeController(ICoffeeCatalogService catalogService)
+    public HomeController(ICoffeeCatalogService catalogService, IConfiguration configuration)
     {
         _catalogService = catalogService;
+        _configuration = configuration;
     }
 
     [HttpGet("")]
@@ -79,7 +81,11 @@ public class HomeController : Controller
     [ResponseCache(Duration = 86400)]
     public IActionResult SitemapXml()
     {
-        var baseUrl = $"{Request.Scheme}://{Request.Host}";
+        var configuredBase = _configuration["SiteSettings:BaseUrl"];
+        var baseUrl = !string.IsNullOrWhiteSpace(configuredBase)
+            ? configuredBase.TrimEnd('/')
+            : $"{Request.Scheme}://{Request.Host}";
+
         var sb = new StringBuilder();
         sb.AppendLine("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
         sb.AppendLine("<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">");
@@ -116,4 +122,3 @@ public class HomeController : Controller
         return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
     }
 }
-

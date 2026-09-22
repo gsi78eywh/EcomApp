@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  lusitrack:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jmtcafe_lusitrack
+    ports:
+      - "8080:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_HTTP_PORTS=8080
+      - SiteSettings__BaseUrl=https://jmtcafe.ph
+      - Admin__Passcode=JMT2026
+    restart: unless-stopped

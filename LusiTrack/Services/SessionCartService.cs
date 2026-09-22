@@ -26,7 +26,9 @@ public class SessionCartService : ICartService
     public void AddItem(CoffeeProduct product, int quantity = 1, string size = "Regular", string temperature = "Hot", string milkOption = "Regular Milk", string specialInstructions = "", decimal priceAdjustment = 0m, string flavorSyrup = "None", string sweetnessLevel = "100% Normal", string addOns = "None")
     {
         var cart = GetCart();
-        var effectivePrice = product.Price + priceAdjustment;
+        var safeQuantity = Math.Clamp(quantity, 1, 99);
+        var safeAdjustment = Math.Max(0m, Math.Min(500m, priceAdjustment));
+        var effectivePrice = Math.Max(product.Price, product.Price + safeAdjustment);
 
         var existingItem = cart.Items.FirstOrDefault(i => 
             i.ProductId == product.Id && 
@@ -39,7 +41,7 @@ public class SessionCartService : ICartService
 
         if (existingItem != null)
         {
-            existingItem.Quantity += quantity;
+            existingItem.Quantity = Math.Min(99, existingItem.Quantity + safeQuantity);
         }
         else
         {
@@ -48,7 +50,7 @@ public class SessionCartService : ICartService
                 ProductId = product.Id,
                 ProductName = product.Name,
                 Price = effectivePrice,
-                Quantity = quantity,
+                Quantity = safeQuantity,
                 ImageUrl = product.ImageUrl,
                 Size = size,
                 Temperature = temperature,
@@ -117,14 +119,14 @@ public class SessionCartService : ICartService
         if (string.IsNullOrWhiteSpace(couponCode)) return false;
 
         var code = couponCode.Trim().ToUpperInvariant();
-        if (code == "LUSI10" || code == "BREW10")
+        if (code == "JMT10" || code == "LUSI10" || code == "BREW10")
         {
             cart.CouponCode = code;
             cart.DiscountAmount = Math.Round(cart.Subtotal * 0.10m, 2);
             SaveCart(cart);
             return true;
         }
-        else if (code == "CEBU50" || code == "WELCOME50")
+        else if (code == "DALAGUETE50" || code == "CEBU50" || code == "WELCOME50")
         {
             cart.CouponCode = code;
             cart.DiscountAmount = Math.Min(cart.Subtotal, 50.00m);
@@ -144,13 +146,23 @@ public class SessionCartService : ICartService
 
     private static void RecalculateDiscounts(CartViewModel cart)
     {
-        if (cart.CouponCode == "LUSI10" || cart.CouponCode == "BREW10")
+        if (string.IsNullOrWhiteSpace(cart.CouponCode))
+        {
+            cart.DiscountAmount = 0m;
+            return;
+        }
+
+        if (cart.CouponCode == "JMT10" || cart.CouponCode == "LUSI10" || cart.CouponCode == "BREW10")
         {
             cart.DiscountAmount = Math.Round(cart.Subtotal * 0.10m, 2);
         }
-        else if (cart.CouponCode == "CEBU50" || cart.CouponCode == "WELCOME50")
+        else if (cart.CouponCode == "DALAGUETE50" || cart.CouponCode == "CEBU50" || cart.CouponCode == "WELCOME50")
         {
             cart.DiscountAmount = Math.Min(cart.Subtotal, 50.00m);
+        }
+        else
+        {
+            cart.DiscountAmount = 0m;
         }
     }
 

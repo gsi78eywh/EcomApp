@@ -10,6 +10,10 @@
                 <div class="d-flex align-items-center gap-3">
                     <img id="jmtModalItemImg" src="/images/jmt/jmt_chicken_meal.png" alt="JMT Menu Item" 
                          class="rounded-3 shadow-sm" style="width: 62px; height: 62px; object-fit: cover; border: 2px solid #e5b880;" />
+                    <div id="jmtModalItemEmblem" class="rounded-3 shadow-sm align-items-center justify-content-center text-warning" 
+                         style="width: 62px; height: 62px; background: rgba(212,163,115,0.18); border: 2px solid #e5b880; font-size: 1.8rem; display: none;">
+                        <i id="jmtModalCategoryIcon" class="bi bi-cup-hot-fill"></i>
+                    </div>
                     <div>
                         <span class="badge bg-warning text-dark small fw-bold text-uppercase px-2 py-1 rounded-pill" id="jmtModalItemCategory">Chicken Meal</span>
                         <h5 class="modal-title brand-font fw-bold text-white mb-0 mt-1" id="jmtModalItemTitle">1-Pc Crispy Chicken Meal</h5>
@@ -26,11 +30,11 @@
                     Golden crispy fried chicken served with 1 cup hot steamed rice, savory house chicken gravy, and 1 signature chilled drink.
                 </p>
 
-                <!-- No Photo Facebook Verification Notice (Shown dynamically if item has no photo) -->
-                <div id="jmtModalNoPhotoNotice" class="alert alert-warning align-items-center gap-2 py-2 px-3 small rounded-3 mb-3" style="display: none; background: rgba(212, 163, 115, 0.15); border-color: rgba(212, 163, 115, 0.5);">
-                    <i class="bi bi-shield-check fs-5 text-warning flex-shrink-0"></i>
+                <!-- Fresh Preparation Guarantee -->
+                <div id="jmtModalNoPhotoNotice" class="alert alert-secondary align-items-center gap-2 py-2 px-3 small rounded-3 mb-3" style="display: none; background: rgba(212, 163, 115, 0.12); border: 1px solid rgba(212, 163, 115, 0.35); color: #2d180c;">
+                    <i class="bi bi-patch-check-fill fs-5 text-warning flex-shrink-0"></i>
                     <div>
-                        <strong>Authentic Photo Pending:</strong> We don't use AI-generated images. To view real photos and live servings of this item, please check our official Facebook page!
+                        <strong>Fresh Authentic Recipe:</strong> Prepared live to order at our JMT Cafe kitchen & espresso bar in Purok 5 Tabon!
                     </div>
                 </div>
 
@@ -118,21 +122,33 @@
         const desc = document.getElementById('jmtModalItemDesc');
         const detailsBtn = document.getElementById('jmtModalViewDetailsBtn');
 
-        if (img) {
+        const emblem = document.getElementById('jmtModalItemEmblem');
+        const icon = document.getElementById('jmtModalCategoryIcon');
+
+        if (img && emblem) {
             if (product.imageUrl && product.imageUrl.trim() !== '') {
                 img.src = product.imageUrl;
+                img.style.display = 'block';
+                emblem.style.display = 'none';
             } else {
-                img.src = '/images/jmt/jmt_storefront_highlands.jpg';
+                img.style.display = 'none';
+                emblem.style.display = 'flex';
+                if (icon && product.category) {
+                    const c = product.category.toLowerCase();
+                    if (c.includes('burger')) icon.className = 'bi bi-fire';
+                    else if (c.includes('mojito')) icon.className = 'bi bi-droplet-half';
+                    else if (c.includes('coffee')) icon.className = 'bi bi-cup-hot-fill';
+                    else if (c.includes('silog') || c.includes('rice')) icon.className = 'bi bi-egg-fried';
+                    else if (c.includes('shake') || c.includes('juice')) icon.className = 'bi bi-cup-straw';
+                    else if (c.includes('beer')) icon.className = 'bi bi-cup-fill';
+                    else icon.className = 'bi bi-star-fill';
+                }
             }
         }
 
         const notice = document.getElementById('jmtModalNoPhotoNotice');
         if (notice) {
-            if (!product.imageUrl || product.imageUrl.trim() === '') {
-                notice.style.display = 'flex';
-            } else {
-                notice.style.display = 'none';
-            }
+            notice.style.display = 'flex';
         }
 
         if (title && product.name) title.innerText = product.name;

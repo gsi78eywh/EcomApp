@@ -1,4 +1,12 @@
 @using LusiTrack.Services
+@inject Microsoft.Extensions.Configuration.IConfiguration Configuration
+@{
+    var configuredBase = Configuration["SiteSettings:BaseUrl"];
+    var currentBaseUrl = !string.IsNullOrWhiteSpace(configuredBase) 
+        ? configuredBase.TrimEnd('/') 
+        : $"{Context.Request.Scheme}://{Context.Request.Host}";
+    var canonicalUrl = $"{currentBaseUrl}{Context.Request.Path}";
+}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -8,17 +16,18 @@
     <meta name="description" content="JMT CAFE located at @JmtCafeConfig.FullAddress. Savor our famous 10-inch party burger, crispy chicken meals with signature drinks, flame-grilled burger combos, handcrafted fruit mojitos, and authentic barista coffee." />
     <meta name="keywords" content="JMT Cafe, Dalaguete cafe, Purok 5 Tabon, Bisayang Explorer TV, Cebu food trip, Dalaguete chicken meal, Dalaguete burger, Cebu coffee shop, Osmeña Peak stopover" />
     <meta name="theme-color" content="#231709" />
+    <link rel="canonical" href="@canonicalUrl" />
 
     <!-- Open Graph / Social Media Meta Tags -->
     <meta property="og:type" content="restaurant" />
     <meta property="og:title" content="@ViewData["Title"] - @JmtCafeConfig.Name Dalaguete" />
     <meta property="og:description" content="Handcrafted coffee, fruit mojitos from ₱35, crispy chicken meals from ₱79, and giant 10-inch burgers at @JmtCafeConfig.FullAddress." />
-    <meta property="og:image" content="~/images/jmt/jmt_storefront_highlands.jpg" />
-    <meta property="og:url" content="https://jmtcafe.ph" />
+    <meta property="og:image" content="@currentBaseUrl/images/jmt/jmt_storefront_highlands.jpg" />
+    <meta property="og:url" content="@canonicalUrl" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="@ViewData["Title"] - @JmtCafeConfig.Name" />
     <meta name="twitter:description" content="Dalaguete's premier food and coffee spot in Purok 5 Tabon, Cebu." />
-    <meta name="twitter:image" content="~/images/jmt/jmt_storefront_highlands.jpg" />
+    <meta name="twitter:image" content="@currentBaseUrl/images/jmt/jmt_storefront_highlands.jpg" />
 
     <!-- Favicon & Touch Icons with Official Logo -->
     <link rel="icon" type="image/png" href="~/images/jmt/jmt_logo.png" />
@@ -55,7 +64,7 @@
         "latitude": @JmtCafeConfig.Latitude,
         "longitude": @JmtCafeConfig.Longitude
       },
-      "url": "https://jmtcafe.ph",
+      "url": "@currentBaseUrl",
       "openingHoursSpecification": {
         "@@type": "OpeningHoursSpecification",
         "dayOfWeek": [

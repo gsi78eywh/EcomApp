@@ -59,19 +59,34 @@ public class CheckoutController : Controller
             return View("Index", model);
         }
 
-        // Attach cart items and calculate final breakdown
+        // Security: Always re-attach cart items and strictly recompute totals on the server
         model.Items = cart.Items.ToList();
         model.Subtotal = cart.Subtotal;
         model.DeliveryFee = model.FulfillmentType == "Pickup" ? 0m : cart.ShippingFee;
         model.DiscountAmount = cart.DiscountAmount;
-        model.TotalAmount = Math.Max(0, model.Subtotal + Math.Round(model.Subtotal * 0.05m, 2) + model.DeliveryFee - model.DiscountAmount);
+        var vatAmount = Math.Round(model.Subtotal * 0.05m, 2);
+        model.TotalAmount = Math.Max(0m, model.Subtotal + vatAmount + model.DeliveryFee - model.DiscountAmount);
         model.OrderDate = DateTime.Now;
         model.OrderStatus = "Preparing";
         model.PaymentMethod = "GCash";
         model.PaymentStatus = "Paid (GCash Verified)";
+        
+        // Input sanitization
+        model.CustomerName = model.CustomerName?.Trim() ?? string.Empty;
+        model.Email = model.Email?.Trim() ?? string.Empty;
+        model.Phone = model.Phone?.Trim() ?? string.Empty;
+        model.Address = model.Address?.Trim() ?? string.Empty;
+        model.City = model.City?.Trim() ?? "Dalaguete";
+        model.PostalCode = model.PostalCode?.Trim() ?? "6022";
+        model.OrderNotes = model.OrderNotes?.Trim();
+
         if (string.IsNullOrWhiteSpace(model.GCashReferenceNumber))
         {
             model.GCashReferenceNumber = $"9832{Random.Shared.Next(1000000, 9999999)}";
+        }
+        else
+        {
+            model.GCashReferenceNumber = model.GCashReferenceNumber.Trim();
         }
 
         // Save order via service (deducts inventory, records timeline)
@@ -102,4 +117,3 @@ public class CheckoutController : Controller
         return View(order);
     }
 }
-

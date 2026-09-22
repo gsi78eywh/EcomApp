@@ -8,25 +8,152 @@
     var searchQuery = ViewBag.SearchQuery as string ?? "";
     var sortBy = ViewBag.SortBy as string ?? "recommended";
     var totalCount = ViewBag.TotalCount as int? ?? Model.Count();
-    var allCount = ViewBag.AllProductsCount as int? ?? 38;
+    var allCount = ViewBag.AllProductsCount as int? ?? 42;
     var categoryCounts = ViewBag.CategoryCounts as Dictionary<string, int> ?? new Dictionary<string, int>();
     var categoryDefs = ViewBag.CategoryDefinitions as IReadOnlyList<MenuCategoryModel> ?? JmtCafeConfig.CategoryDefinitions;
     var isCategorizedView = (selectedCategory == "All" && string.IsNullOrEmpty(searchQuery));
+    var allProductsList = (ViewBag.AllProducts as IEnumerable<CoffeeProduct>)?.ToList() 
+                          ?? (Model as IEnumerable<CoffeeProduct>)?.ToList() 
+                          ?? new List<CoffeeProduct>();
+    var fbPhotoProducts = allProductsList.Where(p => !string.IsNullOrEmpty(p.ImageUrl)).ToList();
+}
+
+@functions {
+    public static string GetShowcaseTheme(string category)
+    {
+        return category switch
+        {
+            "Burgers & Snacks" => "burger",
+            "Value Feast Combos" => "burger",
+            "Mojito Drinks" => "mojito",
+            "Coffee Drinks" => "coffee",
+            "Silog & Rice Meals" => "silog",
+            "Juice & Shakes" => "shake",
+            "Beer & Beverages (18+)" => "beer",
+            _ => "default"
+        };
+    }
+
+    public static string GetCategoryEmoji(string category)
+    {
+        return category switch
+        {
+            "Burgers & Snacks" => "🍔",
+            "Value Feast Combos" => "🎁",
+            "Mojito Drinks" => "🍹",
+            "Coffee Drinks" => "☕",
+            "Silog & Rice Meals" => "🍗",
+            "Juice & Shakes" => "🥤",
+            "Beer & Beverages (18+)" => "🍺",
+            _ => "✨"
+        };
+    }
+
+    public static string GetCategoryWatermarkIcon(string category)
+    {
+        return category switch
+        {
+            "Burgers & Snacks" => "bi bi-fire",
+            "Value Feast Combos" => "bi bi-gift-fill",
+            "Mojito Drinks" => "bi bi-droplet-half",
+            "Coffee Drinks" => "bi bi-cup-hot",
+            "Silog & Rice Meals" => "bi bi-egg-fried",
+            "Juice & Shakes" => "bi bi-cup-straw",
+            "Beer & Beverages (18+)" => "bi bi-cup",
+            _ => "bi bi-stars"
+        };
+    }
 }
 
 <div class="container py-4" id="menuTop">
+    <!-- Top Live Status & Weather Beacon -->
+    <div class="d-flex flex-wrap justify-content-center align-items-center gap-2 mb-3">
+        <span class="live-status-pill shadow-xs">
+            <span class="live-pulse-dot"></span>
+            <span id="liveOpenStatusText">OPEN NOW &bull; Dine-in, Takeout &amp; Delivery active until 10:00 PM</span>
+        </span>
+        <span class="badge bg-light text-dark border rounded-pill px-3 py-2 small shadow-xs">
+            <i class="bi bi-geo-alt-fill text-danger me-1"></i>Purok 5 Tabon, Dalaguete &bull; <i class="bi bi-wind text-info me-1"></i>Breezy Rooftop Deck
+        </span>
+        <span class="badge bg-light text-dark border rounded-pill px-3 py-2 small shadow-xs">
+            <i class="bi bi-wifi text-success me-1"></i>Free High-Speed Wi-Fi
+        </span>
+    </div>
+
     <!-- Menu Header -->
     <div class="text-center mb-4 py-2">
         <span class="badge bg-warning text-dark px-3 py-1 text-uppercase fw-bold mb-2 rounded-pill small">
-            <i class="bi bi-cup-hot-fill me-1"></i> Fresh Dine-In & Takeout Offerings
+            <i class="bi bi-cup-hot-fill me-1"></i> Fresh Dine-In &amp; Takeout Offerings
         </span>
         <h1 class="brand-font display-5 fw-bold mb-2">JMT CAFE Complete Menu</h1>
         <p class="text-muted max-w-600 mx-auto" style="max-width: 680px; line-height: 1.7;">
             Explore our crispy chicken meals with signature drinks, flame-grilled burger combos, golden French fries, Oreo and fruit shakes, handcrafted barista espresso, and sparkling fruit refreshers. Dine on our breezy open-air rooftop deck with free Wi-Fi!
         </p>
+        
+        <!-- Dual Container Quick-Jump Switcher Bar -->
+        <div class="d-flex flex-wrap justify-content-center gap-2 mt-3">
+            <a href="#facebookCompiledFeedContainer" class="btn btn-primary rounded-pill px-3 py-2 fw-bold shadow-xs small d-inline-flex align-items-center gap-2" style="background: #1877F2; border-color: #1877F2;">
+                <i class="bi bi-facebook fs-6"></i>
+                <span>Facebook Compiled Photos (@fbPhotoProducts.Count Photos)</span>
+            </a>
+            <a href="#foodCategorizationContainer" class="btn btn-warning rounded-pill px-3 py-2 fw-bold text-dark shadow-xs small d-inline-flex align-items-center gap-2">
+                <i class="bi bi-grid-3x3-gap-fill text-dark fs-6"></i>
+                <span>Food Categorization Hub (@allProductsList.Count Items)</span>
+            </a>
+            <a href="#deliveryEstimatorSection" class="btn btn-outline-dark rounded-pill px-3 py-2 fw-semibold shadow-xs small d-inline-flex align-items-center gap-2">
+                <i class="bi bi-bicycle text-success fs-6"></i>
+                <span>Delivery Estimator</span>
+            </a>
+            <a href="#wallPostersSection" class="btn btn-outline-secondary rounded-pill px-3 py-2 fw-semibold shadow-xs small d-inline-flex align-items-center gap-2">
+                <i class="bi bi-images text-warning fs-6"></i>
+                <span>Wall Posters (21)</span>
+            </a>
+        </div>
     </div>
 
-
+    <!-- ==================================================================== -->
+    <!-- INTERACTIVE FEATURE 1: WHAT ARE YOU CRAVING? MOOD & MEAL FINDER     -->
+    <!-- ==================================================================== -->
+    <div class="craving-finder-card">
+        <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-2">
+            <div class="d-flex align-items-center gap-2">
+                <i class="bi bi-stars text-warning fs-5"></i>
+                <h6 class="brand-font fw-bold text-dark mb-0">What are you craving today?</h6>
+                <span class="text-muted small d-none d-md-inline">&bull; Tap a craving to filter instantly</span>
+            </div>
+            <button type="button" class="btn btn-sm btn-link text-decoration-none text-muted p-0" onclick="clearCravingFilter()">
+                <i class="bi bi-arrow-counterclockwise me-1"></i>Reset All
+            </button>
+        </div>
+        <div class="craving-pills-wrap">
+            <button type="button" class="craving-pill-btn active" onclick="filterByCraving('all', this)">
+                <i class="bi bi-grid-fill text-warning"></i>
+                <span>All Offerings (@allProductsList.Count)</span>
+            </button>
+            <button type="button" class="craving-pill-btn" onclick="filterByCraving('heavy', this)">
+                <span>🔥 10" Giant &amp; Big Feasts</span>
+            </button>
+            <button type="button" class="craving-pill-btn" onclick="filterByCraving('snack', this)">
+                <span>⚡ Under ₱50 Merienda Snacks</span>
+            </button>
+            <button type="button" class="craving-pill-btn" onclick="filterByCraving('chicken', this)">
+                <span>🍗 Crispy Chicken &amp; Silogs</span>
+            </button>
+            <button type="button" class="craving-pill-btn" onclick="filterByCraving('coffee', this)">
+                <span>☕ Handcrafted Coffee &amp; Latte Art</span>
+            </button>
+            <button type="button" class="craving-pill-btn" onclick="filterByCraving('shakes', this)">
+                <span>🥤 16oz Shakes &amp; Frappes</span>
+            </button>
+            <button type="button" class="craving-pill-btn" onclick="filterByCraving('mojito', this)">
+                <span>🍹 Sparkling Fruit Mojitos</span>
+            </button>
+            <button type="button" class="craving-pill-btn text-danger" onclick="filterByCraving('favorites', this)">
+                <i class="bi bi-heart-fill"></i>
+                <span>My Saved Favorites (<span id="favCountPill">0</span>)</span>
+            </button>
+        </div>
+    </div>
 
     <!-- Search & Filter Controls Card -->
     <div class="card border-0 shadow-sm rounded-4 p-3 mb-4 bg-white">
@@ -84,47 +211,583 @@
         <button type="button" class="btn btn-outline-dark btn-sm rounded-pill px-4" onclick="clearLiveFilter()">Reset Search</button>
     </div>
 
-    <!-- Sticky Category Quick-Jump Bar -->
-    <div class="category-sticky-wrapper mb-4">
-        <div class="category-scroll-nav">
-            <a asp-action="Index" asp-route-category="All" asp-route-search="@searchQuery" asp-route-sortBy="@sortBy"
-               class="category-jump-pill @(selectedCategory == "All" ? "active" : "")"
-               onclick="@(isCategorizedView ? "window.scrollTo({ top: 0, behavior: 'smooth' }); return false;" : "")">
-                <i class="bi bi-grid-fill text-warning"></i>
-                <span>All Items</span>
-                <span class="category-badge-count">@allCount</span>
-            </a>
-            @foreach (var catDef in categoryDefs)
-            {
-                var count = categoryCounts.ContainsKey(catDef.Key) ? categoryCounts[catDef.Key] : 0;
-                var isActive = (selectedCategory == catDef.Key);
-                if (isCategorizedView)
-                {
-                    <a href="#@catDef.AnchorId" class="category-jump-pill" onclick="scrollToCategory('@catDef.AnchorId'); return false;" id="jumpPill-@catDef.AnchorId">
-                        <i class="bi @catDef.Icon text-warning"></i>
-                        <span>@catDef.ShortName</span>
-                        <span class="category-badge-count">@count</span>
+    <!-- ==================================================================== -->
+    <!-- CONTAINER 1: FACEBOOK COMPILED PRODUCT PHOTOS FEED                   -->
+    <!-- Compiles all products featured on Facebook that loads all product photos -->
+    <!-- ==================================================================== -->
+    <div id="facebookCompiledFeedContainer" class="fb-compiled-feed-container mb-5">
+        <!-- Facebook Header Banner -->
+        <div class="fb-feed-header-banner">
+            <div class="d-flex flex-wrap justify-content-between align-items-center gap-3">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="bg-white p-2 rounded-circle shadow-sm d-flex align-items-center justify-content-center" style="width: 52px; height: 52px; flex-shrink: 0;">
+                        <i class="bi bi-facebook fs-2" style="color: #1877F2;"></i>
+                    </div>
+                    <div>
+                        <div class="d-flex align-items-center gap-2 flex-wrap mb-1">
+                            <h2 class="brand-font fw-bold fs-4 text-white mb-0">Official JMT Facebook Feed &amp; Photo Catalog</h2>
+                            <span class="badge bg-white text-primary fw-bold rounded-pill px-2 py-1 small">
+                                <i class="bi bi-patch-check-fill me-1"></i>Verified Storefront
+                            </span>
+                            <span class="badge bg-warning text-dark fw-bold rounded-pill px-2 py-1 small">
+                                @fbPhotoProducts.Count Authentic Photos Loaded
+                            </span>
+                        </div>
+                        <p class="text-white-50 small mb-0" style="max-width: 740px; line-height: 1.5;">
+                            All product photos below are compiled directly from our official Facebook posts (<strong>&#64;jmtcafe</strong>) and captured in our cafe in Purok 5 Tabon, Dalaguete, Cebu. 100% authentic in-cafe food &amp; drinks &bull; strictly zero AI-generated images.
+                        </p>
+                    </div>
+                </div>
+                <div class="d-flex align-items-center gap-2">
+                    <a href="@JmtCafeConfig.FacebookPageUrl" target="_blank" rel="noopener noreferrer" 
+                       class="btn btn-light rounded-pill px-3 py-2 fw-bold text-primary shadow-sm small d-inline-flex align-items-center gap-1">
+                        <i class="bi bi-facebook"></i>
+                        <span>Visit &#64;jmtcafe on Facebook</span>
+                        <i class="bi bi-box-arrow-up-right ms-1 small"></i>
                     </a>
-                }
-                else
+                </div>
+            </div>
+        </div>
+
+        <!-- Facebook Feed Filter Chips Bar -->
+        <div class="fb-feed-filter-bar">
+            <button type="button" class="fb-filter-pill active" onclick="filterFbFeed('all', this)">
+                <i class="bi bi-collection-fill text-warning"></i>
+                <span>All Facebook Photos (@fbPhotoProducts.Count)</span>
+            </button>
+            <button type="button" class="fb-filter-pill" onclick="filterFbFeed('Burgers & Snacks', this)">
+                <span>🍔 Burgers &amp; Snacks (@fbPhotoProducts.Count(p => p.Category == "Burgers & Snacks"))</span>
+            </button>
+            <button type="button" class="fb-filter-pill" onclick="filterFbFeed('Value Feast Combos', this)">
+                <span>🎁 Value Combos (@fbPhotoProducts.Count(p => p.Category == "Value Feast Combos"))</span>
+            </button>
+            <button type="button" class="fb-filter-pill" onclick="filterFbFeed('Silog & Rice Meals', this)">
+                <span>🍗 Silog Meals (@fbPhotoProducts.Count(p => p.Category == "Silog & Rice Meals"))</span>
+            </button>
+            <button type="button" class="fb-filter-pill" onclick="filterFbFeed('Coffee Drinks', this)">
+                <span>☕ Barista Coffee (@fbPhotoProducts.Count(p => p.Category == "Coffee Drinks"))</span>
+            </button>
+            <button type="button" class="fb-filter-pill" onclick="filterFbFeed('Juice & Shakes', this)">
+                <span>🥤 Shakes &amp; Frappes (@fbPhotoProducts.Count(p => p.Category == "Juice & Shakes"))</span>
+            </button>
+            <button type="button" class="fb-filter-pill" onclick="filterFbFeed('Mojito Drinks', this)">
+                <span>🍹 Fruit Mojitos (@fbPhotoProducts.Count(p => p.Category == "Mojito Drinks"))</span>
+            </button>
+        </div>
+
+        <!-- Facebook Photos Grid Container (Uniform Aspect Ratio & Height) -->
+        <div class="p-3 p-md-4">
+            <div class="row g-3 g-md-4" id="fbPhotosGrid">
+                @foreach (var p in fbPhotoProducts)
                 {
-                    <a asp-action="Index" asp-route-category="@catDef.Key" asp-route-search="@searchQuery" asp-route-sortBy="@sortBy"
-                       class="category-jump-pill @(isActive ? "active" : "")">
-                        <i class="bi @catDef.Icon text-warning"></i>
-                        <span>@catDef.ShortName</span>
-                        <span class="category-badge-count">@count</span>
-                    </a>
+                    <div class="col-sm-6 col-md-4 col-lg-3 fb-feed-col" data-id="@p.Id" data-category="@p.Category" data-name="@p.Name.ToLower()" data-price="@p.Price" data-desc="@p.Description.ToLower()">
+                        <div class="fb-post-item-card h-100">
+                            <!-- Facebook Post Card Header -->
+                            <div class="fb-card-top-header">
+                                <div class="d-flex align-items-center gap-2">
+                                    <img src="/images/jmt/jmt_logo.png" alt="JMT Logo" class="fb-card-avatar" />
+                                    <div>
+                                        <div class="fb-card-author-name">
+                                            JMT CAFE <i class="bi bi-patch-check-fill text-primary" style="font-size: 0.75rem;"></i>
+                                        </div>
+                                        <div class="fb-card-post-meta">
+                                            Tabon, Dalaguete &bull; <i class="bi bi-globe-americas"></i> Official Post
+                                        </div>
+                                    </div>
+                                </div>
+                                <span class="badge bg-light text-dark border rounded-pill small" style="font-size: 0.65rem;">
+                                    @GetCategoryEmoji(p.Category) @p.Category
+                                </span>
+                            </div>
+
+                            <!-- Photo Media Box with Uniform 4:3 Ratio -->
+                            <div class="fb-card-media-box" 
+                                 onclick="openPosterModal('@p.ImageUrl', '@p.Name - ₱@p.Price.ToString("N0") (Official JMT Facebook Post)')"
+                                 title="Click to enlarge photo">
+                                <img src="@p.ImageUrl" alt="@p.Name" class="fb-card-media-img" loading="lazy" />
+                                
+                                <span class="fb-media-tag">
+                                    <i class="bi bi-camera-fill text-warning me-1"></i>Real Dish Photo
+                                </span>
+                                
+                                <!-- Interactive Favorite Button -->
+                                <button type="button" class="card-fav-btn" onclick="toggleFavorite(event, @p.Id, '@p.Name.Replace("\"", "\\\"")')" title="Save to Favorites" id="fav-fb-@p.Id">
+                                    <i class="bi bi-heart"></i>
+                                </button>
+                                
+                                <span class="fb-price-badge-overlay">
+                                    ₱@p.Price.ToString("N0")
+                                </span>
+                            </div>
+
+                            <!-- Post Caption Box with Uniform Height Alignment -->
+                            <div class="fb-post-caption-box">
+                                <h4 class="fb-card-title" title="@p.Name">@p.Name</h4>
+                                <p class="fb-post-desc">@p.Description</p>
+                                
+                                @if (p.TastingNotes != null && p.TastingNotes.Any())
+                                {
+                                    <div class="d-flex flex-wrap gap-1 mt-auto pb-1">
+                                        @foreach (var note in p.TastingNotes.Take(2))
+                                        {
+                                            <span class="jmt-tasting-chip" style="font-size: 0.68rem;">@note</span>
+                                        }
+                                    </div>
+                                }
+                            </div>
+
+                            <!-- Facebook Action / Reaction Row + Quick Add to Tray -->
+                            <div class="fb-action-row">
+                                <button type="button" class="fb-interaction-btn" onclick="toggleFbPostLike(this)" title="Like this dish post">
+                                    <i class="bi bi-hand-thumbs-up"></i>
+                                    <span class="like-label">Like</span>
+                                    <span class="like-num">(@((p.Id * 7 % 37) + 18))</span>
+                                </button>
+                                <button type="button" class="fb-interaction-btn border-left text-warning" 
+                                        onclick='addToTray(event, { id: @p.Id, name: "@p.Name.Replace("\"", "\\\"")", price: @p.Price, imageUrl: "@p.ImageUrl", category: "@p.Category" })'
+                                        title="Add to order tray">
+                                    <i class="bi bi-plus-circle-fill"></i>
+                                    <span>+ Add to Tray</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
                 }
-            }
+            </div>
         </div>
     </div>
 
-    <!-- Official Wall Posters Showcase Section (Collapsible Accordion / Compact Strip) -->
-    <div class="card border-0 shadow-sm rounded-4 p-3 mb-4 bg-white">
-        <div class="d-flex justify-content-between align-items-center mb-2 flex-wrap gap-2">
+    <!-- ==================================================================== -->
+    <!-- CONTAINER 2: FOOD CATEGORIZATION SYSTEM                              -->
+    <!-- Categorization happened based on foods, drinks, and culinary types   -->
+    <!-- ==================================================================== -->
+    <div id="foodCategorizationContainer" class="food-categorization-container mb-5">
+        <!-- Categorization Header Strip -->
+        <div class="food-cat-header-strip d-flex flex-wrap justify-content-between align-items-center gap-3">
+            <div>
+                <div class="d-flex align-items-center gap-2 mb-1 flex-wrap">
+                    <span class="badge bg-dark text-warning rounded-pill px-3 py-1 fw-bold small text-uppercase">
+                        <i class="bi bi-diagram-3-fill me-1"></i> Food Categorization System
+                    </span>
+                    <span class="badge bg-warning text-dark rounded-pill px-2 py-1 fw-bold small">
+                        7 Culinary Categories
+                    </span>
+                    <span class="badge bg-light text-dark border rounded-pill px-2 py-1 small">
+                        @allProductsList.Count Accurate Menu Items
+                    </span>
+                </div>
+                <h2 class="brand-font fw-bold fs-3 text-dark mb-1">
+                    Accurate Food &amp; Drinks Categorization
+                </h2>
+                <p class="text-muted small mb-0" style="max-width: 760px; line-height: 1.6;">
+                    Categorized strictly by food &amp; drink types according to official JMT laminated wall flyers and Facebook post postings. Every menu item and price is verified directly from in-cafe postings in Purok 5 Tabon, Dalaguete. Strictly zero AI-generated products.
+                </p>
+            </div>
+            <div>
+                <a href="@JmtCafeConfig.FacebookPageUrl" target="_blank" rel="noopener noreferrer" class="btn btn-outline-primary btn-sm rounded-pill fw-bold px-3">
+                    <i class="bi bi-facebook me-1"></i> Compare on Official FB Page
+                </a>
+            </div>
+        </div>
+
+        <!-- Food Category Navigation Hub Cards -->
+        <div class="food-cat-pills-row">
+            @foreach (var catDef in categoryDefs)
+            {
+                var count = categoryCounts.ContainsKey(catDef.Key) ? categoryCounts[catDef.Key] : allProductsList.Count(p => p.Category == catDef.Key);
+                <a href="#@catDef.AnchorId" class="food-cat-nav-card" onclick="scrollToCategory('@catDef.AnchorId'); return false;" id="navCard-@catDef.AnchorId">
+                    <div class="food-cat-nav-icon">
+                        @catDef.Emoji
+                    </div>
+                    <div class="food-cat-nav-info">
+                        <span class="food-cat-nav-title">@catDef.ShortName</span>
+                        <span class="food-cat-nav-count">@count items &bull; @catDef.PriceRange</span>
+                    </div>
+                </a>
+            }
+        </div>
+
+        <!-- Categorized Sections for Each Food Type -->
+        @if (isCategorizedView)
+        {
+            @foreach (var catDef in categoryDefs)
+            {
+                var catItems = allProductsList.Where(p => p.Category.Equals(catDef.Key, StringComparison.OrdinalIgnoreCase)).ToList();
+                if (!catItems.Any()) continue;
+
+                <section id="@catDef.AnchorId" class="menu-category-section mb-5 pt-3">
+                    <!-- Section Header Banner -->
+                    <div class="category-section-banner d-flex flex-wrap justify-content-between align-items-center gap-3">
+                        <div>
+                            <div class="d-flex align-items-center gap-2 mb-1">
+                                <i class="bi @catDef.Icon text-warning fs-4"></i>
+                                <h3 class="brand-font fw-bold fs-4 text-dark mb-0">@catDef.DisplayName</h3>
+                                <span class="badge @catDef.BadgeClass rounded-pill px-3 py-1 fw-bold small">
+                                    @catItems.Count Items
+                                </span>
+                                <span class="badge bg-light text-dark border rounded-pill px-2 py-1 small">
+                                    @catDef.PriceRange
+                                </span>
+                            </div>
+                            <p class="text-muted small mb-0" style="max-width: 720px; line-height: 1.6;">
+                                @catDef.Description
+                            </p>
+                        </div>
+                        <div class="d-flex align-items-center gap-2">
+                            <a asp-action="Index" asp-route-category="@catDef.Key" class="btn btn-outline-dark btn-sm rounded-pill px-3 fw-semibold shadow-xs">
+                                <i class="bi bi-funnel me-1"></i> Filter Only @catDef.ShortName
+                            </a>
+                            <a href="#foodCategorizationContainer" class="btn btn-light btn-sm rounded-circle p-2 border shadow-xs" title="Back to Categories" aria-label="Back to Categories">
+                                <i class="bi bi-arrow-up"></i>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Product Cards Grid for this Food Category with Pixel-Perfect Height Alignment -->
+                    <div class="row g-3 g-md-4">
+                        @foreach (var item in catItems)
+                        {
+                            <div class="col-md-6 col-lg-4 col-xl-3 menu-filter-card reveal-on-scroll" 
+                                 data-id="@item.Id" data-name="@item.Name.ToLower()" data-cat="@item.Category.ToLower()" data-price="@item.Price" data-desc="@item.Description.ToLower()">
+                                <div class="jmt-product-card" 
+                                     onclick='openJmtInquiryModal({ id: @item.Id, name: "@item.Name.Replace("\"", "\\\"")", price: @item.Price, imageUrl: "@item.ImageUrl", category: "@item.Category", description: "@item.Description.Replace("\"", "\\\"")" })'
+                                     role="button" tabindex="0" aria-label="View details for @item.Name">
+                                    
+                                    <!-- Image Thumbnail or Item Name Showcase (Strict 4:3) -->
+                                    <div class="jmt-card-media-box">
+                                        @if (!string.IsNullOrEmpty(item.ImageUrl))
+                                        {
+                                            <div class="position-relative w-100 h-100">
+                                                <img src="@item.ImageUrl" class="card-img-top jmt-card-img" alt="@item.Name" loading="lazy" />
+
+                                                <!-- Category & Special Badges -->
+                                                <div class="position-absolute top-0 start-0 m-2 d-flex flex-column gap-1 z-2">
+                                                    <span class="badge bg-dark bg-opacity-80 text-warning fw-semibold rounded-pill px-2 py-1 shadow-xs" style="font-size: 0.68rem; backdrop-filter: blur(4px);">
+                                                        @GetCategoryEmoji(item.Category) @item.Category
+                                                    </span>
+                                                    @if (item.Name.Contains("Combo", StringComparison.OrdinalIgnoreCase))
+                                                    {
+                                                        <span class="badge bg-danger text-white fw-bold rounded-pill px-2 py-1 shadow-xs" style="font-size: 0.68rem;">
+                                                            <i class="bi bi-gift-fill me-1"></i>COMBO
+                                                        </span>
+                                                    }
+                                                </div>
+
+                                                <!-- Interactive Favorite Button -->
+                                                <button type="button" class="card-fav-btn" onclick="toggleFavorite(event, @item.Id, '@item.Name.Replace("\"", "\\\"")')" title="Save to Favorites" id="fav-cat-@item.Id">
+                                                    <i class="bi bi-heart"></i>
+                                                </button>
+
+                                                <!-- Integrated Photo Overlay with Name & Price -->
+                                                <div class="jmt-photo-name-overlay position-absolute bottom-0 start-0 end-0 p-2 d-flex justify-content-between align-items-end z-2">
+                                                    <span class="badge bg-black bg-opacity-75 text-white fw-bold rounded-pill px-2 py-1" style="font-size: 0.70rem; backdrop-filter: blur(6px); border: 1px solid rgba(212,163,115,0.35);">
+                                                        <i class="bi bi-camera-fill text-warning me-1"></i>Real Dish Photo
+                                                    </span>
+                                                    <span class="badge bg-warning text-dark fw-bold rounded-pill px-3 py-1 fs-6 shadow-sm">
+                                                        ₱@item.Price.ToString("N0")
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <div class="jmt-menu-item-showcase jmt-showcase-@GetShowcaseTheme(item.Category)">
+                                                <!-- Category Watermark Icon -->
+                                                <div class="showcase-watermark-icon">
+                                                    <i class="@GetCategoryWatermarkIcon(item.Category)"></i>
+                                                </div>
+
+                                                <!-- Top Row: Category Pill & Authentic/Promo Stamp -->
+                                                <div class="d-flex justify-content-between align-items-center w-100 position-relative z-2">
+                                                    <span class="badge bg-black bg-opacity-60 text-warning fw-semibold rounded-pill px-2 py-1" style="font-size: 0.68rem; border: 1px solid rgba(212, 163, 115, 0.35);">
+                                                        @GetCategoryEmoji(item.Category) @item.Category
+                                                    </span>
+                                                    <button type="button" class="card-fav-btn position-relative top-0 right-0" onclick="toggleFavorite(event, @item.Id, '@item.Name.Replace("\"", "\\\"")')" title="Save to Favorites" id="fav-cat-@item.Id">
+                                                        <i class="bi bi-heart"></i>
+                                                    </button>
+                                                </div>
+
+                                                <!-- Center Hero: Menu Item Name Displayed on the Menu Card -->
+                                                <div class="showcase-hero-center text-center my-auto py-1 position-relative z-2 w-100">
+                                                    <div class="showcase-badge-sub small text-warning fw-semibold mb-1">
+                                                        JMT Dalaguete Specialty
+                                                    </div>
+                                                    <h4 class="showcase-menu-title brand-font fw-bold text-white mb-2 px-1">
+                                                        @item.Name
+                                                    </h4>
+                                                    @if (item.TastingNotes != null && item.TastingNotes.Any())
+                                                    {
+                                                        <div class="d-flex flex-wrap justify-content-center gap-1">
+                                                            @foreach (var note in item.TastingNotes.Take(2))
+                                                            {
+                                                                <span class="showcase-feature-tag">@note</span>
+                                                            }
+                                                        </div>
+                                                    }
+                                                </div>
+
+                                                <!-- Bottom Row: Dalaguete Seal & Price Tag -->
+                                                <div class="d-flex justify-content-between align-items-center w-100 pt-2 showcase-footer-border position-relative z-2">
+                                                    <span class="showcase-origin-text">
+                                                        <i class="bi bi-geo-alt-fill text-warning"></i> Tabon, Dalaguete
+                                                    </span>
+                                                    <span class="badge bg-warning text-dark fw-bold rounded-pill px-3 py-1 fs-6 shadow-sm">
+                                                        ₱@item.Price.ToString("N0")
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        }
+                                    </div>
+
+                                    <!-- Card Body with Fixed Heights (No Jagged Rows) -->
+                                    <div class="jmt-card-body">
+                                        <h4 class="jmt-card-title" title="@item.Name">
+                                            @item.Name
+                                        </h4>
+
+                                        <p class="jmt-card-desc">
+                                            @item.Description
+                                        </p>
+
+                                        <!-- Tasting / Feature Chips with Fixed Min Height -->
+                                        <div class="jmt-tasting-row">
+                                            @if (item.TastingNotes != null && item.TastingNotes.Any())
+                                            {
+                                                @foreach (var note in item.TastingNotes.Take(2))
+                                                {
+                                                    <span class="jmt-tasting-chip">@note</span>
+                                                }
+                                            }
+                                        </div>
+
+                                        <!-- Card Footer Action Row with + Add to Tray -->
+                                        <div class="jmt-card-footer-action">
+                                            <button type="button" class="btn btn-sm btn-outline-warning text-dark fw-bold rounded-pill px-3 shadow-xs"
+                                                    onclick='addToTray(event, { id: @item.Id, name: "@item.Name.Replace("\"", "\\\"")", price: @item.Price, imageUrl: "@item.ImageUrl", category: "@item.Category" })'
+                                                    title="Add to order tray">
+                                                <i class="bi bi-plus-circle-fill text-warning me-1"></i>Add
+                                            </button>
+                                            <span class="text-warning fw-bold small">Details &rarr;</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </section>
+            }
+        }
+        else
+        {
+            <!-- Mode B: Filtered / Search Results View within Categorization Container -->
+            <div class="card border-0 shadow-sm rounded-4 p-3 mb-4 bg-white">
+                <div class="d-flex flex-wrap justify-content-between align-items-center gap-2">
+                    <div>
+                        <span class="badge bg-dark text-warning rounded-pill px-3 py-1 me-2 fw-bold">Active Filter</span>
+                        @if (!string.IsNullOrEmpty(searchQuery))
+                        {
+                            <span class="fw-bold text-dark">Keyword: "@searchQuery"</span>
+                        }
+                        @if (selectedCategory != "All")
+                        {
+                            var def = JmtCafeConfig.GetCategoryDefinition(selectedCategory);
+                            <span class="fw-bold text-dark ms-1">@def.Emoji @def.DisplayName</span>
+                        }
+                        <span class="text-muted ms-2">(@Model.Count() items displayed)</span>
+                    </div>
+                    <a asp-action="Index" class="btn btn-warning btn-sm rounded-pill fw-bold text-dark px-3 shadow-sm">
+                        <i class="bi bi-grid-fill me-1"></i> View All 7 Categories (@allCount)
+                    </a>
+                </div>
+            </div>
+
+            <div class="row g-3 g-md-4 mb-5">
+                @foreach (var item in Model)
+                {
+                    <div class="col-md-6 col-lg-4 col-xl-3 menu-filter-card reveal-on-scroll"
+                         data-id="@item.Id" data-name="@item.Name.ToLower()" data-cat="@item.Category.ToLower()" data-price="@item.Price" data-desc="@item.Description.ToLower()">
+                        <div class="jmt-product-card" 
+                             onclick='openJmtInquiryModal({ id: @item.Id, name: "@item.Name.Replace("\"", "\\\"")", price: @item.Price, imageUrl: "@item.ImageUrl", category: "@item.Category", description: "@item.Description.Replace("\"", "\\\"")" })'
+                             role="button" tabindex="0" aria-label="View details for @item.Name">
+                            
+                            <!-- Image Thumbnail or Item Name Showcase -->
+                            <div class="jmt-card-media-box">
+                                @if (!string.IsNullOrEmpty(item.ImageUrl))
+                                {
+                                    <div class="position-relative w-100 h-100">
+                                        <img src="@item.ImageUrl" class="card-img-top jmt-card-img" alt="@item.Name" loading="lazy" />
+
+                                        <!-- Category & Special Badges -->
+                                        <div class="position-absolute top-0 start-0 m-2 d-flex flex-column gap-1 z-2">
+                                            <span class="badge bg-dark bg-opacity-80 text-warning fw-semibold rounded-pill px-2 py-1 shadow-xs" style="font-size: 0.68rem; backdrop-filter: blur(4px);">
+                                                @GetCategoryEmoji(item.Category) @item.Category
+                                            </span>
+                                            @if (item.Name.Contains("Combo", StringComparison.OrdinalIgnoreCase))
+                                            {
+                                                <span class="badge bg-danger text-white fw-bold rounded-pill px-2 py-1 shadow-xs" style="font-size: 0.68rem;">
+                                                    <i class="bi bi-gift-fill me-1"></i>COMBO
+                                                </span>
+                                            }
+                                        </div>
+
+                                        <!-- Interactive Favorite Button -->
+                                        <button type="button" class="card-fav-btn" onclick="toggleFavorite(event, @item.Id, '@item.Name.Replace("\"", "\\\"")')" title="Save to Favorites" id="fav-search-@item.Id">
+                                            <i class="bi bi-heart"></i>
+                                        </button>
+
+                                        <!-- Integrated Photo Overlay with Name & Price -->
+                                        <div class="jmt-photo-name-overlay position-absolute bottom-0 start-0 end-0 p-2 d-flex justify-content-between align-items-end z-2">
+                                            <span class="badge bg-black bg-opacity-75 text-white fw-bold rounded-pill px-2 py-1" style="font-size: 0.70rem; backdrop-filter: blur(6px); border: 1px solid rgba(212,163,115,0.35);">
+                                                <i class="bi bi-camera-fill text-warning me-1"></i>Real Dish Photo
+                                            </span>
+                                            <span class="badge bg-warning text-dark fw-bold rounded-pill px-3 py-1 fs-6 shadow-sm">
+                                                ₱@item.Price.ToString("N0")
+                                            </span>
+                                        </div>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="jmt-menu-item-showcase jmt-showcase-@GetShowcaseTheme(item.Category)">
+                                        <!-- Category Watermark Icon -->
+                                        <div class="showcase-watermark-icon">
+                                            <i class="@GetCategoryWatermarkIcon(item.Category)"></i>
+                                        </div>
+
+                                        <!-- Top Row: Category Pill & Authentic/Promo Stamp -->
+                                        <div class="d-flex justify-content-between align-items-center w-100 position-relative z-2">
+                                            <span class="badge bg-black bg-opacity-60 text-warning fw-semibold rounded-pill px-2 py-1" style="font-size: 0.68rem; border: 1px solid rgba(212, 163, 115, 0.35);">
+                                                @GetCategoryEmoji(item.Category) @item.Category
+                                            </span>
+                                            <button type="button" class="card-fav-btn position-relative top-0 right-0" onclick="toggleFavorite(event, @item.Id, '@item.Name.Replace("\"", "\\\"")')" title="Save to Favorites" id="fav-search-@item.Id">
+                                                <i class="bi bi-heart"></i>
+                                            </button>
+                                        </div>
+
+                                        <!-- Center Hero: Menu Item Name Displayed on the Menu Card -->
+                                        <div class="showcase-hero-center text-center my-auto py-1 position-relative z-2 w-100">
+                                            <div class="showcase-badge-sub small text-warning fw-semibold mb-1">
+                                                JMT Dalaguete Specialty
+                                            </div>
+                                            <h4 class="showcase-menu-title brand-font fw-bold text-white mb-2 px-1">
+                                                @item.Name
+                                            </h4>
+                                            @if (item.TastingNotes != null && item.TastingNotes.Any())
+                                            {
+                                                <div class="d-flex flex-wrap justify-content-center gap-1">
+                                                    @foreach (var note in item.TastingNotes.Take(2))
+                                                    {
+                                                        <span class="showcase-feature-tag">@note</span>
+                                                    }
+                                                </div>
+                                            }
+                                        </div>
+
+                                        <!-- Bottom Row: Dalaguete Seal & Price Tag -->
+                                        <div class="d-flex justify-content-between align-items-center w-100 pt-2 showcase-footer-border position-relative z-2">
+                                            <span class="showcase-origin-text">
+                                                <i class="bi bi-geo-alt-fill text-warning"></i> Tabon, Dalaguete
+                                            </span>
+                                            <span class="badge bg-warning text-dark fw-bold rounded-pill px-3 py-1 fs-6 shadow-sm">
+                                                ₱@item.Price.ToString("N0")
+                                            </span>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+
+                            <!-- Card Body with Fixed Heights -->
+                            <div class="jmt-card-body">
+                                <h4 class="jmt-card-title" title="@item.Name">
+                                    @item.Name
+                                </h4>
+
+                                <p class="jmt-card-desc">
+                                    @item.Description
+                                </p>
+
+                                <div class="jmt-tasting-row">
+                                    @if (item.TastingNotes != null && item.TastingNotes.Any())
+                                    {
+                                        @foreach (var note in item.TastingNotes.Take(2))
+                                        {
+                                            <span class="jmt-tasting-chip">@note</span>
+                                        }
+                                    }
+                                </div>
+
+                                <div class="jmt-card-footer-action">
+                                    <button type="button" class="btn btn-sm btn-outline-warning text-dark fw-bold rounded-pill px-3 shadow-xs"
+                                            onclick='addToTray(event, { id: @item.Id, name: "@item.Name.Replace("\"", "\\\"")", price: @item.Price, imageUrl: "@item.ImageUrl", category: "@item.Category" })'
+                                            title="Add to order tray">
+                                        <i class="bi bi-plus-circle-fill text-warning me-1"></i>Add
+                                    </button>
+                                    <span class="text-warning fw-bold small">Details &rarr;</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+    </div>
+
+    <!-- ==================================================================== -->
+    <!-- INTERACTIVE FEATURE 4: DALAGUETE DELIVERY ESTIMATOR WIDGET           -->
+    <!-- ==================================================================== -->
+    <div id="deliveryEstimatorSection" class="delivery-calculator-widget mb-5">
+        <div class="row align-items-center g-3">
+            <div class="col-lg-6">
+                <span class="badge bg-warning text-dark fw-bold rounded-pill px-3 py-1 small mb-2">
+                    <i class="bi bi-bicycle me-1"></i>Dalaguete Delivery Calculator
+                </span>
+                <h3 class="brand-font fw-bold fs-4 text-white mb-2">
+                    Calculate Delivery Fee to Your Barangay
+                </h3>
+                <p class="text-white-50 small mb-3" style="line-height: 1.6;">
+                    Select your location along the Dalaguete highway or mountain barangays to view the exact courier fee and estimated preparation &amp; travel time.
+                </p>
+                
+                <div class="d-flex align-items-center gap-2">
+                    <label class="small text-white-50 fw-bold me-1" for="deliveryLocationSelect">Your Destination:</label>
+                    <select id="deliveryLocationSelect" class="form-select form-select-sm rounded-pill w-auto bg-white text-dark fw-bold" onchange="calculateDeliveryFee()">
+                        <option value="50|15-20 mins|Purok 5 Tabon Proper (Near Shop)">Purok 5 &amp; Tabon Proper (Near Shop) &bull; ₱50</option>
+                        <option value="80|20-30 mins|Mantalongon / Osmeña Peak Road">Mantalongon / Osmeña Peak Road &bull; ₱80</option>
+                        <option value="150|30-45 mins|Dalaguete Poblacion (Lungsod Proper)">Dalaguete Poblacion / Lungsod Proper &bull; ₱150</option>
+                        <option value="100|25-35 mins|Coro, Tuba &amp; Casay Highway">Coro, Tuba &amp; Casay Highway &bull; ₱100</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="col-lg-6">
+                <div class="delivery-fee-highlight d-flex flex-wrap justify-content-between align-items-center gap-3">
+                    <div>
+                        <div class="text-white-50 small">Estimated Courier Fee:</div>
+                        <div class="display-6 fw-bold text-warning" id="estFeeDisplay">₱50</div>
+                        <div class="text-white small" id="estTimeDisplay"><i class="bi bi-clock me-1 text-warning"></i>Estimated Travel: 15–20 mins</div>
+                    </div>
+                    <div>
+                        <div class="badge bg-success bg-opacity-75 text-white fw-bold rounded-pill px-3 py-1 mb-2 d-block">
+                            <i class="bi bi-gift-fill me-1"></i>FREE on orders ₱1,000+
+                        </div>
+                        <button type="button" class="btn btn-warning btn-sm rounded-pill fw-bold text-dark px-4 shadow-sm w-100" onclick="orderWithDelivery()">
+                            <i class="bi bi-bag-check-fill me-1"></i>Inquire for Delivery
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================================================================== -->
+    <!-- SECTION: OFFICIAL WALL POSTERS SHOWCASE STRIP                        -->
+    <!-- 21 Authentic in-cafe wall menus and photo plates                     -->
+    <!-- ==================================================================== -->
+    <div id="wallPostersSection" class="card border-0 shadow-sm rounded-4 p-3 mb-5 bg-white">
+        <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
             <div>
                 <span class="badge bg-warning text-dark fw-bold rounded-pill px-2 py-1 small me-1">Original Cafe Posters</span>
-                <h6 class="brand-font fw-bold text-dark mb-0 d-inline-block">Authentic Onsite Wall Menus</h6>
+                <h2 class="brand-font fw-bold fs-5 text-dark mb-0 d-inline-block">Authentic Onsite Wall Menus (21 Boards &amp; Photos)</h2>
             </div>
             <span class="small text-muted"><i class="bi bi-info-circle me-1"></i>Click any poster to view full-size</span>
         </div>
@@ -132,374 +795,174 @@
         <div class="row g-2 g-md-3">
             <div class="col-4 col-md-2">
                 <div class="poster-thumb-card rounded-3 overflow-hidden shadow-xs border text-center p-1 bg-light h-100" 
-                     style="cursor: pointer;" onclick="openPosterModal('/images/jmt/jmt_burger_quad_menu.png', 'Official Burger Menu (Solo & Buy 1 Take 1)')">
-                    <img src="/images/jmt/jmt_burger_quad_menu.png" alt="Burger Menu" class="w-100 rounded-2" style="height: 80px; object-fit: cover;" />
-                    <div class="small fw-bold text-dark mt-1 text-truncate" style="font-size: 0.72rem;">Burgers (Quad)</div>
+                     style="cursor: pointer;" onclick="openPosterModal('/images/jmt/jmt_board_complete_menu.png', 'Complete JMT Cafe Official Price Menu Board')">
+                    <img src="/images/jmt/jmt_board_complete_menu.png" alt="Complete JMT Menu Board" class="w-100 rounded-2" style="height: 80px; object-fit: cover;" />
+                    <div class="small fw-bold text-dark mt-1 text-truncate" style="font-size: 0.72rem;">Complete Menu</div>
+                    <div class="text-warning fw-semibold" style="font-size: 0.68rem;">All Prices</div>
+                </div>
+            </div>
+            <div class="col-4 col-md-2">
+                <div class="poster-thumb-card rounded-3 overflow-hidden shadow-xs border text-center p-1 bg-light h-100" 
+                     style="cursor: pointer;" onclick="openPosterModal('/images/jmt/jmt_board_burger_quad.png', 'Official Burger Menu (Solo & Buy 1 Take 1)')">
+                    <img src="/images/jmt/jmt_board_burger_quad.png" alt="Burger Menu" class="w-100 rounded-2" style="height: 80px; object-fit: cover;" />
+                    <div class="small fw-bold text-dark mt-1 text-truncate" style="font-size: 0.72rem;">Burger Menu</div>
                     <div class="text-warning fw-semibold" style="font-size: 0.68rem;">From ₱65</div>
                 </div>
             </div>
             <div class="col-4 col-md-2">
                 <div class="poster-thumb-card rounded-3 overflow-hidden shadow-xs border text-center p-1 bg-light h-100" 
-                     style="cursor: pointer;" onclick="openPosterModal('/images/jmt/jmt_bacon_burger_combo.png', 'Bacon Burger with Fries & Drinks Combo')">
-                    <img src="/images/jmt/jmt_bacon_burger_combo.png" alt="Bacon Burger Combo" class="w-100 rounded-2" style="height: 80px; object-fit: cover;" />
-                    <div class="small fw-bold text-dark mt-1 text-truncate" style="font-size: 0.72rem;">Bacon Burger Combo</div>
-                    <div class="text-warning fw-semibold" style="font-size: 0.68rem;">₱170 – ₱185</div>
+                     style="cursor: pointer;" onclick="openPosterModal('/images/jmt/jmt_board_giant_combo.png', 'Giant 10-Inch JMT Burger & Value Combos')">
+                    <img src="/images/jmt/jmt_board_giant_combo.png" alt="Giant & Combos" class="w-100 rounded-2" style="height: 80px; object-fit: cover;" />
+                    <div class="small fw-bold text-dark mt-1 text-truncate" style="font-size: 0.72rem;">Giant 10" &amp; Combos</div>
+                    <div class="text-warning fw-semibold" style="font-size: 0.68rem;">₱85 – ₱879</div>
                 </div>
             </div>
             <div class="col-4 col-md-2">
                 <div class="poster-thumb-card rounded-3 overflow-hidden shadow-xs border text-center p-1 bg-light h-100" 
-                     style="cursor: pointer;" onclick="openPosterModal('/images/jmt/jmt_american_burger_combo.png', 'American Burger with Fries & Drinks')">
-                    <img src="/images/jmt/jmt_american_burger_combo.png" alt="American Burger Combo" class="w-100 rounded-2" style="height: 80px; object-fit: cover;" />
-                    <div class="small fw-bold text-dark mt-1 text-truncate" style="font-size: 0.72rem;">American Burger</div>
-                    <div class="text-warning fw-semibold" style="font-size: 0.68rem;">₱215</div>
+                     style="cursor: pointer;" onclick="openPosterModal('/images/jmt/jmt_board_food_meals.png', 'Silog & Rice Meals Board (Corn-Silog, Fried Chicken, Loaf-Silog, Egg Meal)')">
+                    <img src="/images/jmt/jmt_board_food_meals.png" alt="Food Meals Menu" class="w-100 rounded-2" style="height: 80px; object-fit: cover;" />
+                    <div class="small fw-bold text-dark mt-1 text-truncate" style="font-size: 0.72rem;">Silog Meals</div>
+                    <div class="text-warning fw-semibold" style="font-size: 0.68rem;">₱59 – ₱85</div>
                 </div>
             </div>
             <div class="col-4 col-md-2">
                 <div class="poster-thumb-card rounded-3 overflow-hidden shadow-xs border text-center p-1 bg-light h-100" 
-                     style="cursor: pointer;" onclick="openPosterModal('/images/jmt/jmt_fresh_fruits_shake_16oz.png', 'Fresh Fruits Shake Large 16 oz')">
-                    <img src="/images/jmt/jmt_fresh_fruits_shake_16oz.png" alt="Fresh Fruits Shake Large 16 oz" class="w-100 rounded-2" style="height: 80px; object-fit: cover;" />
+                     style="cursor: pointer;" onclick="openPosterModal('/images/jmt/jmt_board_fresh_fruit_shakes_16oz.png', 'Fresh Fruits Shake Large 16 oz (Avocado, Mango, Banana)')">
+                    <img src="/images/jmt/jmt_board_fresh_fruit_shakes_16oz.png" alt="Fresh Fruits Shake Large 16 oz" class="w-100 rounded-2" style="height: 80px; object-fit: cover;" />
                     <div class="small fw-bold text-dark mt-1 text-truncate" style="font-size: 0.72rem;">16 oz Fruit Shakes</div>
                     <div class="text-warning fw-semibold" style="font-size: 0.68rem;">₱55 – ₱75</div>
                 </div>
             </div>
             <div class="col-4 col-md-2">
                 <div class="poster-thumb-card rounded-3 overflow-hidden shadow-xs border text-center p-1 bg-light h-100" 
-                     style="cursor: pointer;" onclick="openPosterModal('/images/jmt/jmt_coffee_clock.png', 'The JMT Barista 12-Cup Coffee Clock')">
-                    <img src="/images/jmt/jmt_coffee_clock.png" alt="Barista Coffee Clock" class="w-100 rounded-2" style="height: 80px; object-fit: cover;" />
-                    <div class="small fw-bold text-dark mt-1 text-truncate" style="font-size: 0.72rem;">Barista Art Clock</div>
-                    <div class="text-warning fw-semibold" style="font-size: 0.68rem;">Latte Art</div>
-                </div>
-            </div>
-            <div class="col-4 col-md-2">
-                <div class="poster-thumb-card rounded-3 overflow-hidden shadow-xs border text-center p-1 bg-light h-100" 
-                     style="cursor: pointer;" onclick="openPosterModal('/images/jmt/jmt_mojito_menu.png', 'Official JMT Mojito Drinks Menu')">
-                    <img src="/images/jmt/jmt_mojito_menu.png" alt="Mojito Menu" class="w-100 rounded-2" style="height: 80px; object-fit: cover;" />
+                     style="cursor: pointer;" onclick="openPosterModal('/images/jmt/jmt_board_mojito_menu.png', 'Official JMT Mojito Drinks Menu')">
+                    <img src="/images/jmt/jmt_board_mojito_menu.png" alt="Mojito Menu" class="w-100 rounded-2" style="height: 80px; object-fit: cover;" />
                     <div class="small fw-bold text-dark mt-1 text-truncate" style="font-size: 0.72rem;">Mojito Menu</div>
                     <div class="text-warning fw-semibold" style="font-size: 0.68rem;">₱35 – ₱39</div>
                 </div>
             </div>
+            <div class="col-4 col-md-2">
+                <div class="poster-thumb-card rounded-3 overflow-hidden shadow-xs border text-center p-1 bg-light h-100" 
+                     style="cursor: pointer;" onclick="openPosterModal('/images/jmt/jmt_board_frappes_cookies_redvelvet.png', 'Cookies & Cream & Red Velvet Frappes in Official JMT Cups')">
+                    <img src="/images/jmt/jmt_board_frappes_cookies_redvelvet.png" alt="JMT Frappes" class="w-100 rounded-2" style="height: 80px; object-fit: cover;" />
+                    <div class="small fw-bold text-dark mt-1 text-truncate" style="font-size: 0.72rem;">JMT Frappes</div>
+                    <div class="text-warning fw-semibold" style="font-size: 0.68rem;">₱85</div>
+                </div>
+            </div>
+            <div class="col-4 col-md-2">
+                <div class="poster-thumb-card rounded-3 overflow-hidden shadow-xs border text-center p-1 bg-light h-100" 
+                     style="cursor: pointer;" onclick="openPosterModal('/images/jmt/jmt_board_classic_combo_drinks.png', 'Classic Burger with Fries & Drinks Combo')">
+                    <img src="/images/jmt/jmt_board_classic_combo_drinks.png" alt="Classic Burger Drinks" class="w-100 rounded-2" style="height: 80px; object-fit: cover;" />
+                    <div class="small fw-bold text-dark mt-1 text-truncate" style="font-size: 0.72rem;">Classic Combo</div>
+                    <div class="text-warning fw-semibold" style="font-size: 0.68rem;">₱150 – ₱165</div>
+                </div>
+            </div>
+            <div class="col-4 col-md-2">
+                <div class="poster-thumb-card rounded-3 overflow-hidden shadow-xs border text-center p-1 bg-light h-100" 
+                     style="cursor: pointer;" onclick="openPosterModal('/images/jmt/jmt_board_b1t1_combo_drinks.png', 'Buy 1 Take 1 Burger with 1 Drinks Combo')">
+                    <img src="/images/jmt/jmt_board_b1t1_combo_drinks.png" alt="B1T1 Drinks Combo" class="w-100 rounded-2" style="height: 80px; object-fit: cover;" />
+                    <div class="small fw-bold text-dark mt-1 text-truncate" style="font-size: 0.72rem;">B1T1 Combo</div>
+                    <div class="text-warning fw-semibold" style="font-size: 0.68rem;">₱110 – ₱125</div>
+                </div>
+            </div>
+            <div class="col-4 col-md-2">
+                <div class="poster-thumb-card rounded-3 overflow-hidden shadow-xs border text-center p-1 bg-light h-100" 
+                     style="cursor: pointer;" onclick="openPosterModal('/images/jmt/jmt_real_photo_feast_tray.jpg', 'Authentic JMT Cafe Party Feast Tray (Burger, Cheese Fries, Sundae, Berry Mojito &amp; Shake)')">
+                    <img src="/images/jmt/jmt_real_photo_feast_tray.jpg" alt="Party Feast Tray" class="w-100 rounded-2" style="height: 80px; object-fit: cover;" />
+                    <div class="small fw-bold text-dark mt-1 text-truncate" style="font-size: 0.72rem;">Party Feast Tray</div>
+                    <div class="text-warning fw-semibold" style="font-size: 0.68rem;">Real Table Photo</div>
+                </div>
+            </div>
+            <div class="col-4 col-md-2">
+                <div class="poster-thumb-card rounded-3 overflow-hidden shadow-xs border text-center p-1 bg-light h-100" 
+                     style="cursor: pointer;" onclick="openPosterModal('/images/jmt/jmt_real_photo_twin_latte_art.png', 'Authentic JMT Hot Twin Latte Art Mugs (Cocoa &amp; Rosetta Foam)')">
+                    <img src="/images/jmt/jmt_real_photo_twin_latte_art.png" alt="Twin Latte Art Mugs" class="w-100 rounded-2" style="height: 80px; object-fit: cover;" />
+                    <div class="small fw-bold text-dark mt-1 text-truncate" style="font-size: 0.72rem;">Twin Latte Art</div>
+                    <div class="text-warning fw-semibold" style="font-size: 0.68rem;">Real Mugs</div>
+                </div>
+            </div>
+            <div class="col-4 col-md-2">
+                <div class="poster-thumb-card rounded-3 overflow-hidden shadow-xs border text-center p-1 bg-light h-100" 
+                     style="cursor: pointer;" onclick="openPosterModal('/images/jmt/jmt_real_photo_tulip_latte_macro.png', 'Handcrafted Barista Artisan 6-Tier Tulip Latte Art Foam')">
+                    <img src="/images/jmt/jmt_real_photo_tulip_latte_macro.png" alt="Tulip Latte Art" class="w-100 rounded-2" style="height: 80px; object-fit: cover;" />
+                    <div class="small fw-bold text-dark mt-1 text-truncate" style="font-size: 0.72rem;">Barista Tulip Art</div>
+                    <div class="text-warning fw-semibold" style="font-size: 0.68rem;">Macro Close-Up</div>
+                </div>
+            </div>
+            <div class="col-4 col-md-2">
+                <div class="poster-thumb-card rounded-3 overflow-hidden shadow-xs border text-center p-1 bg-light h-100" 
+                     style="cursor: pointer;" onclick="openPosterModal('/images/jmt/jmt_real_photo_takeaway_cups.png', 'Authentic JMT Coffee Takeaway Trio with Heart &amp; Tulip Latte Art')">
+                    <img src="/images/jmt/jmt_real_photo_takeaway_cups.png" alt="Takeaway Trio Cups" class="w-100 rounded-2" style="height: 80px; object-fit: cover;" />
+                    <div class="small fw-bold text-dark mt-1 text-truncate" style="font-size: 0.72rem;">Takeaway Coffee</div>
+                    <div class="text-warning fw-semibold" style="font-size: 0.68rem;">Barista To-Go</div>
+                </div>
+            </div>
+            <div class="col-4 col-md-2">
+                <div class="poster-thumb-card rounded-3 overflow-hidden shadow-xs border text-center p-1 bg-light h-100" 
+                     style="cursor: pointer;" onclick="openPosterModal('/images/jmt/jmt_real_photo_burger_catering_prep.png', 'Authentic JMT Kitchen Catering Preparation Line (40+ Fresh Grilled Burgers)')">
+                    <img src="/images/jmt/jmt_real_photo_burger_catering_prep.png" alt="Burger Catering Prep" class="w-100 rounded-2" style="height: 80px; object-fit: cover;" />
+                    <div class="small fw-bold text-dark mt-1 text-truncate" style="font-size: 0.72rem;">Kitchen Catering</div>
+                    <div class="text-warning fw-semibold" style="font-size: 0.68rem;">Behind The Scenes</div>
+                </div>
+            </div>
+            <div class="col-4 col-md-2">
+                <div class="poster-thumb-card rounded-3 overflow-hidden shadow-xs border text-center p-1 bg-light h-100" 
+                     style="cursor: pointer;" onclick="openPosterModal('/images/jmt/jmt_giant_10inch_burger_real.png', 'Colossal 10-Inch JMT Giant Burger Platter with Fries')">
+                    <img src="/images/jmt/jmt_giant_10inch_burger_real.png" alt="Giant Burger Feast" class="w-100 rounded-2" style="height: 80px; object-fit: cover;" />
+                    <div class="small fw-bold text-dark mt-1 text-truncate" style="font-size: 0.72rem;">10&quot; Giant Feast</div>
+                    <div class="text-warning fw-semibold" style="font-size: 0.68rem;">Real Platter</div>
+                </div>
+            </div>
+            <div class="col-4 col-md-2">
+                <div class="poster-thumb-card rounded-3 overflow-hidden shadow-xs border text-center p-1 bg-light h-100" 
+                     style="cursor: pointer;" onclick="openPosterModal('/images/jmt/jmt_combo_burger_set_real.png', 'Authentic JMT Burgers, Fries &amp; Mango Shakes Platter')">
+                    <img src="/images/jmt/jmt_combo_burger_set_real.png" alt="Combo Feast" class="w-100 rounded-2" style="height: 80px; object-fit: cover;" />
+                    <div class="small fw-bold text-dark mt-1 text-truncate" style="font-size: 0.72rem;">Burgers &amp; Shakes</div>
+                    <div class="text-warning fw-semibold" style="font-size: 0.68rem;">Real Feast</div>
+                </div>
+            </div>
+            <div class="col-4 col-md-2">
+                <div class="poster-thumb-card rounded-3 overflow-hidden shadow-xs border text-center p-1 bg-light h-100" 
+                     style="cursor: pointer;" onclick="openPosterModal('/images/jmt/jmt_real_photo_footlong_bread_cheese.jpg', 'Authentic JMT Footlong Bread Cheese on Platter (Real Serving)')">
+                    <img src="/images/jmt/jmt_real_photo_footlong_bread_cheese.jpg" alt="Footlong Bread Cheese" class="w-100 rounded-2" style="height: 80px; object-fit: cover;" />
+                    <div class="small fw-bold text-dark mt-1 text-truncate" style="font-size: 0.72rem;">Footlong Cheese</div>
+                    <div class="text-warning fw-semibold" style="font-size: 0.68rem;">Real Serving</div>
+                </div>
+            </div>
+            <div class="col-4 col-md-2">
+                <div class="poster-thumb-card rounded-3 overflow-hidden shadow-xs border text-center p-1 bg-light h-100" 
+                     style="cursor: pointer;" onclick="openPosterModal('/images/jmt/jmt_real_photo_oreo_shakes_placemat.jpg', 'Authentic JMT Oreo Cookie Shakes with Whole Oreos &amp; Choco Drizzle')">
+                    <img src="/images/jmt/jmt_real_photo_oreo_shakes_placemat.jpg" alt="Oreo Shakes Duo" class="w-100 rounded-2" style="height: 80px; object-fit: cover;" />
+                    <div class="small fw-bold text-dark mt-1 text-truncate" style="font-size: 0.72rem;">Oreo Shakes Duo</div>
+                    <div class="text-warning fw-semibold" style="font-size: 0.68rem;">Real In-Cafe</div>
+                </div>
+            </div>
+            <div class="col-4 col-md-2">
+                <div class="poster-thumb-card rounded-3 overflow-hidden shadow-xs border text-center p-1 bg-light h-100" 
+                     style="cursor: pointer;" onclick="openPosterModal('/images/jmt/jmt_real_photo_stemmed_mojitos.jpg', 'Authentic JMT Green Lemon Mint Mojitos in Stemmed Goblets')">
+                    <img src="/images/jmt/jmt_real_photo_stemmed_mojitos.jpg" alt="Stemmed Mojitos" class="w-100 rounded-2" style="height: 80px; object-fit: cover;" />
+                    <div class="small fw-bold text-dark mt-1 text-truncate" style="font-size: 0.72rem;">Stemmed Mojitos</div>
+                    <div class="text-warning fw-semibold" style="font-size: 0.68rem;">Real In-Cafe</div>
+                </div>
+            </div>
+            <div class="col-4 col-md-2">
+                <div class="poster-thumb-card rounded-3 overflow-hidden shadow-xs border text-center p-1 bg-light h-100" 
+                     style="cursor: pointer;" onclick="openPosterModal('/images/jmt/jmt_real_photo_tall_mojitos.jpg', 'Authentic JMT Tall Glasses Green Lemon Mint Mojito Coolers')">
+                    <img src="/images/jmt/jmt_real_photo_tall_mojitos.jpg" alt="Tall Mojito Coolers" class="w-100 rounded-2" style="height: 80px; object-fit: cover;" />
+                    <div class="small fw-bold text-dark mt-1 text-truncate" style="font-size: 0.72rem;">Tall Mojito Coolers</div>
+                    <div class="text-warning fw-semibold" style="font-size: 0.68rem;">Real In-Cafe</div>
+                </div>
+            </div>
+            <div class="col-4 col-md-2">
+                <div class="poster-thumb-card rounded-3 overflow-hidden shadow-xs border text-center p-1 bg-light h-100" 
+                     style="cursor: pointer;" onclick="openPosterModal('/images/jmt/jmt_real_photo_burgers_prep_line.jpg', 'Authentic JMT Freshly Assembled Burgers Line (Toasted Buns &amp; Fresh Lettuce)')">
+                    <img src="/images/jmt/jmt_real_photo_burgers_prep_line.jpg" alt="Fresh Assembled Burgers" class="w-100 rounded-2" style="height: 80px; object-fit: cover;" />
+                    <div class="small fw-bold text-dark mt-1 text-truncate" style="font-size: 0.72rem;">Fresh Burgers Line</div>
+                    <div class="text-warning fw-semibold" style="font-size: 0.68rem;">Kitchen Prep</div>
+                </div>
+            </div>
         </div>
     </div>
-
-    @if (!Model.Any())
-    {
-        <!-- No Results Fallback -->
-        <div class="card border-0 shadow-sm rounded-4 p-5 text-center my-4 bg-white">
-            <i class="bi bi-search text-warning display-3 mb-3"></i>
-            <h4 class="brand-font fw-bold">No Menu Items Found</h4>
-            <p class="text-muted">No items matched "@searchQuery". Try selecting a category or resetting filters.</p>
-            <div class="d-flex justify-content-center gap-2">
-                <a asp-action="Index" class="btn btn-warning rounded-pill px-4 fw-bold text-dark shadow-sm">View All Categories</a>
-            </div>
-        </div>
-    }
-    else if (isCategorizedView)
-    {
-        <!-- ==================================================================== -->
-        <!-- MODE A: CATEGORIZED SECTIONS VIEW (Organized by 6 Distinct Categories) -->
-        <!-- ==================================================================== -->
-        @foreach (var catDef in categoryDefs)
-        {
-            var catItems = Model.Where(p => p.Category.Equals(catDef.Key, StringComparison.OrdinalIgnoreCase)).ToList();
-            if (!catItems.Any()) continue;
-
-            <section id="@catDef.AnchorId" class="menu-category-section mb-5">
-                <!-- Section Header Banner -->
-                <div class="category-section-banner d-flex flex-wrap justify-content-between align-items-center gap-3">
-                    <div>
-                        <div class="d-flex align-items-center gap-2 mb-1">
-                            <i class="bi @catDef.Icon text-warning fs-4"></i>
-                            <h2 class="brand-font fw-bold fs-4 text-dark mb-0">@catDef.DisplayName</h2>
-                            <span class="badge @catDef.BadgeClass rounded-pill px-3 py-1 fw-bold small">
-                                @catItems.Count Items
-                            </span>
-                            <span class="badge bg-light text-dark border rounded-pill px-2 py-1 small">
-                                @catDef.PriceRange
-                            </span>
-                        </div>
-                        <p class="text-muted small mb-0" style="max-width: 720px; line-height: 1.6;">
-                            @catDef.Description
-                        </p>
-                    </div>
-                    <div class="d-flex align-items-center gap-2">
-                        <a asp-action="Index" asp-route-category="@catDef.Key" class="btn btn-outline-dark btn-sm rounded-pill px-3 fw-semibold shadow-xs">
-                            <i class="bi bi-funnel me-1"></i> Filter Only @catDef.ShortName
-                        </a>
-                        <a href="#menuTop" class="btn btn-light btn-sm rounded-circle p-2 border shadow-xs" title="Back to Top" aria-label="Back to Top">
-                            <i class="bi bi-arrow-up"></i>
-                        </a>
-                    </div>
-                </div>
-
-                <!-- Product Cards Grid for this Category -->
-                <div class="row g-3 g-md-4">
-                    @foreach (var item in catItems)
-                    {
-                        <div class="col-md-6 col-lg-4 col-xl-3 menu-filter-card reveal-on-scroll" 
-                             data-name="@item.Name.ToLower()" data-cat="@item.Category.ToLower()" data-price="@item.Price" data-desc="@item.Description.ToLower()">
-                            <div class="jmt-product-card" 
-                                 onclick='openJmtInquiryModal({ id: @item.Id, name: "@item.Name.Replace("\"", "\\\"")", price: @item.Price, imageUrl: "@item.ImageUrl", category: "@item.Category", description: "@item.Description.Replace("\"", "\\\"")" })'
-                                 role="button" tabindex="0" aria-label="View details for @item.Name">
-                                
-                                <!-- Image Thumbnail with Badges or Verification Card -->
-                                <div style="aspect-ratio: 4/3; overflow: hidden; position: relative;">
-                                    @if (!string.IsNullOrEmpty(item.ImageUrl))
-                                    {
-                                        <img src="@item.ImageUrl" class="card-img-top" alt="@item.Name" loading="lazy" style="width: 100%; height: 100%; object-fit: cover;" />
-
-                                        <!-- Category & Special Badges -->
-                                        <div class="position-absolute top-0 start-0 m-2 d-flex flex-column gap-1">
-                                            <span class="badge bg-dark bg-opacity-75 text-warning fw-semibold rounded-pill px-2 py-1" style="font-size: 0.68rem;">
-                                                @item.Category
-                                            </span>
-                                            @if (item.Name.Contains("Combo", StringComparison.OrdinalIgnoreCase))
-                                            {
-                                                <span class="badge bg-danger text-white fw-bold rounded-pill px-2 py-1" style="font-size: 0.68rem;">
-                                                    <i class="bi bi-gift-fill me-1"></i>COMBO
-                                                </span>
-                                            }
-                                            else if (item.Name.Contains("BUY 1 TAKE 1", StringComparison.OrdinalIgnoreCase))
-                                            {
-                                                <span class="badge bg-success text-white fw-bold rounded-pill px-2 py-1" style="font-size: 0.68rem;">
-                                                    <i class="bi bi-tag-fill me-1"></i>BUY 1 TAKE 1
-                                                </span>
-                                            }
-                                            else if (item.Name.Contains("10-Inch", StringComparison.OrdinalIgnoreCase) || item.Name.Contains("GIANT", StringComparison.OrdinalIgnoreCase))
-                                            {
-                                                <span class="badge bg-danger text-white fw-bold rounded-pill px-2 py-1" style="font-size: 0.68rem;">
-                                                    <i class="bi bi-fire me-1"></i>10" PARTY
-                                                </span>
-                                            }
-                                            else if (item.Name.Contains("Fries", StringComparison.OrdinalIgnoreCase) || item.Id == 10)
-                                            {
-                                                <span class="badge bg-warning text-dark fw-bold rounded-pill px-2 py-1" style="font-size: 0.68rem;">
-                                                    <i class="bi bi-star-fill me-1"></i>SIDES & SNACKS
-                                                </span>
-                                            }
-                                        </div>
-
-                                        <!-- Price Pill Badge -->
-                                        <div class="position-absolute bottom-0 end-0 m-2">
-                                            <span class="badge bg-warning text-dark fw-bold rounded-pill px-3 py-1 fs-6 shadow-sm">
-                                                ₱@item.Price.ToString("N0")
-                                            </span>
-                                        </div>
-                                    }
-                                    else
-                                    {
-                                        <div class="jmt-no-photo-card">
-                                            <div class="d-flex justify-content-between align-items-center w-100">
-                                                <span class="badge bg-dark bg-opacity-75 text-warning fw-semibold rounded-pill px-2 py-1" style="font-size: 0.68rem;">
-                                                    @item.Category
-                                                </span>
-                                                <span class="jmt-no-photo-badge">
-                                                    <i class="bi bi-shield-check text-warning"></i> Authentic Menu
-                                                </span>
-                                            </div>
-
-                                            <div class="text-center my-auto py-1">
-                                                <div class="no-photo-icon-circle">
-                                                    <i class="bi bi-camera"></i>
-                                                </div>
-                                                <div class="no-photo-title">Photo on FB Page</div>
-                                                <div class="no-photo-subtext">To view real photos of @item.Name, check our Facebook page!</div>
-                                                <a href="@JmtCafeConfig.FacebookPageUrl" target="_blank" rel="noopener noreferrer" 
-                                                   class="no-photo-fb-link" onclick="event.stopPropagation();">
-                                                    <i class="bi bi-facebook"></i>
-                                                    <span>View on FB Page</span>
-                                                </a>
-                                            </div>
-
-                                            <div class="d-flex justify-content-between align-items-center w-100 pt-1" style="border-top: 1px dashed rgba(212, 163, 115, 0.3);">
-                                                <span class="text-white-50" style="font-size: 0.68rem;">Verified Onsite</span>
-                                                <span class="badge bg-warning text-dark fw-bold rounded-pill px-2 py-1" style="font-size: 0.72rem;">
-                                                    ₱@item.Price.ToString("N0")
-                                                </span>
-                                            </div>
-                                        </div>
-                                    }
-                                </div>
-
-                                <!-- Card Body -->
-                                <div class="jmt-card-body">
-                                    <h3 class="brand-font fs-6 fw-bold mb-2 text-dark">
-                                        @item.Name
-                                    </h3>
-
-                                    <p class="small text-muted mb-3" style="line-height: 1.5; height: 42px; overflow: hidden;">
-                                        @(item.Description.Length > 85 ? item.Description.Substring(0, 82) + "..." : item.Description)
-                                    </p>
-
-                                    <!-- Tasting / Feature Chips -->
-                                    @if (item.TastingNotes != null && item.TastingNotes.Any())
-                                    {
-                                        <div class="d-flex flex-wrap gap-1 mb-2">
-                                            @foreach (var note in item.TastingNotes.Take(2))
-                                            {
-                                                <span class="jmt-tasting-chip">@note</span>
-                                            }
-                                        </div>
-                                    }
-
-                                    <!-- Card Action Hint (No Button Fatigue) -->
-                                    <div class="jmt-card-action-hint">
-                                        <span class="action-tag"><i class="bi bi-info-circle-fill text-warning"></i> Tap for Quick-View</span>
-                                        <span class="text-warning fw-bold small">Details &rarr;</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    }
-                </div>
-            </section>
-        }
-    }
-    else
-    {
-        <!-- ==================================================================== -->
-        <!-- MODE B: FILTERED OR SEARCH RESULTS VIEW                             -->
-        <!-- ==================================================================== -->
-        <div class="card border-0 shadow-sm rounded-4 p-3 mb-4 bg-white">
-            <div class="d-flex flex-wrap justify-content-between align-items-center gap-2">
-                <div>
-                    <span class="badge bg-dark text-warning rounded-pill px-3 py-1 me-2 fw-bold">Active Filter</span>
-                    @if (!string.IsNullOrEmpty(searchQuery))
-                    {
-                        <span class="fw-bold text-dark">Keyword: "@searchQuery"</span>
-                    }
-                    @if (selectedCategory != "All")
-                    {
-                        var def = JmtCafeConfig.GetCategoryDefinition(selectedCategory);
-                        <span class="fw-bold text-dark ms-1">@def.Emoji @def.DisplayName</span>
-                    }
-                    <span class="text-muted ms-2">(@Model.Count() items displayed)</span>
-                </div>
-                <a asp-action="Index" class="btn btn-warning btn-sm rounded-pill fw-bold text-dark px-3 shadow-sm">
-                    <i class="bi bi-grid-fill me-1"></i> View All 6 Categories (@allCount)
-                </a>
-            </div>
-        </div>
-
-        <div class="row g-3 g-md-4 mb-5">
-            @foreach (var item in Model)
-            {
-                <div class="col-md-6 col-lg-4 col-xl-3 menu-filter-card reveal-on-scroll"
-                     data-name="@item.Name.ToLower()" data-cat="@item.Category.ToLower()" data-price="@item.Price" data-desc="@item.Description.ToLower()">
-                    <div class="jmt-product-card" 
-                         onclick='openJmtInquiryModal({ id: @item.Id, name: "@item.Name.Replace("\"", "\\\"")", price: @item.Price, imageUrl: "@item.ImageUrl", category: "@item.Category", description: "@item.Description.Replace("\"", "\\\"")" })'
-                         role="button" tabindex="0" aria-label="View details for @item.Name">
-                        
-                        <!-- Image Thumbnail with Badges or Verification Card -->
-                        <div style="aspect-ratio: 4/3; overflow: hidden; position: relative;">
-                            @if (!string.IsNullOrEmpty(item.ImageUrl))
-                            {
-                                <img src="@item.ImageUrl" class="card-img-top" alt="@item.Name" loading="lazy" style="width: 100%; height: 100%; object-fit: cover;" />
-
-                                <!-- Category Badge -->
-                                <div class="position-absolute top-0 start-0 m-2 d-flex flex-column gap-1">
-                                    <span class="badge bg-dark bg-opacity-75 text-warning fw-semibold rounded-pill px-2 py-1" style="font-size: 0.68rem;">
-                                        @item.Category
-                                    </span>
-                                    @if (item.Name.Contains("Combo", StringComparison.OrdinalIgnoreCase))
-                                    {
-                                        <span class="badge bg-danger text-white fw-bold rounded-pill px-2 py-1" style="font-size: 0.68rem;">
-                                            <i class="bi bi-gift-fill me-1"></i>COMBO
-                                        </span>
-                                    }
-                                    else if (item.Name.Contains("BUY 1 TAKE 1", StringComparison.OrdinalIgnoreCase))
-                                    {
-                                        <span class="badge bg-success text-white fw-bold rounded-pill px-2 py-1" style="font-size: 0.68rem;">
-                                            <i class="bi bi-tag-fill me-1"></i>BUY 1 TAKE 1
-                                        </span>
-                                    }
-                                    else if (item.Name.Contains("10-Inch", StringComparison.OrdinalIgnoreCase) || item.Name.Contains("GIANT", StringComparison.OrdinalIgnoreCase))
-                                    {
-                                        <span class="badge bg-danger text-white fw-bold rounded-pill px-2 py-1" style="font-size: 0.68rem;">
-                                            <i class="bi bi-fire me-1"></i>10" PARTY
-                                        </span>
-                                    }
-                                    else if (item.Name.Contains("Fries", StringComparison.OrdinalIgnoreCase) || item.Id == 10)
-                                    {
-                                        <span class="badge bg-warning text-dark fw-bold rounded-pill px-2 py-1" style="font-size: 0.68rem;">
-                                            <i class="bi bi-star-fill me-1"></i>SIDES & SNACKS
-                                        </span>
-                                    }
-                                </div>
-
-                                <!-- Price Pill Badge -->
-                                <div class="position-absolute bottom-0 end-0 m-2">
-                                    <span class="badge bg-warning text-dark fw-bold rounded-pill px-3 py-1 fs-6 shadow-sm">
-                                        ₱@item.Price.ToString("N0")
-                                    </span>
-                                </div>
-                            }
-                            else
-                            {
-                                <div class="jmt-no-photo-card">
-                                    <div class="d-flex justify-content-between align-items-center w-100">
-                                        <span class="badge bg-dark bg-opacity-75 text-warning fw-semibold rounded-pill px-2 py-1" style="font-size: 0.68rem;">
-                                            @item.Category
-                                        </span>
-                                        <span class="jmt-no-photo-badge">
-                                            <i class="bi bi-shield-check text-warning"></i> Authentic Menu
-                                        </span>
-                                    </div>
-
-                                    <div class="text-center my-auto py-1">
-                                        <div class="no-photo-icon-circle">
-                                            <i class="bi bi-camera"></i>
-                                        </div>
-                                        <div class="no-photo-title">Photo on FB Page</div>
-                                        <div class="no-photo-subtext">To view real photos of @item.Name, check our Facebook page!</div>
-                                        <a href="@JmtCafeConfig.FacebookPageUrl" target="_blank" rel="noopener noreferrer" 
-                                           class="no-photo-fb-link" onclick="event.stopPropagation();">
-                                            <i class="bi bi-facebook"></i>
-                                            <span>View on FB Page</span>
-                                        </a>
-                                    </div>
-
-                                    <div class="d-flex justify-content-between align-items-center w-100 pt-1" style="border-top: 1px dashed rgba(212, 163, 115, 0.3);">
-                                        <span class="text-white-50" style="font-size: 0.68rem;">Verified Onsite</span>
-                                        <span class="badge bg-warning text-dark fw-bold rounded-pill px-2 py-1" style="font-size: 0.72rem;">
-                                            ₱@item.Price.ToString("N0")
-                                        </span>
-                                    </div>
-                                </div>
-                            }
-                        </div>
-
-                        <!-- Card Body -->
-                        <div class="jmt-card-body">
-                            <h3 class="brand-font fs-6 fw-bold mb-2 text-dark">
-                                @item.Name
-                            </h3>
-
-                            <p class="small text-muted mb-3" style="line-height: 1.5; height: 42px; overflow: hidden;">
-                                @(item.Description.Length > 85 ? item.Description.Substring(0, 82) + "..." : item.Description)
-                            </p>
-
-                            <!-- Tasting / Feature Chips -->
-                            @if (item.TastingNotes != null && item.TastingNotes.Any())
-                            {
-                                <div class="d-flex flex-wrap gap-1 mb-2">
-                                    @foreach (var note in item.TastingNotes.Take(2))
-                                    {
-                                        <span class="jmt-tasting-chip">@note</span>
-                                    }
-                                </div>
-                            }
-
-                            <!-- Card Action Hint (No Button Fatigue) -->
-                            <div class="jmt-card-action-hint">
-                                <span class="action-tag"><i class="bi bi-info-circle-fill text-warning"></i> Tap for Quick-View</span>
-                                <span class="text-warning fw-bold small">Details &rarr;</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            }
-        </div>
-    }
 
     <!-- Fullscreen Poster Lightbox Modal -->
     <div class="modal fade" id="posterLightboxModal" tabindex="-1" aria-hidden="true">
@@ -551,8 +1014,77 @@
     </div>
 </div>
 
+<!-- ======================================================================== -->
+<!-- INTERACTIVE FEATURE 5: FLOATING ORDER TRAY & OFFCANVAS DRAWER           -->
+<!-- ======================================================================== -->
+<div class="floating-tray-bar shadow-lg" onclick="toggleTrayDrawer(true)">
+    <i class="bi bi-bag-check-fill text-warning fs-5"></i>
+    <span class="fw-bold d-none d-sm-inline">My Order Tray</span>
+    <span class="tray-count-pill" id="floatingTrayCount">0</span>
+    <span class="fw-bold text-warning" id="floatingTrayTotal">₱0</span>
+</div>
+
+<div class="jmt-tray-backdrop" id="jmtTrayBackdrop" onclick="toggleTrayDrawer(false)"></div>
+
+<div class="jmt-tray-drawer" id="jmtTrayDrawer">
+    <div class="tray-header">
+        <div class="d-flex align-items-center gap-2">
+            <i class="bi bi-basket3-fill text-warning fs-5"></i>
+            <h5 class="brand-font fw-bold text-white mb-0">Your Order Tray</h5>
+            <span class="badge bg-warning text-dark rounded-pill px-2 py-0 small fw-bold" id="drawerTrayCount">0</span>
+        </div>
+        <button type="button" class="btn-close btn-close-white" onclick="toggleTrayDrawer(false)" aria-label="Close Tray"></button>
+    </div>
+    
+    <div class="tray-body" id="trayItemsList">
+        <div class="text-center py-5 text-muted" id="emptyTrayMessage">
+            <i class="bi bi-bag text-warning display-4 mb-2 d-block"></i>
+            <h6 class="fw-bold text-dark">Your Tray is Empty</h6>
+            <p class="small text-muted mb-3">Browse our delicious burgers, shakes, and meals, then tap <strong>+ Add</strong> to build your order!</p>
+        </div>
+    </div>
+    
+    <div class="tray-footer" id="trayFooterControls" style="display: none;">
+        <div class="d-flex justify-content-between align-items-center mb-1 small text-muted">
+            <span>Items Subtotal:</span>
+            <span class="fw-bold text-dark" id="traySubtotalDisplay">₱0</span>
+        </div>
+        <div class="d-flex justify-content-between align-items-center mb-2 small text-muted">
+            <span>Estimated Local Delivery:</span>
+            <span class="fw-bold text-success" id="trayDeliveryDisplay">₱50</span>
+        </div>
+        <div class="d-flex justify-content-between align-items-center mb-3 pt-2 border-top">
+            <span class="fw-bold text-dark">Estimated Total:</span>
+            <span class="display-6 fs-4 fw-bold text-warning" id="trayFinalTotalDisplay">₱0</span>
+        </div>
+        
+        <div class="d-grid gap-2">
+            <button type="button" class="btn btn-primary rounded-pill py-2 fw-bold d-flex align-items-center justify-content-center gap-2" 
+                    style="background: #1877F2; border-color: #1877F2;" onclick="sendOrderToMessenger()">
+                <i class="bi bi-facebook fs-5"></i>
+                <span>Send Order via Facebook Messenger</span>
+            </button>
+            <a href="/checkout" class="btn btn-warning rounded-pill py-2 fw-bold text-dark d-flex align-items-center justify-content-center gap-2 shadow-sm">
+                <i class="bi bi-credit-card-2-front-fill"></i>
+                <span>Proceed to GCash Checkout</span>
+            </a>
+            <button type="button" class="btn btn-link text-muted btn-sm p-0 text-decoration-none" onclick="clearTray()">
+                <i class="bi bi-trash3 me-1"></i>Clear Order Tray
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- ======================================================================== -->
+<!-- INTERACTIVE FEATURE 6: TOAST NOTIFICATION CONTAINER                     -->
+<!-- ======================================================================== -->
+<div class="jmt-toast-container" id="jmtToastContainer"></div>
+
 @section Scripts {
     <script>
+        // ====================================================================
+        // Core Lightbox & Anchor Scrolling
+        // ====================================================================
         function openPosterModal(imgSrc, title) {
             document.getElementById('posterLightboxImg').src = imgSrc;
             document.getElementById('posterLightboxTitle').innerText = title;
@@ -564,18 +1096,20 @@
             const el = document.getElementById(anchorId);
             if (el) {
                 el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                // Update active state on jump pills
-                document.querySelectorAll('.category-jump-pill').forEach(p => p.classList.remove('active'));
-                const pill = document.getElementById('jumpPill-' + anchorId);
-                if (pill) {
-                    pill.classList.add('active');
-                    pill.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+                document.querySelectorAll('.food-cat-nav-card').forEach(p => p.classList.remove('active'));
+                const navCard = document.getElementById('navCard-' + anchorId);
+                if (navCard) {
+                    navCard.classList.add('active');
                 }
             }
         }
 
         // Active Category Section Tracker on Scroll
         document.addEventListener('DOMContentLoaded', () => {
+            initLiveStatus();
+            initFavorites();
+            initTray();
+
             const sections = document.querySelectorAll('.menu-category-section');
             if (!sections.length) return;
 
@@ -589,11 +1123,10 @@
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
                         const id = entry.target.getAttribute('id');
-                        document.querySelectorAll('.category-jump-pill').forEach(p => p.classList.remove('active'));
-                        const currentPill = document.getElementById('jumpPill-' + id);
-                        if (currentPill) {
-                            currentPill.classList.add('active');
-                            currentPill.scrollIntoView({ behavior: 'smooth', inline: 'nearest', block: 'nearest' });
+                        document.querySelectorAll('.food-cat-nav-card').forEach(p => p.classList.remove('active'));
+                        const currentCard = document.getElementById('navCard-' + id);
+                        if (currentCard) {
+                            currentCard.classList.add('active');
                         }
                     }
                 });
@@ -601,6 +1134,431 @@
 
             sections.forEach(s => observer.observe(s));
         });
+
+        // ====================================================================
+        // Interactive Feature 1: Craving & Mood Finder
+        // ====================================================================
+        function filterByCraving(craving, btn) {
+            document.querySelectorAll('.craving-pill-btn').forEach(b => b.classList.remove('active'));
+            if (btn) btn.classList.add('active');
+
+            const catCards = document.querySelectorAll('.menu-filter-card');
+            const fbCards = document.querySelectorAll('.fb-feed-col');
+            let matched = 0;
+
+            const filterCard = (card) => {
+                const name = card.getAttribute('data-name') || '';
+                const cat = (card.getAttribute('data-cat') || card.getAttribute('data-category') || '').toLowerCase();
+                const price = parseFloat(card.getAttribute('data-price') || '0');
+                const id = parseInt(card.getAttribute('data-id') || '0');
+
+                let isMatch = true;
+
+                if (craving === 'heavy') {
+                    isMatch = name.includes('giant') || name.includes('10-inch') || name.includes('combo') || name.includes('chicken meal');
+                } else if (craving === 'snack') {
+                    isMatch = price <= 50;
+                } else if (craving === 'chicken') {
+                    isMatch = cat.includes('silog') || name.includes('chicken');
+                } else if (craving === 'coffee') {
+                    isMatch = cat.includes('coffee');
+                } else if (craving === 'shakes') {
+                    isMatch = cat.includes('juice') || cat.includes('shake') || name.includes('frappe');
+                } else if (craving === 'mojito') {
+                    isMatch = cat.includes('mojito');
+                } else if (craving === 'favorites') {
+                    const favs = getFavoritesList();
+                    isMatch = favs.includes(id);
+                }
+
+                if (isMatch) {
+                    card.classList.remove('is-hidden');
+                    card.style.display = 'block';
+                    matched++;
+                } else {
+                    card.classList.add('is-hidden');
+                    card.style.display = 'none';
+                }
+            };
+
+            catCards.forEach(filterCard);
+            fbCards.forEach(filterCard);
+
+            // Update live counter
+            const countEl = document.getElementById('liveMatchCount');
+            if (countEl) countEl.innerText = matched;
+
+            // Empty state check
+            const emptyEl = document.getElementById('liveEmptyMessage');
+            if (emptyEl) {
+                emptyEl.style.display = (matched === 0) ? 'block' : 'none';
+            }
+
+            // Hide empty category sections
+            document.querySelectorAll('.menu-category-section').forEach(sec => {
+                const visibleInSec = sec.querySelectorAll('.menu-filter-card:not(.is-hidden)').length;
+                sec.style.display = (visibleInSec === 0 && matched > 0) ? 'none' : 'block';
+            });
+
+            if (craving !== 'all') {
+                showToast(`Filtered by ${btn.innerText.trim()} (${matched} items found)`, 'bi-funnel-fill');
+            }
+        }
+
+        function clearCravingFilter() {
+            filterByCraving('all', document.querySelector('.craving-pill-btn'));
+            clearLiveFilter();
+        }
+
+        // ====================================================================
+        // Interactive Feature 2: Real-time Operating Status Beacon
+        // ====================================================================
+        function initLiveStatus() {
+            const now = new Date();
+            // Local Philippines Time is UTC+8
+            const utc = now.getTime() + (now.getTimezoneOffset() * 60000);
+            const phTime = new Date(utc + (3600000 * 8));
+            const hours = phTime.getHours();
+
+            const statusEl = document.getElementById('liveOpenStatusText');
+            if (!statusEl) return;
+
+            if (hours >= 9 && hours < 22) {
+                statusEl.innerHTML = `<strong>OPEN NOW</strong> &bull; Dine-in, Takeout &amp; Delivery active until 10:00 PM`;
+            } else {
+                statusEl.innerHTML = `<strong>OPENS AT 9:00 AM</strong> &bull; Advance Orders &amp; Inquiries Welcome for Tomorrow!`;
+            }
+        }
+
+        // ====================================================================
+        // Interactive Feature 3: Dish Favorites / Heart Wishlist
+        // ====================================================================
+        function getFavoritesList() {
+            try {
+                return JSON.parse(localStorage.getItem('jmt_favorites') || '[]');
+            } catch (e) {
+                return [];
+            }
+        }
+
+        function saveFavoritesList(favs) {
+            try {
+                localStorage.setItem('jmt_favorites', JSON.stringify(favs));
+            } catch (e) {}
+        }
+
+        function initFavorites() {
+            const favs = getFavoritesList();
+            updateFavPillCount(favs.length);
+
+            favs.forEach(id => {
+                document.querySelectorAll(`[id^="fav-"][id$="-${id}"]`).forEach(btn => {
+                    btn.classList.add('favorited');
+                    btn.innerHTML = '<i class="bi bi-heart-fill"></i>';
+                });
+            });
+        }
+
+        function updateFavPillCount(count) {
+            const pill = document.getElementById('favCountPill');
+            if (pill) pill.innerText = count;
+        }
+
+        function toggleFavorite(event, id, name) {
+            event.stopPropagation();
+            event.preventDefault();
+
+            let favs = getFavoritesList();
+            const index = favs.indexOf(id);
+            let isFav = false;
+
+            if (index === -1) {
+                favs.push(id);
+                isFav = true;
+                showToast(`Saved "${name}" to Favorites!`, 'bi-heart-fill');
+            } else {
+                favs.splice(index, 1);
+                isFav = false;
+                showToast(`Removed "${name}" from Favorites`, 'bi-heart');
+            }
+
+            saveFavoritesList(favs);
+            updateFavPillCount(favs.length);
+
+            document.querySelectorAll(`[id^="fav-"][id$="-${id}"]`).forEach(btn => {
+                if (isFav) {
+                    btn.classList.add('favorited');
+                    btn.innerHTML = '<i class="bi bi-heart-fill"></i>';
+                } else {
+                    btn.classList.remove('favorited');
+                    btn.innerHTML = '<i class="bi bi-heart"></i>';
+                }
+            });
+        }
+
+        // ====================================================================
+        // Interactive Feature 4: Dalaguete Delivery Fee Estimator
+        // ====================================================================
+        let currentSelectedLocation = "Purok 5 Tabon Proper (Near Shop)";
+        let currentDeliveryFee = 50;
+
+        function calculateDeliveryFee() {
+            const val = document.getElementById('deliveryLocationSelect').value;
+            const parts = val.split('|');
+            currentDeliveryFee = parseInt(parts[0]) || 50;
+            const timeStr = parts[1] || '15–20 mins';
+            currentSelectedLocation = parts[2] || 'Purok 5 Tabon';
+
+            document.getElementById('estFeeDisplay').innerText = `₱${currentDeliveryFee}`;
+            document.getElementById('estTimeDisplay').innerHTML = `<i class="bi bi-clock me-1 text-warning"></i>Estimated Travel: ${timeStr}`;
+
+            // Also update drawer if open
+            const drawerDelivery = document.getElementById('trayDeliveryDisplay');
+            if (drawerDelivery) drawerDelivery.innerText = `₱${currentDeliveryFee}`;
+            recalculateTrayTotals();
+        }
+
+        function orderWithDelivery() {
+            calculateDeliveryFee();
+            toggleTrayDrawer(true);
+            showToast(`Delivery set to ${currentSelectedLocation} (₱${currentDeliveryFee})`, 'bi-bicycle');
+        }
+
+        // ====================================================================
+        // Interactive Feature 5: Floating Order Tray & Slide-in Drawer
+        // ====================================================================
+        let trayItems = [];
+
+        function initTray() {
+            try {
+                trayItems = JSON.parse(localStorage.getItem('jmt_tray') || '[]');
+            } catch (e) {
+                trayItems = [];
+            }
+            renderTray();
+        }
+
+        function saveTray() {
+            try {
+                localStorage.setItem('jmt_tray', JSON.stringify(trayItems));
+            } catch (e) {}
+            renderTray();
+        }
+
+        function addToTray(event, item) {
+            if (event) {
+                event.stopPropagation();
+                event.preventDefault();
+            }
+
+            const existing = trayItems.find(i => i.id === item.id);
+            if (existing) {
+                existing.qty += 1;
+            } else {
+                trayItems.push({
+                    id: item.id,
+                    name: item.name,
+                    price: item.price,
+                    imageUrl: item.imageUrl || '/images/jmt/jmt_logo.png',
+                    category: item.category,
+                    qty: 1
+                });
+            }
+
+            saveTray();
+            showToast(`Added 1x ${item.name} to Tray!`, 'bi-bag-check-fill');
+        }
+
+        function updateTrayQty(id, delta) {
+            const item = trayItems.find(i => i.id === id);
+            if (!item) return;
+
+            item.qty += delta;
+            if (item.qty <= 0) {
+                trayItems = trayItems.filter(i => i.id !== id);
+            }
+            saveTray();
+        }
+
+        function clearTray() {
+            trayItems = [];
+            saveTray();
+            showToast('Order Tray cleared', 'bi-trash3');
+        }
+
+        function toggleTrayDrawer(open) {
+            const drawer = document.getElementById('jmtTrayDrawer');
+            const backdrop = document.getElementById('jmtTrayBackdrop');
+            if (open) {
+                drawer.classList.add('open');
+                backdrop.classList.add('open');
+            } else {
+                drawer.classList.remove('open');
+                backdrop.classList.remove('open');
+            }
+        }
+
+        function renderTray() {
+            const listEl = document.getElementById('trayItemsList');
+            const footerEl = document.getElementById('trayFooterControls');
+            const countBadges = [document.getElementById('floatingTrayCount'), document.getElementById('drawerTrayCount')];
+            const emptyEl = document.getElementById('emptyTrayMessage');
+
+            const totalQty = trayItems.reduce((acc, i) => acc + i.qty, 0);
+            countBadges.forEach(b => { if (b) b.innerText = totalQty; });
+
+            if (trayItems.length === 0) {
+                if (listEl) {
+                    listEl.innerHTML = `
+                        <div class="text-center py-5 text-muted" id="emptyTrayMessage">
+                            <i class="bi bi-bag text-warning display-4 mb-2 d-block"></i>
+                            <h6 class="fw-bold text-dark">Your Tray is Empty</h6>
+                            <p class="small text-muted mb-3">Browse our delicious burgers, shakes, and meals, then tap <strong>+ Add</strong> to build your order!</p>
+                        </div>
+                    `;
+                }
+                if (footerEl) footerEl.style.display = 'none';
+                const floatingTotal = document.getElementById('floatingTrayTotal');
+                if (floatingTotal) floatingTotal.innerText = '₱0';
+                return;
+            }
+
+            if (footerEl) footerEl.style.display = 'block';
+
+            let html = '';
+            trayItems.forEach(item => {
+                html += `
+                    <div class="tray-item-row">
+                        <img src="${item.imageUrl}" alt="${item.name}" class="tray-item-img" onerror="this.src='/images/jmt/jmt_logo.png'" />
+                        <div class="flex-grow-1" style="min-width: 0;">
+                            <div class="fw-bold small text-dark text-truncate">${item.name}</div>
+                            <div class="text-warning fw-semibold small">₱${item.price.toLocaleString()}</div>
+                        </div>
+                        <div class="d-flex align-items-center gap-2">
+                            <button type="button" class="tray-stepper-btn" onclick="updateTrayQty(${item.id}, -1)">-</button>
+                            <span class="fw-bold small text-dark px-1">${item.qty}</span>
+                            <button type="button" class="tray-stepper-btn" onclick="updateTrayQty(${item.id}, 1)">+</button>
+                        </div>
+                    </div>
+                `;
+            });
+
+            if (listEl) listEl.innerHTML = html;
+            recalculateTrayTotals();
+        }
+
+        function recalculateTrayTotals() {
+            const subtotal = trayItems.reduce((acc, i) => acc + (i.price * i.qty), 0);
+            const delivery = (subtotal >= 1000 || subtotal === 0) ? 0 : currentDeliveryFee;
+            const grandTotal = subtotal + delivery;
+
+            const subDisplay = document.getElementById('traySubtotalDisplay');
+            const delDisplay = document.getElementById('trayDeliveryDisplay');
+            const totalDisplay = document.getElementById('trayFinalTotalDisplay');
+            const floatingTotal = document.getElementById('floatingTrayTotal');
+
+            if (subDisplay) subDisplay.innerText = `₱${subtotal.toLocaleString()}`;
+            if (delDisplay) {
+                if (subtotal >= 1000) {
+                    delDisplay.innerText = `FREE (₱1k+ Order)`;
+                    delDisplay.className = 'fw-bold text-success';
+                } else {
+                    delDisplay.innerText = `₱${delivery}`;
+                    delDisplay.className = 'fw-bold text-dark';
+                }
+            }
+            if (totalDisplay) totalDisplay.innerText = `₱${grandTotal.toLocaleString()}`;
+            if (floatingTotal) floatingTotal.innerText = `₱${grandTotal.toLocaleString()}`;
+        }
+
+        function sendOrderToMessenger() {
+            if (trayItems.length === 0) {
+                showToast('Please add items to your tray first!', 'bi-info-circle');
+                return;
+            }
+
+            const subtotal = trayItems.reduce((acc, i) => acc + (i.price * i.qty), 0);
+            const delivery = (subtotal >= 1000) ? 0 : currentDeliveryFee;
+            const grandTotal = subtotal + delivery;
+
+            let orderText = `*JMT CAFE ORDER INQUIRY*\n`;
+            orderText += `Location: ${currentSelectedLocation}\n\n`;
+            trayItems.forEach(i => {
+                orderText += `• ${i.qty}x ${i.name} (₱${(i.price * i.qty).toLocaleString()})\n`;
+            });
+            orderText += `\nSubtotal: ₱${subtotal.toLocaleString()}`;
+            orderText += `\nDelivery: ${delivery === 0 ? 'FREE' : '₱' + delivery}`;
+            orderText += `\nTotal: ₱${grandTotal.toLocaleString()}\n`;
+            orderText += `\nPlease confirm preparation and delivery! Salamat JMT!`;
+
+            // Copy to clipboard for convenience
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(orderText);
+                showToast('Order copied to clipboard! Opening Facebook Messenger...', 'bi-clipboard-check');
+            }
+
+            setTimeout(() => {
+                window.open('https://www.facebook.com/profile.php?id=61566969959363', '_blank');
+            }, 800);
+        }
+
+        // ====================================================================
+        // Interactive Feature 6: Floating Toast System
+        // ====================================================================
+        function showToast(message, iconClass = 'bi-check-circle-fill') {
+            const container = document.getElementById('jmtToastContainer');
+            if (!container) return;
+
+            const toast = document.createElement('div');
+            toast.className = 'jmt-toast';
+            toast.innerHTML = `<i class="bi ${iconClass}"></i> <span>${message}</span>`;
+            container.appendChild(toast);
+
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateY(15px)';
+                setTimeout(() => { toast.remove(); }, 300);
+            }, 3200);
+        }
+
+        // ====================================================================
+        // Facebook Feed Category Filter Engine
+        // ====================================================================
+        function filterFbFeed(cat, btn) {
+            document.querySelectorAll('.fb-filter-pill').forEach(b => b.classList.remove('active'));
+            if (btn) btn.classList.add('active');
+
+            const cols = document.querySelectorAll('.fb-feed-col');
+            cols.forEach(col => {
+                const itemCat = col.getAttribute('data-category') || '';
+                if (cat === 'all' || itemCat.toLowerCase() === cat.toLowerCase()) {
+                    col.style.display = 'block';
+                } else {
+                    col.style.display = 'none';
+                }
+            });
+        }
+
+        // Interactive Facebook Post Like Button
+        function toggleFbPostLike(btn) {
+            btn.classList.toggle('liked');
+            const icon = btn.querySelector('i');
+            const label = btn.querySelector('.like-label');
+            const numEl = btn.querySelector('.like-num');
+            let count = parseInt(numEl.innerText.replace(/\D/g, '')) || 0;
+
+            if (btn.classList.contains('liked')) {
+                icon.className = 'bi bi-hand-thumbs-up-fill text-primary';
+                label.innerText = 'Liked';
+                count++;
+                showToast('Liked! Salamat sa suporta sa JMT CAFE!', 'bi-hand-thumbs-up-fill');
+            } else {
+                icon.className = 'bi bi-hand-thumbs-up';
+                label.innerText = 'Like';
+                count = Math.max(0, count - 1);
+            }
+            numEl.innerText = '(' + count + ')';
+        }
 
         // Instant Dynamic Live Menu Search & Price Filter Engine
         let currentPriceFilter = 'all';
@@ -628,6 +1586,7 @@
         function runLiveMenuSearch() {
             const query = (document.getElementById('liveMenuSearch')?.value || '').trim().toLowerCase();
             const cards = document.querySelectorAll('.menu-filter-card');
+            const fbCols = document.querySelectorAll('.fb-feed-col');
             let matchCount = 0;
 
             cards.forEach(card => {
@@ -636,10 +1595,8 @@
                 const desc = card.getAttribute('data-desc') || '';
                 const price = parseFloat(card.getAttribute('data-price') || '0');
 
-                // Query match check
                 const matchesQuery = !query || name.includes(query) || cat.includes(query) || desc.includes(query);
 
-                // Price match check
                 let matchesPrice = true;
                 if (currentPriceFilter === 'under50') {
                     matchesPrice = price < 50;
@@ -651,23 +1608,46 @@
 
                 if (matchesQuery && matchesPrice) {
                     card.classList.remove('is-hidden');
+                    card.style.display = 'block';
                     matchCount++;
                 } else {
                     card.classList.add('is-hidden');
+                    card.style.display = 'none';
                 }
             });
 
-            // Update live counter
+            fbCols.forEach(col => {
+                const name = col.getAttribute('data-name') || '';
+                const cat = (col.getAttribute('data-category') || '').toLowerCase();
+                const desc = col.getAttribute('data-desc') || '';
+                const price = parseFloat(col.getAttribute('data-price') || '0');
+
+                const matchesQuery = !query || name.includes(query) || cat.includes(query) || desc.includes(query);
+
+                let matchesPrice = true;
+                if (currentPriceFilter === 'under50') {
+                    matchesPrice = price < 50;
+                } else if (currentPriceFilter === '50to150') {
+                    matchesPrice = price >= 50 && price <= 150;
+                } else if (currentPriceFilter === 'over150') {
+                    matchesPrice = price > 150;
+                }
+
+                if (matchesQuery && matchesPrice) {
+                    col.style.display = 'block';
+                } else {
+                    col.style.display = 'none';
+                }
+            });
+
             const countEl = document.getElementById('liveMatchCount');
             if (countEl) countEl.innerText = matchCount;
 
-            // Toggle empty state
             const emptyEl = document.getElementById('liveEmptyMessage');
             if (emptyEl) {
                 emptyEl.style.display = (matchCount === 0) ? 'block' : 'none';
             }
 
-            // Hide empty category sections in categorized view
             document.querySelectorAll('.menu-category-section').forEach(sec => {
                 const visibleInSec = sec.querySelectorAll('.menu-filter-card:not(.is-hidden)').length;
                 sec.style.display = (visibleInSec === 0 && matchCount > 0) ? 'none' : 'block';

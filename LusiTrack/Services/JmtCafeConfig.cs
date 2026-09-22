@@ -53,7 +53,8 @@ public static class JmtCafeConfig
     public const string FacebookPageName = "JMT CAFE";
     public const string BisayangExplorerUrl = "https://www.facebook.com/BisayangExplorerTV";
     public const string GoogleMapsPlaceUrl = "https://www.google.com/maps/place/JMT+CAFE/@9.7848734,123.4460781,17z";
-    public const string GoogleMapsEmbedUrl = "https://maps.google.com/maps?q=9.7848734,123.4460781&hl=en&z=17&output=embed";
+    public const string GoogleMapsEmbedUrl = "https://maps.google.com/maps?q=JMT+CAFE,+Tabon,+Dalaguete,+Cebu&t=&z=17&ie=UTF8&iwloc=&output=embed";
+    public const string OpenStreetMapEmbedUrl = "https://www.openstreetmap.org/export/embed.html?bbox=123.4380781%2C9.7768734%2C123.4540781%2C9.7928734&layer=mapnik&marker=9.7848734%2C123.4460781";
     
     // Pricing Strategy
     public const string PriceRangeDisplay = "₱35 – ₱879";
@@ -78,44 +79,72 @@ public static class JmtCafeConfig
         new()
         {
             Key = "Burgers & Snacks",
-            DisplayName = "Burgers, Combos & Snacks",
-            ShortName = "Burgers & Combos",
+            DisplayName = "Flame-Grilled Burgers & Snacks",
+            ShortName = "Burgers & Snacks",
             Icon = "bi-stack",
             Emoji = "🍔",
             AnchorId = "cat-burgers",
             BadgeClass = "bg-danger text-white",
-            CoverImageUrl = "/images/jmt/jmt_american_burger_combo.png",
+            CoverImageUrl = "/images/jmt/jmt_giant_10inch_burger_real.png",
             PriceRange = "₱20 – ₱879",
-            Description = "Flame-grilled beef patties, value combos with golden fries & chilled drinks, Buy 1 Take 1 deals, and our legendary Giant 10-Inch Party Burger.",
+            Description = "Flame-grilled pure beef patties, crispy chicken burgers, footlong cheese rolls, shoestring cheese fries, and our colossal 10-inch party burger.",
             DisplayOrder = 1
         },
         new()
         {
-            Key = "Silog & Rice Meals",
-            DisplayName = "Rice Meals & Silogs",
-            ShortName = "Rice Meals",
-            Icon = "bi-egg-fried",
-            Emoji = "🍗",
-            AnchorId = "cat-ricemeals",
-            BadgeClass = "bg-warning text-dark",
-            CoverImageUrl = "/images/jmt/jmt_burger_steak_silog.png",
-            PriceRange = "₱45 – ₱135",
-            Description = "Crispy golden fried chicken with savory house gravy, CornSilog, LoafSilog, and hearty breakfast favorites served with hot steamed jasmine rice.",
+            Key = "Value Feast Combos",
+            DisplayName = "Official Value Feast Combos",
+            ShortName = "Feast Combos",
+            Icon = "bi-gift-fill",
+            Emoji = "🎁",
+            AnchorId = "cat-combos",
+            BadgeClass = "bg-primary text-white",
+            CoverImageUrl = "/images/jmt/jmt_double_burger_fries_feast.png",
+            PriceRange = "₱110 – ₱215",
+            Description = "Hunger-busting value meals: 2 burgers + fries + drink, Bacon Burger combo, American Burger set, and Buy 1 Take 1 drinks combos.",
             DisplayOrder = 2
         },
         new()
         {
+            Key = "Silog & Rice Meals",
+            DisplayName = "Rice Meals & Authentic Silogs",
+            ShortName = "Silog Meals",
+            Icon = "bi-egg-fried",
+            Emoji = "🍗",
+            AnchorId = "cat-ricemeals",
+            BadgeClass = "bg-warning text-dark",
+            CoverImageUrl = "/images/jmt/jmt_fried_chicken_drumstick_meal.png",
+            PriceRange = "₱59 – ₱135",
+            Description = "Crispy golden fried chicken drumsticks with savory house gravy, CornSilog, LoafSilog, and fluffy omelet silog with garlic fried rice.",
+            DisplayOrder = 3
+        },
+        new()
+        {
             Key = "Coffee Drinks",
-            DisplayName = "Barista Coffee & Espresso",
+            DisplayName = "Barista Coffee & Latte Art",
             ShortName = "Coffee & Espresso",
             Icon = "bi-cup-hot-fill",
             Emoji = "☕",
             AnchorId = "cat-coffee",
             BadgeClass = "bg-dark text-warning",
-            CoverImageUrl = "/images/jmt/jmt_coffee_clock.png",
+            CoverImageUrl = "/images/jmt/jmt_twin_latte_art_mugs.png",
             PriceRange = "₱39 – ₱65",
-            Description = "Espresso poured with artisan latte art (Swan, Tulip, Rosetta), authentic Vietnamese Egg Coffee with golden custard foam, and iced Spanish lattes.",
-            DisplayOrder = 3
+            Description = "Espresso with handcrafted tulip latte art, cocoa-dusted cappuccino, caramel and Spanish lattes, and authentic Vietnamese Egg Coffee.",
+            DisplayOrder = 4
+        },
+        new()
+        {
+            Key = "Juice & Shakes",
+            DisplayName = "16 oz Fruit Shakes & Frappes",
+            ShortName = "Shakes & Frappes",
+            Icon = "bi-cup-fill",
+            Emoji = "🥤",
+            AnchorId = "cat-shakes",
+            BadgeClass = "bg-success text-white",
+            CoverImageUrl = "/images/jmt/jmt_mango_shake_16oz.png",
+            PriceRange = "₱30 – ₱85",
+            Description = "Large 16 oz fresh mango, avocado, and banana shakes, Cookies & Cream and Red Velvet frappes in official JMT logo cups, and tall Oreo dessert shakes.",
+            DisplayOrder = 5
         },
         new()
         {
@@ -126,24 +155,10 @@ public static class JmtCafeConfig
             Emoji = "🍹",
             AnchorId = "cat-mojitos",
             BadgeClass = "bg-info text-dark",
-            CoverImageUrl = "/images/jmt/jmt_mojito_menu.png",
+            CoverImageUrl = "/images/jmt/jmt_strawberry_mojito_balloon.png",
             PriceRange = "₱35 – ₱39",
-            Description = "Refreshing chilled sparkling fruit sodas infused with crisp mint leaves, fresh lime, crushed ice, and vibrant fruit syrups.",
-            DisplayOrder = 4
-        },
-        new()
-        {
-            Key = "Juice & Shakes",
-            DisplayName = "Fruit & Oreo Dessert Shakes",
-            ShortName = "Shakes & Frappes",
-            Icon = "bi-cup-fill",
-            Emoji = "🥤",
-            AnchorId = "cat-shakes",
-            BadgeClass = "bg-success text-white",
-            CoverImageUrl = "/images/jmt/jmt_burger_shakes.png",
-            PriceRange = "₱30 – ₱85",
-            Description = "Large 16 oz fresh mango and avocado shakes, plus thick chocolate Oreo dessert frappes topped with cookie crunch in elegant wine goblets.",
-            DisplayOrder = 5
+            Description = "Chilled sparkling sodas infused with wild blueberries, ripe strawberries, zesty lemon, and crushed garden mint served in balloon glasses.",
+            DisplayOrder = 6
         },
         new()
         {
@@ -154,10 +169,10 @@ public static class JmtCafeConfig
             Emoji = "🍺",
             AnchorId = "cat-beers",
             BadgeClass = "bg-secondary text-white",
-            CoverImageUrl = "/images/jmt/jmt_storefront_highlands.jpg",
+            CoverImageUrl = "/images/jmt/jmt_real_photo_feast_tray.jpg",
             PriceRange = "₱150",
-            Description = "Ice cold beers and chilled refreshments for road-trippers and riders relaxing after conquering Dalaguete's mountain roads.",
-            DisplayOrder = 6
+            Description = "Chilled ice-cold beers for evening relaxation on our open-air highland rooftop terrace after touring Dalaguete.",
+            DisplayOrder = 7
         }
     };
 

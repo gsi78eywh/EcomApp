@@ -38,7 +38,7 @@ public class OrderService : IOrderService
             Courier = new DeliveryCourierInfo
             {
                 Name = "Junrey \"Kuya Jun\" D.",
-                Phone = "+63 917 882 1940",
+                Phone = "+63 906 014 7674",
                 VehicleModel = "Honda Click 125i (Silver/Black)",
                 PlateNumber = "7G-8821",
                 Rating = 4.95,

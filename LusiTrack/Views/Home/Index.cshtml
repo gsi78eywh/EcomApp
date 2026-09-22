@@ -5,6 +5,50 @@
     var categories = ViewBag.Categories as IEnumerable<string> ?? Enumerable.Empty<string>();
 }
 
+@functions {
+    public static string GetShowcaseTheme(string category)
+    {
+        return category switch
+        {
+            "Burgers & Snacks" => "burger",
+            "Mojito Drinks" => "mojito",
+            "Coffee Drinks" => "coffee",
+            "Silog & Rice Meals" => "silog",
+            "Juice & Shakes" => "shake",
+            "Beer & Beverages (18+)" => "beer",
+            _ => "default"
+        };
+    }
+
+    public static string GetCategoryEmoji(string category)
+    {
+        return category switch
+        {
+            "Burgers & Snacks" => "🍔",
+            "Mojito Drinks" => "🍹",
+            "Coffee Drinks" => "☕",
+            "Silog & Rice Meals" => "🍳",
+            "Juice & Shakes" => "🥤",
+            "Beer & Beverages (18+)" => "🍺",
+            _ => "✨"
+        };
+    }
+
+    public static string GetCategoryWatermarkIcon(string category)
+    {
+        return category switch
+        {
+            "Burgers & Snacks" => "bi bi-fire",
+            "Mojito Drinks" => "bi bi-droplet-half",
+            "Coffee Drinks" => "bi bi-cup-hot",
+            "Silog & Rice Meals" => "bi bi-egg-fried",
+            "Juice & Shakes" => "bi bi-cup-straw",
+            "Beer & Beverages (18+)" => "bi bi-cup",
+            _ => "bi bi-stars"
+        };
+    }
+}
+
 <!-- Hero Section with JMT Cafe Amber / Deep Roast Aesthetic -->
 <section class="py-5 text-white position-relative overflow-hidden mb-5" 
          style="background: radial-gradient(circle at 80% 20%, rgba(212, 163, 115, 0.22) 0%, transparent 55%), linear-gradient(135deg, #0f0805 0%, #1c0e07 55%, #381b0a 100%); border-bottom: 1px solid rgba(212, 163, 115, 0.25);">
@@ -103,8 +147,9 @@
                         <!-- Slide Track with Real Photography -->
                         <div class="starbucks-slide-track">
                             <!-- Slide 1: Giant 10-Inch JMT Burger & Combos -->
+                            <!-- Slide 1: Giant JMT 10-Inch Burger -->
                             <div class="starbucks-slide active" data-slide-index="0">
-                                <img src="/images/jmt/jmt_burger_menu_poster.png" 
+                                <img src="/images/jmt/jmt_giant_10inch_burger_real.png" 
                                      alt="Giant JMT 10-Inch Burger" class="starbucks-slide-img" />
                                 <div class="starbucks-slide-gradient"></div>
                                 <div class="starbucks-overlay-card">
@@ -113,7 +158,7 @@
                                             <i class="bi bi-fire"></i> GIANT 10" BURGER • ₱879
                                         </span>
                                         <button type="button" class="btn btn-warning btn-sm rounded-pill py-0 px-2 fw-bold text-dark shadow-sm small" 
-                                                onclick='openJmtInquiryModal({ id: 1, name: "Giant JMT 10-Inch Burger", price: 879, imageUrl: "/images/jmt/jmt_burger_menu_poster.png", category: "Burgers & Snacks", description: "Packed with pure beef, crispy smoked bacon, lettuce, tomatoes, cheese, and a heap of fries." })'>
+                                                onclick='openJmtInquiryModal({ id: 1, name: "Giant JMT 10-Inch Burger", price: 879, imageUrl: "/images/jmt/jmt_giant_10inch_burger_real.png", category: "Burgers & Snacks", description: "Packed with pure beef, crispy smoked bacon, lettuce, tomatoes, cheese, and a heap of fries." })'>
                                             <i class="bi bi-shop me-1"></i>Visit / Inquire
                                         </button>
                                     </div>
@@ -128,8 +173,8 @@
 
                             <!-- Slide 2: Mojito Drinks Menu -->
                             <div class="starbucks-slide" data-slide-index="1">
-                                <img src="/images/jmt/jmt_mojito_menu.png" 
-                                     alt="Official JMT Mojito Drinks Poster" class="starbucks-slide-img" />
+                                <img src="/images/jmt/jmt_strawberry_mojito_balloon.png" 
+                                     alt="Official JMT Mojito Drinks" class="starbucks-slide-img" />
                                 <div class="starbucks-slide-gradient"></div>
                                 <div class="starbucks-overlay-card">
                                     <div class="d-flex justify-content-between align-items-center mb-1">
@@ -137,7 +182,7 @@
                                             <i class="bi bi-cup-straw"></i> FRESH FRUIT MOJITOS • From ₱35
                                         </span>
                                         <button type="button" class="btn btn-warning btn-sm rounded-pill py-0 px-2 fw-bold text-dark shadow-sm small" 
-                                                onclick='openJmtInquiryModal({ id: 16, name: "Strawberry Mojito", price: 39, imageUrl: "/images/jmt/jmt_mojito_menu.png", category: "Mojito Drinks", description: "Served ice-cold with real fruit, fresh garden mint, and sparkling effervescence." })'>
+                                                onclick='openJmtInquiryModal({ id: 16, name: "Strawberry Mojito", price: 39, imageUrl: "/images/jmt/jmt_strawberry_mojito_balloon.png", category: "Mojito Drinks", description: "Served ice-cold with real fruit, fresh garden mint, and sparkling effervescence." })'>
                                             <i class="bi bi-shop me-1"></i>Visit / Inquire
                                         </button>
                                     </div>
@@ -152,7 +197,7 @@
 
                             <!-- Slide 3: 1pc Chicken Meal w/ Drink -->
                             <div class="starbucks-slide" data-slide-index="2">
-                                <img src="/images/jmt/jmt_chicken_meal.png" 
+                                <img src="/images/jmt/jmt_fried_chicken_drumstick_meal.png" 
                                      alt="1-Pc Crispy Fried Chicken Meal w/ Drink" class="starbucks-slide-img" />
                                 <div class="starbucks-slide-gradient"></div>
                                 <div class="starbucks-overlay-card">
@@ -161,7 +206,7 @@
                                             <i class="bi bi-stars"></i> 1-PC CHICKEN MEAL • ₱135
                                         </span>
                                         <button type="button" class="btn btn-warning btn-sm rounded-pill py-0 px-2 fw-bold text-dark shadow-sm small" 
-                                                onclick='openJmtInquiryModal({ id: 26, name: "1-Pc Crispy Chicken Meal w/ Drink (Deluxe)", price: 135, imageUrl: "/images/jmt/jmt_chicken_meal.png", category: "Chicken Meal", description: "Golden chicken, hot jasmine rice, savory gravy, and butterfly pea lemon refresher." })'>
+                                                onclick='openJmtInquiryModal({ id: 26, name: "1-Pc Crispy Chicken Meal w/ Drink (Deluxe)", price: 135, imageUrl: "/images/jmt/jmt_fried_chicken_drumstick_meal.png", category: "Chicken Meal", description: "Golden chicken, hot jasmine rice, savory gravy, and butterfly pea lemon refresher." })'>
                                             <i class="bi bi-shop me-1"></i>Visit / Inquire
                                         </button>
                                     </div>
@@ -431,54 +476,95 @@
                          onclick='openJmtInquiryModal({ id: @item.Id, name: "@item.Name.Replace("\"", "\\\"")", price: @item.Price, imageUrl: "@item.ImageUrl", category: "@item.Category", description: "@item.Description.Replace("\"", "\\\"")" })'
                          role="button" tabindex="0" aria-label="View details for @item.Name">
                         
-                        <!-- Thumbnail Wrapper with Badges or Verification Card -->
+                        <!-- Thumbnail Wrapper: Photo Overlay or Item Name Showcase -->
                         <div style="aspect-ratio: 4/3; overflow: hidden; position: relative;">
                             @if (!string.IsNullOrEmpty(item.ImageUrl))
                             {
-                                <img src="@item.ImageUrl" alt="@item.Name" loading="lazy" style="width: 100%; height: 100%; object-fit: cover;" />
-                                
-                                <!-- Category Badge -->
-                                <div class="position-absolute top-0 start-0 m-2 d-flex flex-column gap-1">
-                                    <span class="badge bg-dark bg-opacity-75 text-warning fw-semibold rounded-pill px-2 py-1" style="font-size: 0.68rem;">
-                                        @item.Category
-                                    </span>
-                                </div>
+                                <div class="position-relative w-100 h-100">
+                                    <img src="@item.ImageUrl" class="card-img-top jmt-card-img" alt="@item.Name" loading="lazy" />
+                                    
+                                    <!-- Category Badge -->
+                                    <div class="position-absolute top-0 start-0 m-2 d-flex flex-column gap-1 z-2">
+                                        <span class="badge bg-dark bg-opacity-80 text-warning fw-semibold rounded-pill px-2 py-1 shadow-xs" style="font-size: 0.68rem; backdrop-filter: blur(4px);">
+                                            @GetCategoryEmoji(item.Category) @item.Category
+                                        </span>
+                                    </div>
 
-                                <!-- Price Pill Badge (No trailing .00) -->
-                                <div class="position-absolute bottom-0 end-0 m-2">
-                                    <span class="badge bg-warning text-dark fw-bold rounded-pill px-3 py-1 fs-6 shadow-sm">
-                                        ₱@item.Price.ToString("N0")
-                                    </span>
+                                    <!-- Integrated Photo Overlay with Name & Price -->
+                                    <div class="jmt-photo-name-overlay position-absolute bottom-0 start-0 end-0 p-2 d-flex justify-content-between align-items-end z-2">
+                                        <span class="badge bg-black bg-opacity-75 text-white fw-bold rounded-pill px-2 py-1" style="font-size: 0.70rem; backdrop-filter: blur(6px); border: 1px solid rgba(212,163,115,0.35);">
+                                            <i class="bi bi-camera-fill text-warning me-1"></i>Real Dish Photo
+                                        </span>
+                                        <span class="badge bg-warning text-dark fw-bold rounded-pill px-3 py-1 fs-6 shadow-sm">
+                                            ₱@item.Price.ToString("N0")
+                                        </span>
+                                    </div>
                                 </div>
                             }
                             else
                             {
-                                <div class="jmt-no-photo-card">
-                                    <div class="d-flex justify-content-between align-items-center w-100">
-                                        <span class="badge bg-dark bg-opacity-75 text-warning fw-semibold rounded-pill px-2 py-1" style="font-size: 0.68rem;">
-                                            @item.Category
-                                        </span>
-                                        <span class="jmt-no-photo-badge">
-                                            <i class="bi bi-shield-check text-warning"></i> Authentic Menu
-                                        </span>
+                                <div class="jmt-menu-item-showcase jmt-showcase-@GetShowcaseTheme(item.Category)">
+                                    <!-- Category Watermark Icon -->
+                                    <div class="showcase-watermark-icon">
+                                        <i class="@GetCategoryWatermarkIcon(item.Category)"></i>
                                     </div>
 
-                                    <div class="text-center my-auto py-1">
-                                        <div class="no-photo-icon-circle">
-                                            <i class="bi bi-camera"></i>
+                                    <!-- Top Row: Category Pill & Authentic/Promo Stamp -->
+                                    <div class="d-flex justify-content-between align-items-center w-100 position-relative z-2">
+                                        <span class="badge bg-black bg-opacity-60 text-warning fw-semibold rounded-pill px-2 py-1" style="font-size: 0.68rem; border: 1px solid rgba(212, 163, 115, 0.35);">
+                                            @GetCategoryEmoji(item.Category) @item.Category
+                                        </span>
+                                        @if (item.Name.Contains("Combo", StringComparison.OrdinalIgnoreCase))
+                                        {
+                                            <span class="badge bg-danger text-white fw-bold rounded-pill px-2 py-1" style="font-size: 0.68rem;">
+                                                <i class="bi bi-gift-fill me-1"></i>COMBO
+                                            </span>
+                                        }
+                                        else if (item.Name.Contains("BUY 1 TAKE 1", StringComparison.OrdinalIgnoreCase))
+                                        {
+                                            <span class="badge bg-success text-white fw-bold rounded-pill px-2 py-1" style="font-size: 0.68rem;">
+                                                <i class="bi bi-tag-fill me-1"></i>BUY 1 TAKE 1
+                                            </span>
+                                        }
+                                        else if (item.Name.Contains("10-Inch", StringComparison.OrdinalIgnoreCase) || item.Name.Contains("GIANT", StringComparison.OrdinalIgnoreCase))
+                                        {
+                                            <span class="badge bg-danger text-white fw-bold rounded-pill px-2 py-1" style="font-size: 0.68rem;">
+                                                <i class="bi bi-fire me-1"></i>10" PARTY
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="showcase-hallmark-stamp">
+                                                <i class="bi bi-patch-check-fill text-warning"></i> Authentic
+                                            </span>
+                                        }
+                                    </div>
+
+                                    <!-- Center Hero: Menu Item Name Displayed on the Menu Card -->
+                                    <div class="showcase-hero-center text-center my-auto py-1 position-relative z-2 w-100">
+                                        <div class="showcase-badge-sub small text-warning fw-semibold mb-1">
+                                            JMT Dalaguete Specialty
                                         </div>
-                                        <div class="no-photo-title">Photo on FB Page</div>
-                                        <div class="no-photo-subtext">To view real photos of @item.Name, check our Facebook page!</div>
-                                        <a href="@JmtCafeConfig.FacebookPageUrl" target="_blank" rel="noopener noreferrer" 
-                                           class="no-photo-fb-link" onclick="event.stopPropagation();">
-                                            <i class="bi bi-facebook"></i>
-                                            <span>View on FB Page</span>
-                                        </a>
+                                        <h4 class="showcase-menu-title brand-font fw-bold text-white mb-2 px-1">
+                                            @item.Name
+                                        </h4>
+                                        @if (item.TastingNotes != null && item.TastingNotes.Any())
+                                        {
+                                            <div class="d-flex flex-wrap justify-content-center gap-1">
+                                                @foreach (var note in item.TastingNotes.Take(2))
+                                                {
+                                                    <span class="showcase-feature-tag">@note</span>
+                                                }
+                                            </div>
+                                        }
                                     </div>
 
-                                    <div class="d-flex justify-content-between align-items-center w-100 pt-1" style="border-top: 1px dashed rgba(212, 163, 115, 0.3);">
-                                        <span class="text-white-50" style="font-size: 0.68rem;">Verified Onsite</span>
-                                        <span class="badge bg-warning text-dark fw-bold rounded-pill px-2 py-1" style="font-size: 0.72rem;">
+                                    <!-- Bottom Row: Dalaguete Seal & Price Tag -->
+                                    <div class="d-flex justify-content-between align-items-center w-100 pt-2 showcase-footer-border position-relative z-2">
+                                        <span class="showcase-origin-text">
+                                            <i class="bi bi-geo-alt-fill text-warning"></i> Tabon, Dalaguete
+                                        </span>
+                                        <span class="badge bg-warning text-dark fw-bold rounded-pill px-3 py-1 fs-6 shadow-sm">
                                             ₱@item.Price.ToString("N0")
                                         </span>
                                     </div>
@@ -532,6 +618,211 @@
         </div>
     </section>
 
+    <!-- Official 5.0-Star Google Maps Reviews & Real Guest Highlights -->
+    <section class="mb-5">
+        <div class="card border-0 shadow-lg rounded-4 overflow-hidden bg-white">
+            <!-- Header Banner -->
+            <div class="p-4 p-md-5 text-white" style="background: linear-gradient(135deg, #180e07 0%, #29160b 60%, #150b06 100%);">
+                <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
+                    <div>
+                        <div class="d-flex align-items-center gap-2 mb-2">
+                            <span class="badge bg-warning text-dark fw-bold rounded-pill px-3 py-1">
+                                <i class="bi bi-google me-1"></i> Google Maps Verified
+                            </span>
+                            <span class="badge bg-white bg-opacity-15 text-warning border border-warning border-opacity-30 rounded-pill px-3 py-1 small">
+                                PORUK 5 TABON, Dalaguete
+                            </span>
+                        </div>
+                        <div class="d-flex align-items-baseline gap-3">
+                            <h2 class="display-5 brand-font fw-bold text-white mb-0">5.0</h2>
+                            <div class="d-flex flex-column">
+                                <div class="text-warning fs-5">
+                                    <i class="bi bi-star-fill"></i>
+                                    <i class="bi bi-star-fill"></i>
+                                    <i class="bi bi-star-fill"></i>
+                                    <i class="bi bi-star-fill"></i>
+                                    <i class="bi bi-star-fill"></i>
+                                </div>
+                                <span class="text-white-50 small">100% 5-Star Rating • Verified Google Reviews</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <a href="@JmtCafeConfig.GoogleMapsPlaceUrl" target="_blank" rel="noopener noreferrer" 
+                           class="btn btn-warning rounded-pill px-4 py-2 fw-bold text-dark shadow-sm d-inline-flex align-items-center gap-2">
+                            <i class="bi bi-box-arrow-up-right"></i>
+                            <span>View on Google Maps</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Reviews Cards Grid -->
+            <div class="p-4 p-md-5 bg-light">
+                <div class="row g-4">
+                    <!-- Review 1: Johanna K. with Real Photos -->
+                    <div class="col-lg-6">
+                        <div class="card h-100 border-0 shadow-sm rounded-4 p-4 bg-white d-flex flex-column justify-content-between">
+                            <div>
+                                <div class="d-flex justify-content-between align-items-start mb-3">
+                                    <div class="d-flex align-items-center gap-3">
+                                        <div class="rounded-circle text-white d-flex align-items-center justify-content-center fw-bold shadow-xs" 
+                                             style="width: 48px; height: 48px; background: #2e7d32; font-size: 1.25rem;">
+                                            J
+                                        </div>
+                                        <div>
+                                            <h6 class="fw-bold text-dark mb-0">Johanna K.</h6>
+                                            <small class="text-muted"><i class="bi bi-patch-check-fill text-warning me-1"></i>Local Guide • 46 reviews • 56 photos</small>
+                                        </div>
+                                    </div>
+                                    <div class="text-warning small">
+                                        <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
+                                    </div>
+                                </div>
+
+                                <div class="mb-2">
+                                    <span class="badge bg-light text-secondary border rounded-pill px-2 py-1 small">Dine in</span>
+                                    <span class="badge bg-light text-secondary border rounded-pill px-2 py-1 small">₱1–200</span>
+                                </div>
+
+                                <p class="text-dark fw-semibold mb-3" style="font-size: 0.95rem; line-height: 1.6;">
+                                    &ldquo;Excellent Mango shake! Freshly prepared and super refreshing with the beautiful highland breeze.&rdquo;
+                                </p>
+
+                                <!-- Real Customer Photos Attached to Johanna's Review -->
+                                <div class="row g-2 mb-3">
+                                    <div class="col-6">
+                                        <div class="rounded-3 overflow-hidden border shadow-xs position-relative" style="height: 140px;">
+                                            <img src="/images/jmt/jmt_building_customer.png" alt="JMT Cafe Building Dalaguete" class="w-100 h-100" style="object-fit: cover;" />
+                                            <div class="position-absolute bottom-0 start-0 end-0 p-1 text-center text-white small" style="background: rgba(0,0,0,0.65); font-size: 0.65rem;">
+                                                <i class="bi bi-camera-fill me-1"></i>JMT Storefront & Deck
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="rounded-3 overflow-hidden border shadow-xs position-relative" style="height: 140px;">
+                                            <img src="/images/jmt/jmt_mango_shake_real.png" alt="Real Mango Shake in Dalaguete" class="w-100 h-100" style="object-fit: cover;" />
+                                            <div class="position-absolute bottom-0 start-0 end-0 p-1 text-center text-white small" style="background: rgba(0,0,0,0.65); font-size: 0.65rem;">
+                                                <i class="bi bi-cup-straw me-1"></i>Real Mango Shake
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Owner Response -->
+                            <div class="p-3 rounded-3 mt-2" style="background: rgba(212, 163, 115, 0.12); border-left: 3px solid #d4a373;">
+                                <div class="d-flex align-items-center gap-2 mb-1">
+                                    <span class="badge bg-dark text-warning small px-2 py-1">JMT CAFE (Owner)</span>
+                                </div>
+                                <p class="small text-secondary mb-0">
+                                    &ldquo;Thanks a lot.&rdquo;
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Review 2: Steve Hoffmann -->
+                    <div class="col-lg-6">
+                        <div class="card h-100 border-0 shadow-sm rounded-4 p-4 bg-white d-flex flex-column justify-content-between">
+                            <div>
+                                <div class="d-flex justify-content-between align-items-start mb-3">
+                                    <div class="d-flex align-items-center gap-3">
+                                        <div class="rounded-circle text-white d-flex align-items-center justify-content-center fw-bold shadow-xs" 
+                                             style="width: 48px; height: 48px; background: #1565c0; font-size: 1.25rem;">
+                                            S
+                                        </div>
+                                        <div>
+                                            <h6 class="fw-bold text-dark mb-0">Steve Hoffmann</h6>
+                                            <small class="text-muted"><i class="bi bi-patch-check-fill text-warning me-1"></i>Local Guide • 19 reviews</small>
+                                        </div>
+                                    </div>
+                                    <div class="text-warning small">
+                                        <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
+                                    </div>
+                                </div>
+
+                                <div class="mb-2">
+                                    <span class="badge bg-light text-secondary border rounded-pill px-2 py-1 small">Dine in</span>
+                                    <span class="badge bg-light text-secondary border rounded-pill px-2 py-1 small">₱1–500</span>
+                                </div>
+
+                                <p class="text-dark fw-semibold mb-3" style="font-size: 0.95rem; line-height: 1.6;">
+                                    &ldquo;Super friendly staff and really good food, Shakes and Coffee. Highly recommend.&rdquo;
+                                </p>
+
+                                <div class="p-3 rounded-3 bg-light border mb-3">
+                                    <div class="d-flex align-items-center gap-2 text-secondary small">
+                                        <i class="bi bi-heart-fill text-danger"></i>
+                                        <span>Recommended: <strong>Highland Coffee, Fresh Shakes & Friendly Service</strong></span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Owner Response -->
+                            <div class="p-3 rounded-3 mt-2" style="background: rgba(212, 163, 115, 0.12); border-left: 3px solid #d4a373;">
+                                <div class="d-flex align-items-center gap-2 mb-1">
+                                    <span class="badge bg-dark text-warning small px-2 py-1">JMT CAFE (Owner)</span>
+                                </div>
+                                <p class="small text-secondary mb-0" style="line-height: 1.5;">
+                                    &ldquo;Thank you for visiting our JMT CAFE coffee shop Mr. Steve Hoffmann. Hope to see you around here. Enjoy your vacation and tours.&rdquo;
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Review 3 & 4: Quick Testimonials -->
+                    <div class="col-md-6">
+                        <div class="card border-0 shadow-sm rounded-4 p-3 bg-white h-100">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <div class="d-flex align-items-center gap-2">
+                                    <div class="rounded-circle text-white d-flex align-items-center justify-content-center fw-bold" 
+                                         style="width: 36px; height: 36px; background: #e91e63; font-size: 0.95rem;">
+                                        J
+                                    </div>
+                                    <div>
+                                        <div class="fw-bold text-dark small">Jhun Mari Dicdican</div>
+                                        <div class="text-warning small" style="font-size: 0.72rem;">
+                                            <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                                <span class="badge bg-success bg-opacity-10 text-success small rounded-pill">Verified Guest</span>
+                            </div>
+                            <p class="small text-muted mb-0">
+                                Rated 5.0 stars on Google Maps: Best relaxing tambayan spot in Dalaguete highlands with delicious food and coffee!
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="card border-0 shadow-sm rounded-4 p-3 bg-white h-100">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <div class="d-flex align-items-center gap-2">
+                                    <div class="rounded-circle text-white d-flex align-items-center justify-content-center fw-bold" 
+                                         style="width: 36px; height: 36px; background: #43a047; font-size: 0.95rem;">
+                                        M
+                                    </div>
+                                    <div>
+                                        <div class="fw-bold text-dark small">Mark Marcus</div>
+                                        <div class="text-warning small" style="font-size: 0.72rem;">
+                                            <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                                <span class="badge bg-success bg-opacity-10 text-success small rounded-pill">Verified Guest</span>
+                            </div>
+                            <p class="small text-muted mb-1">
+                                Rated 5.0 stars on Google Maps: Authentic food and welcoming atmosphere along the Tabon highway.
+                            </p>
+                            <small class="text-secondary fst-italic">Owner: &ldquo;Thanks. Hope to be our regular customer.&rdquo;</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- Official Location & Wayfinding Section -->
     <section id="jmtLocationSection" class="card border-0 shadow-lg rounded-4 overflow-hidden mb-5 bg-white">
         <div class="p-4 p-md-5 border-bottom" style="background: linear-gradient(135deg, #180e07 0%, #2f190c 100%); color: #ffffff;">
@@ -567,36 +858,51 @@
         <div class="row g-0">
             <!-- Left: Interactive Dual Map Viewer -->
             <div class="col-lg-8 border-end">
-                <!-- Map Navigation Tabs -->
-                <div class="bg-light p-2 border-bottom d-flex align-items-center justify-content-between flex-wrap gap-2">
-                    <ul class="nav nav-pills gap-1" id="mapViewerTabs" role="tablist">
+                <!-- Map Navigation Tabs (60-30-10 Luxury Palette) -->
+                <div class="jmt-map-tabs-bar d-flex align-items-center justify-content-between flex-wrap gap-2">
+                    <ul class="nav nav-pills gap-2 mb-0" id="mapViewerTabs" role="tablist">
                         <li class="nav-item" role="presentation">
-                            <button class="nav-link active rounded-pill fw-bold small py-1 px-3" id="gmaps-tab" data-bs-toggle="pill" data-bs-target="#gmaps-pane" type="button" role="tab">
-                                <i class="bi bi-google me-1 text-danger"></i> Google Maps Embed
+                            <button class="nav-link jmt-map-tab-btn active" id="osm-tab" data-bs-toggle="pill" data-bs-target="#osm-pane" type="button" role="tab" aria-selected="true" onclick="refreshJmtOsm()">
+                                <i class="bi bi-geo-alt-fill me-1 text-warning"></i> Interactive Highland Map (Street & Satellite)
                             </button>
                         </li>
                         <li class="nav-item" role="presentation">
-                            <button class="nav-link rounded-pill fw-bold small py-1 px-3 text-dark" id="osm-tab" data-bs-toggle="pill" data-bs-target="#osm-pane" type="button" role="tab" onclick="refreshJmtOsm()">
-                                <i class="bi bi-map-fill me-1 text-success"></i> OpenStreetMap (Interactive Map)
+                            <button class="nav-link jmt-map-tab-btn" id="gmaps-tab" data-bs-toggle="pill" data-bs-target="#gmaps-pane" type="button" role="tab" aria-selected="false">
+                                <i class="bi bi-google me-1"></i> Google Maps Listing
                             </button>
                         </li>
                     </ul>
-                    <a href="@JmtCafeConfig.GoogleMapsPlaceUrl" target="_blank" rel="noopener noreferrer" class="small fw-bold text-decoration-none text-primary pe-2">
-                        <i class="bi bi-box-arrow-up-right me-1"></i> Fullscreen Map
+                    <a href="@JmtCafeConfig.GoogleMapsPlaceUrl" target="_blank" rel="noopener noreferrer" class="jmt-map-action-link" title="Open Google Maps in full tab with navigation">
+                        <i class="bi bi-box-arrow-up-right"></i> Open in Maps App
                     </a>
                 </div>
 
                 <div class="tab-content" id="mapViewerTabContent">
-                    <!-- Tab 1: Google Maps Interactive Embed -->
-                    <div class="tab-pane fade show active" id="gmaps-pane" role="tabpanel">
-                        <iframe src="@JmtCafeConfig.GoogleMapsEmbedUrl" 
-                                width="100%" height="470" style="border:0; display: block;" allowfullscreen="" loading="lazy" 
-                                referrerpolicy="no-referrer-when-downgrade" title="Google Maps JMT CAFE Location"></iframe>
+                    <!-- Tab 1 (Default): Interactive Leaflet Map with Street & Satellite Dual Layers -->
+                    <div class="tab-pane fade show active position-relative" id="osm-pane" role="tabpanel">
+                        <div id="jmtOpenStreetMap" style="width: 100%; height: 470px; z-index: 1;"></div>
+                        <!-- Quick Navigation Overlay Strip -->
+                        <div class="position-absolute bottom-0 start-0 m-3 px-3 py-2 rounded-3 shadow-sm bg-white border d-none d-sm-flex align-items-center gap-2" style="z-index: 1000; border-color: rgba(212,163,115,0.4) !important; font-size: 0.75rem;">
+                            <span class="fw-bold text-dark"><i class="bi bi-compass text-warning me-1"></i> Purok 5 Tabon, Dalaguete (Elevation ~800m)</span>
+                            <button type="button" class="btn btn-sm btn-outline-dark rounded-pill py-0 px-2 fw-bold" style="font-size: 0.72rem;" onclick="recenterJmtMap()">
+                                <i class="bi bi-crosshair me-1"></i> Recenter Cafe
+                            </button>
+                        </div>
                     </div>
 
-                    <!-- Tab 2: OpenStreetMap Leaflet Container -->
-                    <div class="tab-pane fade" id="osm-pane" role="tabpanel">
-                        <div id="jmtOpenStreetMap" style="width: 100%; height: 470px; z-index: 1;"></div>
+                    <!-- Tab 2: Google Maps Embed with Verified Place Query & Direct App Link -->
+                    <div class="tab-pane fade" id="gmaps-pane" role="tabpanel">
+                        <div class="bg-light px-3 py-2 border-bottom d-flex justify-content-between align-items-center flex-wrap gap-2" style="font-size: 0.78rem;">
+                            <span class="text-secondary">
+                                <i class="bi bi-info-circle text-warning me-1"></i> Google Maps Listing for <strong>@JmtCafeConfig.Name</strong> (@JmtCafeConfig.Landmark)
+                            </span>
+                            <a href="@JmtCafeConfig.GoogleMapsPlaceUrl" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-warning rounded-pill fw-bold py-0 px-2" style="font-size: 0.72rem;">
+                                <i class="bi bi-cursor-fill me-1"></i> Get Directions
+                            </a>
+                        </div>
+                        <iframe src="@JmtCafeConfig.GoogleMapsEmbedUrl" 
+                                width="100%" height="435" style="border:0; display: block;" allowfullscreen="" loading="lazy" 
+                                referrerpolicy="no-referrer-when-downgrade" title="Google Maps JMT CAFE Location"></iframe>
                     </div>
                 </div>
             </div>
@@ -765,24 +1071,42 @@
             }
         });
 
-        // Initialize OpenStreetMap for JMT Cafe with Verified Coordinates
+        // Initialize OpenStreetMap & Satellite Map for JMT Cafe with Verified Coordinates
         let jmtLeafletMap = null;
+        const jmtCoords = [@JmtCafeConfig.Latitude, @JmtCafeConfig.Longitude];
+
         function initJmtMap() {
             const mapEl = document.getElementById('jmtOpenStreetMap');
             if (!mapEl || jmtLeafletMap) return;
 
-            const jmtCoords = [@JmtCafeConfig.Latitude, @JmtCafeConfig.Longitude];
-
-            jmtLeafletMap = L.map('jmtOpenStreetMap', {
-                zoomControl: true,
-                scrollWheelZoom: false
-            }).setView(jmtCoords, 17);
-
-            L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            // Street Tile Layer (OpenStreetMap)
+            const osmStreetLayer = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
                 maxZoom: 19
-            }).addTo(jmtLeafletMap);
+            });
 
+            // High-Resolution Satellite Layer (Esri World Imagery)
+            const esriSatelliteLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+                attribution: 'Tiles &copy; Esri &mdash; Dalaguete Highlands Satellite',
+                maxZoom: 18
+            });
+
+            jmtLeafletMap = L.map('jmtOpenStreetMap', {
+                center: jmtCoords,
+                zoom: 17,
+                zoomControl: true,
+                scrollWheelZoom: false,
+                layers: [osmStreetLayer]
+            });
+
+            // Base Layer Switcher (Street vs Satellite)
+            const baseLayers = {
+                "🗺️ Street Map": osmStreetLayer,
+                "🛰️ Highland Satellite": esriSatelliteLayer
+            };
+            L.control.layers(baseLayers, null, { position: 'topright' }).addTo(jmtLeafletMap);
+
+            // Custom Animated Coffee Pin
             const jmtIcon = L.divIcon({
                 className: 'custom-leaflet-marker',
                 html: `
@@ -799,26 +1123,39 @@
 
             const marker = L.marker(jmtCoords, { icon: jmtIcon }).addTo(jmtLeafletMap);
             marker.bindPopup(`
-                <div style="font-family: 'Plus Jakarta Sans', sans-serif; min-width: 240px; padding: 4px;">
+                <div style="font-family: 'Plus Jakarta Sans', sans-serif; min-width: 250px; padding: 4px;">
                     <div style="font-weight: 800; font-size: 1.05rem; color: #150b06; margin-bottom: 2px;">
                         <i class="bi bi-shop text-warning me-1"></i> @JmtCafeConfig.Name
                     </div>
-                    <div style="font-size: 0.85rem; color: #555; margin-bottom: 4px;">
+                    <div style="font-size: 0.85rem; color: #333; margin-bottom: 4px; font-weight: 500;">
                         @JmtCafeConfig.AddressLine1, @JmtCafeConfig.Municipality, 6022 Cebu
                     </div>
                     <div style="font-size: 0.78rem; color: #666; margin-bottom: 6px;">
-                        @JmtCafeConfig.Landmark
+                        <i class="bi bi-geo-alt-fill text-warning me-1"></i> @JmtCafeConfig.Landmark
                     </div>
-                    <div style="font-size: 0.78rem; background: #fff8e7; border: 1px solid #ffe08a; padding: 4px 8px; border-radius: 6px; color: #b8860b; font-weight: 700; margin-bottom: 8px;">
+                    <div style="font-size: 0.75rem; background: #fff8e7; border: 1px solid #ffe08a; padding: 4px 8px; border-radius: 6px; color: #b8860b; font-weight: 700; margin-bottom: 8px;">
                         Mountain Breeze • Rooftop Deck • Free Wi-Fi • @JmtCafeConfig.HoursShort
                     </div>
-                    <a href="@JmtCafeConfig.GoogleMapsPlaceUrl" target="_blank" 
-                       style="display: block; text-align: center; background: #180e07; color: #fff; padding: 6px 12px; border-radius: 20px; text-decoration: none; font-weight: 700; font-size: 0.78rem;">
-                        Open Google Maps
-                    </a>
+                    <div class="d-flex gap-2">
+                        <a href="@JmtCafeConfig.GoogleMapsPlaceUrl" target="_blank" 
+                           style="flex: 1; text-align: center; background: #180e07; color: #ffc107; padding: 6px 10px; border-radius: 20px; text-decoration: none; font-weight: 700; font-size: 0.78rem; border: 1px solid #d4a373;">
+                            <i class="bi bi-compass-fill me-1"></i> Directions
+                        </a>
+                        <a href="@JmtCafeConfig.PhoneTelLink" 
+                           style="background: #e58b05; color: #fff; padding: 6px 12px; border-radius: 20px; text-decoration: none; font-weight: 700; font-size: 0.78rem;">
+                            <i class="bi bi-telephone-fill"></i>
+                        </a>
+                    </div>
                 </div>
             `).openPopup();
         }
+
+        window.recenterJmtMap = function() {
+            if (jmtLeafletMap) {
+                jmtLeafletMap.setView(jmtCoords, 17);
+                jmtLeafletMap.invalidateSize();
+            }
+        };
 
         window.refreshJmtOsm = function() {
             setTimeout(() => {
@@ -826,8 +1163,19 @@
                 if (jmtLeafletMap) {
                     jmtLeafletMap.invalidateSize();
                 }
-            }, 250);
+            }, 150);
         };
+
+        const osmTabEl = document.getElementById('osm-tab');
+        if (osmTabEl) {
+            osmTabEl.addEventListener('shown.bs.tab', () => {
+                if (jmtLeafletMap) {
+                    jmtLeafletMap.invalidateSize();
+                } else {
+                    initJmtMap();
+                }
+            });
+        }
 
         // Initialize carousel and map on DOM load
         document.addEventListener('DOMContentLoaded', () => {

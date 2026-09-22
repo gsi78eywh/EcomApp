@@ -219,36 +219,50 @@
             </a>
         </div>
 
-        <!-- Map Navigation Tabs -->
-        <div class="bg-light p-2 border-bottom d-flex align-items-center justify-content-between flex-wrap gap-2">
-            <ul class="nav nav-pills gap-1" id="contactMapTabs" role="tablist">
+        <!-- Map Navigation Tabs (60-30-10 Luxury Palette) -->
+        <div class="jmt-map-tabs-bar d-flex align-items-center justify-content-between flex-wrap gap-2">
+            <ul class="nav nav-pills gap-2 mb-0" id="contactMapTabs" role="tablist">
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link active rounded-pill fw-bold small py-1 px-3" id="contact-gmaps-tab" data-bs-toggle="pill" data-bs-target="#contact-gmaps-pane" type="button" role="tab">
-                        <i class="bi bi-google me-1 text-danger"></i> Google Maps Embed
+                    <button class="nav-link jmt-map-tab-btn active" id="contact-osm-tab" data-bs-toggle="pill" data-bs-target="#contact-osm-pane" type="button" role="tab" aria-selected="true" onclick="refreshContactOsm()">
+                        <i class="bi bi-geo-alt-fill me-1 text-warning"></i> Interactive Highland Map (Street & Satellite)
                     </button>
                 </li>
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link rounded-pill fw-bold small py-1 px-3 text-dark" id="contact-osm-tab" data-bs-toggle="pill" data-bs-target="#contact-osm-pane" type="button" role="tab" onclick="refreshContactOsm()">
-                        <i class="bi bi-map-fill me-1 text-success"></i> OpenStreetMap (Interactive Map)
+                    <button class="nav-link jmt-map-tab-btn" id="contact-gmaps-tab" data-bs-toggle="pill" data-bs-target="#contact-gmaps-pane" type="button" role="tab" aria-selected="false">
+                        <i class="bi bi-google me-1"></i> Google Maps Listing
                     </button>
                 </li>
             </ul>
-            <span class="small text-muted pe-2">
-                <i class="bi bi-pin-map text-warning me-1"></i> @JmtCafeConfig.Landmark
-            </span>
+            <a href="@JmtCafeConfig.GoogleMapsPlaceUrl" target="_blank" rel="noopener noreferrer" class="jmt-map-action-link">
+                <i class="bi bi-box-arrow-up-right"></i> Open in Maps App
+            </a>
         </div>
 
         <div class="tab-content" id="contactMapTabContent">
-            <!-- Tab 1: Google Maps Interactive Embed -->
-            <div class="tab-pane fade show active" id="contact-gmaps-pane" role="tabpanel">
-                <iframe src="@JmtCafeConfig.GoogleMapsEmbedUrl" 
-                        width="100%" height="470" style="border:0; display: block;" allowfullscreen="" loading="lazy" 
-                        referrerpolicy="no-referrer-when-downgrade" title="Google Maps JMT CAFE Location"></iframe>
+            <!-- Tab 1 (Default): Interactive Leaflet Map with Street & Satellite Dual Layers -->
+            <div class="tab-pane fade show active position-relative" id="contact-osm-pane" role="tabpanel">
+                <div id="contactJmtMap" style="width: 100%; height: 470px; z-index: 1;"></div>
+                <div class="position-absolute bottom-0 start-0 m-3 px-3 py-2 rounded-3 shadow-sm bg-white border d-none d-sm-flex align-items-center gap-2" style="z-index: 1000; border-color: rgba(212,163,115,0.4) !important; font-size: 0.75rem;">
+                    <span class="fw-bold text-dark"><i class="bi bi-compass text-warning me-1"></i> Purok 5 Tabon, Dalaguete (Elevation ~800m)</span>
+                    <button type="button" class="btn btn-sm btn-outline-dark rounded-pill py-0 px-2 fw-bold" style="font-size: 0.72rem;" onclick="recenterContactMap()">
+                        <i class="bi bi-crosshair me-1"></i> Recenter Cafe
+                    </button>
+                </div>
             </div>
 
-            <!-- Tab 2: OpenStreetMap Leaflet Container -->
-            <div class="tab-pane fade" id="contact-osm-pane" role="tabpanel">
-                <div id="contactJmtMap" style="width: 100%; height: 470px; z-index: 1;"></div>
+            <!-- Tab 2: Google Maps Embed with Verified Place Query -->
+            <div class="tab-pane fade" id="contact-gmaps-pane" role="tabpanel">
+                <div class="bg-light px-3 py-2 border-bottom d-flex justify-content-between align-items-center flex-wrap gap-2" style="font-size: 0.78rem;">
+                    <span class="text-secondary">
+                        <i class="bi bi-info-circle text-warning me-1"></i> Google Maps Listing for <strong>@JmtCafeConfig.Name</strong> (@JmtCafeConfig.Landmark)
+                    </span>
+                    <a href="@JmtCafeConfig.GoogleMapsPlaceUrl" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-warning rounded-pill fw-bold py-0 px-2" style="font-size: 0.72rem;">
+                        <i class="bi bi-cursor-fill me-1"></i> Get Directions
+                    </a>
+                </div>
+                <iframe src="@JmtCafeConfig.GoogleMapsEmbedUrl" 
+                        width="100%" height="435" style="border:0; display: block;" allowfullscreen="" loading="lazy" 
+                        referrerpolicy="no-referrer-when-downgrade" title="Google Maps JMT CAFE Location"></iframe>
             </div>
         </div>
     </div>
@@ -260,21 +274,38 @@
 
     <script>
         let contactLeafletMap = null;
+        const contactJmtCoords = [@JmtCafeConfig.Latitude, @JmtCafeConfig.Longitude];
 
         function initContactMap() {
             const mapEl = document.getElementById('contactJmtMap');
             if (!mapEl || contactLeafletMap) return;
 
-            const jmtCoords = [@JmtCafeConfig.Latitude, @JmtCafeConfig.Longitude];
-            contactLeafletMap = L.map('contactJmtMap', {
-                zoomControl: true,
-                scrollWheelZoom: false
-            }).setView(jmtCoords, 17);
-
-            L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            // Street Tile Layer (OpenStreetMap)
+            const osmStreetLayer = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
                 maxZoom: 19
-            }).addTo(contactLeafletMap);
+            });
+
+            // High-Resolution Satellite Layer (Esri World Imagery)
+            const esriSatelliteLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+                attribution: 'Tiles &copy; Esri &mdash; Dalaguete Highlands Satellite',
+                maxZoom: 18
+            });
+
+            contactLeafletMap = L.map('contactJmtMap', {
+                center: contactJmtCoords,
+                zoom: 17,
+                zoomControl: true,
+                scrollWheelZoom: false,
+                layers: [osmStreetLayer]
+            });
+
+            // Base Layer Switcher (Street vs Satellite)
+            const baseLayers = {
+                "🗺️ Street Map": osmStreetLayer,
+                "🛰️ Highland Satellite": esriSatelliteLayer
+            };
+            L.control.layers(baseLayers, null, { position: 'topright' }).addTo(contactLeafletMap);
 
             const jmtIcon = L.divIcon({
                 className: 'custom-leaflet-marker',
@@ -290,20 +321,42 @@
                 iconAnchor: [22, 22]
             });
 
-            L.marker(jmtCoords, { icon: jmtIcon }).addTo(contactLeafletMap)
+            L.marker(contactJmtCoords, { icon: jmtIcon }).addTo(contactLeafletMap)
                 .bindPopup(`
-                    <div style="font-family: 'Plus Jakarta Sans', sans-serif; min-width: 230px;">
-                        <strong>@JmtCafeConfig.Name</strong><br>
-                        @JmtCafeConfig.FullAddress<br>
-                        <small class='text-muted'>@JmtCafeConfig.Landmark</small><br>
-                        <small class='text-warning fw-bold'>Mountain Breeze • Rooftop Deck • Free Wi-Fi • @JmtCafeConfig.HoursShort</small><br>
-                        <a href="@JmtCafeConfig.GoogleMapsPlaceUrl" target="_blank" class="btn btn-warning btn-sm rounded-pill fw-bold mt-2 w-100 py-1" style="font-size: 0.75rem;">
-                            Open in Google Maps
-                        </a>
+                    <div style="font-family: 'Plus Jakarta Sans', sans-serif; min-width: 250px; padding: 4px;">
+                        <div style="font-weight: 800; font-size: 1.05rem; color: #150b06; margin-bottom: 2px;">
+                            <i class="bi bi-shop text-warning me-1"></i> @JmtCafeConfig.Name
+                        </div>
+                        <div style="font-size: 0.85rem; color: #333; margin-bottom: 4px; font-weight: 500;">
+                            @JmtCafeConfig.AddressLine1, @JmtCafeConfig.Municipality, 6022 Cebu
+                        </div>
+                        <div style="font-size: 0.78rem; color: #666; margin-bottom: 6px;">
+                            <i class="bi bi-geo-alt-fill text-warning me-1"></i> @JmtCafeConfig.Landmark
+                        </div>
+                        <div style="font-size: 0.75rem; background: #fff8e7; border: 1px solid #ffe08a; padding: 4px 8px; border-radius: 6px; color: #b8860b; font-weight: 700; margin-bottom: 8px;">
+                            Mountain Breeze • Rooftop Deck • Free Wi-Fi • @JmtCafeConfig.HoursShort
+                        </div>
+                        <div class="d-flex gap-2">
+                            <a href="@JmtCafeConfig.GoogleMapsPlaceUrl" target="_blank" 
+                               style="flex: 1; text-align: center; background: #180e07; color: #ffc107; padding: 6px 10px; border-radius: 20px; text-decoration: none; font-weight: 700; font-size: 0.78rem; border: 1px solid #d4a373;">
+                                <i class="bi bi-compass-fill me-1"></i> Directions
+                            </a>
+                            <a href="@JmtCafeConfig.PhoneTelLink" 
+                               style="background: #e58b05; color: #fff; padding: 6px 12px; border-radius: 20px; text-decoration: none; font-weight: 700; font-size: 0.78rem;">
+                                <i class="bi bi-telephone-fill"></i>
+                            </a>
+                        </div>
                     </div>
                 `)
                 .openPopup();
         }
+
+        window.recenterContactMap = function() {
+            if (contactLeafletMap) {
+                contactLeafletMap.setView(contactJmtCoords, 17);
+                contactLeafletMap.invalidateSize();
+            }
+        };
 
         window.refreshContactOsm = function() {
             setTimeout(() => {
@@ -311,8 +364,19 @@
                 if (contactLeafletMap) {
                     contactLeafletMap.invalidateSize();
                 }
-            }, 250);
+            }, 150);
         };
+
+        const contactOsmTabEl = document.getElementById('contact-osm-tab');
+        if (contactOsmTabEl) {
+            contactOsmTabEl.addEventListener('shown.bs.tab', () => {
+                if (contactLeafletMap) {
+                    contactLeafletMap.invalidateSize();
+                } else {
+                    initContactMap();
+                }
+            });
+        }
 
         document.addEventListener('DOMContentLoaded', () => {
             initContactMap();

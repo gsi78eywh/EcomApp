@@ -11,11 +11,11 @@
         <ol class="breadcrumb small">
             <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index" class="text-muted text-decoration-none">Home</a></li>
             <li class="breadcrumb-item"><a asp-controller="Cart" asp-action="Index" class="text-muted text-decoration-none">Cart</a></li>
-            <li class="breadcrumb-item active fw-semibold text-dark" aria-current="page">Checkout</li>
+            <li class="breadcrumb-item active fw-bold text-dark" aria-current="page">Checkout</li>
         </ol>
     </nav>
 
-    <!-- 5-Step Checkout Stepper -->
+    <!-- 5-Step Checkout Stepper (60-30-10 Design System) -->
     <div class="checkout-stepper mb-5">
         <div class="checkout-step-node completed">
             <div class="step-node-circle"><i class="bi bi-check-lg"></i></div>
@@ -40,13 +40,18 @@
     </div>
 
     <div class="row g-4">
-        <!-- Customer & Delivery Form Column -->
+        <!-- Customer & Delivery Form Column (60% Dominant Canvas Surface) -->
         <div class="col-lg-7">
-            <div class="card border-0 shadow-lg rounded-4 p-4 p-md-5 bg-white">
-                <div class="d-flex justify-content-between align-items-center mb-4">
-                    <h3 class="brand-font fw-bold mb-0">Customer & Delivery Details</h3>
-                    <span class="badge bg-light text-dark border rounded-pill px-3 py-1">
-                        <i class="bi bi-shield-check text-success me-1"></i> Fast Guest Checkout
+            <div class="card border-0 shadow-lg rounded-4 p-4 p-md-5 bg-white" style="border: 1px solid rgba(41, 24, 14, 0.08);">
+                <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom">
+                    <div>
+                        <span class="badge badge-espresso rounded-pill px-3 py-1 small mb-1">
+                            <i class="bi bi-shield-check text-warning me-1"></i> Fast Guest Checkout
+                        </span>
+                        <h3 class="brand-font fw-bold mb-0 text-dark">Customer & Delivery Details</h3>
+                    </div>
+                    <span class="badge badge-verified rounded-pill px-3 py-1 small">
+                        <i class="bi bi-patch-check-fill me-1"></i> Verified
                     </span>
                 </div>
 
@@ -57,23 +62,23 @@
                     <div class="row g-3">
                         <div class="col-12">
                             <label asp-for="CustomerName" class="form-label small fw-bold text-secondary">Full Name</label>
-                            <input asp-for="CustomerName" class="form-control" placeholder="e.g. Maria Santos" required />
+                            <input asp-for="CustomerName" class="form-control form-control-lg rounded-3" placeholder="e.g. Maria Santos" required />
                             <span asp-validation-for="CustomerName" class="text-danger small"></span>
                         </div>
 
                         <div class="col-md-6">
                             <label asp-for="Email" class="form-label small fw-bold text-secondary">Email Address (Order Confirmation)</label>
-                            <input asp-for="Email" type="email" class="form-control" placeholder="maria@example.com" required />
+                            <input asp-for="Email" type="email" class="form-control rounded-3" placeholder="maria@example.com" required />
                             <span asp-validation-for="Email" class="text-danger small"></span>
                         </div>
 
                         <div class="col-md-6">
                             <label asp-for="Phone" class="form-label small fw-bold text-secondary">Mobile Number (Courier SMS Dispatch)</label>
-                            <input asp-for="Phone" class="form-control" placeholder="0917 123 4567" required />
+                            <input asp-for="Phone" class="form-control rounded-3" placeholder="0917 123 4567" required />
                             <span asp-validation-for="Phone" class="text-danger small"></span>
                         </div>
 
-                        <!-- Fulfillment Option Selector -->
+                        <!-- Fulfillment Option Selector (60-30-10 Interactive Options) -->
                         <div class="col-12 mt-3">
                             <label class="form-label small fw-bold text-secondary mb-2">Fulfillment Mode</label>
                             <div class="row g-2">
@@ -101,13 +106,13 @@
                         <!-- Delivery Address Fields -->
                         <div class="col-12" id="addressContainer">
                             <label asp-for="Address" class="form-label small fw-bold text-secondary">Delivery Address (Sitio, Landmark, Barangay)</label>
-                            <input asp-for="Address" class="form-control" placeholder="Purok 5 Tabon, Dalaguete, near Basketball Court" />
+                            <input asp-for="Address" class="form-control rounded-3" placeholder="Purok 5 Tabon, Dalaguete, near Basketball Court" />
                             <span asp-validation-for="Address" class="text-danger small"></span>
                         </div>
 
                         <div class="col-md-6" id="cityContainer">
                             <label asp-for="City" class="form-label small fw-bold text-secondary">City / Municipality</label>
-                            <select asp-for="City" class="form-select">
+                            <select asp-for="City" class="form-select rounded-3">
                                 <option value="Dalaguete">Dalaguete</option>
                                 <option value="Argao">Argao</option>
                                 <option value="Alcoy">Alcoy</option>
@@ -118,25 +123,26 @@
 
                         <div class="col-md-6" id="postalContainer">
                             <label asp-for="PostalCode" class="form-label small fw-bold text-secondary">Postal Code</label>
-                            <input asp-for="PostalCode" class="form-control" placeholder="6022" />
+                            <input asp-for="PostalCode" class="form-control rounded-3" placeholder="6022" />
                             <span asp-validation-for="PostalCode" class="text-danger small"></span>
                         </div>
 
-                        <!-- Exclusive GCash Payment Portal -->
+                        <!-- Exclusive GCash Payment Portal (30% Espresso Structure, 10% Gold Accent) -->
                         <div class="col-12 mt-4">
                             <div class="d-flex justify-content-between align-items-center mb-2">
-                                <h4 class="brand-font fw-bold mb-0">Payment Method</h4>
-                                <span class="badge bg-primary text-white px-3 py-1 rounded-pill fw-semibold">
+                                <h4 class="brand-font fw-bold mb-0 text-dark">Payment Method</h4>
+                                <span class="badge badge-gold px-3 py-1 rounded-pill">
                                     <i class="bi bi-shield-check me-1"></i> 100% Pre-Paid via GCash
                                 </span>
                             </div>
 
-                            <!-- Zero-RTS / No-COD Security Notice -->
-                            <div class="alert alert-primary bg-primary bg-opacity-10 border-primary border-opacity-25 rounded-4 p-3 mb-3 d-flex align-items-start gap-3">
-                                <i class="bi bi-shield-lock-fill text-primary fs-4 mt-1"></i>
+                            <!-- Zero-RTS / No-COD Security Notice in Warm Neutral -->
+                            <div class="p-3 rounded-4 mb-3 d-flex align-items-start gap-3" 
+                                 style="background: #FFFDF9; border: 1px solid rgba(212, 163, 115, 0.35);">
+                                <i class="bi bi-shield-lock-fill text-warning fs-4 mt-1 flex-shrink-0"></i>
                                 <div>
-                                    <strong class="text-primary d-block mb-1">Guaranteed Fresh Preparation & Priority Dispatch</strong>
-                                    <small class="text-secondary" style="line-height: 1.5;">
+                                    <strong class="text-dark d-block mb-1">Guaranteed Fresh Preparation & Priority Dispatch</strong>
+                                    <small class="text-secondary" style="line-height: 1.6;">
                                         All party burgers, chicken meals, fruit shakes, and artisan drinks are prepared fresh to order at JMT CAFE in Purok 5 Tabon, Dalaguete. We accept GCash pre-payments and verified onsite orders.
                                     </small>
                                 </div>
@@ -145,36 +151,37 @@
                             <!-- Hidden field ensuring GCash is always set -->
                             <input type="hidden" asp-for="PaymentMethod" value="GCash" />
 
-                            <!-- GCash Official Merchant Card -->
-                            <div class="card border border-primary border-opacity-50 rounded-4 overflow-hidden shadow-sm mb-2" style="background: #f8fbff;">
-                                <div class="bg-primary text-white p-3 d-flex justify-content-between align-items-center">
-                                    <div class="d-flex align-items-center gap-2">
-                                        <div class="bg-white text-primary rounded-circle p-2 d-flex align-items-center justify-content-center" style="width: 38px; height: 38px;">
+                            <!-- GCash Official Merchant Portal Card -->
+                            <div class="gcash-portal-card mb-2">
+                                <div class="gcash-portal-header">
+                                    <div class="d-flex align-items-center gap-3">
+                                        <div class="rounded-circle d-flex align-items-center justify-content-center shadow-sm" 
+                                             style="width: 40px; height: 40px; background: linear-gradient(135deg, var(--gold-400), var(--gold-600)); color: var(--coffee-950);">
                                             <i class="bi bi-wallet2 fs-5"></i>
                                         </div>
                                         <div>
-                                            <div class="fw-bold mb-0">GCash Official Merchant</div>
-                                            <small class="text-white-50">JMT CAFE Dalaguete • Official Food & Drinks Hub</small>
+                                            <div class="fw-bold mb-0 text-white">GCash Official Merchant</div>
+                                            <small class="text-warning opacity-90" style="font-size: 0.75rem;">JMT CAFE Dalaguete • Official Food & Drinks Hub</small>
                                         </div>
                                     </div>
-                                    <span class="badge bg-white text-primary fw-bold px-3 py-1 rounded-pill">
-                                        <i class="bi bi-patch-check-fill text-primary me-1"></i> Verified
+                                    <span class="badge badge-verified px-3 py-1 rounded-pill">
+                                        <i class="bi bi-patch-check-fill text-success me-1"></i> Verified Merchant
                                     </span>
                                 </div>
 
-                                <div class="p-4">
-                                    <div class="row g-3 align-items-center">
+                                <div class="p-4 bg-white">
+                                    <div class="row g-4 align-items-center">
                                         <!-- GCash Merchant Details -->
                                         <div class="col-md-7">
                                             <div class="mb-3">
-                                                <span class="text-muted small text-uppercase fw-semibold">Send Payment To Account:</span>
+                                                <span class="text-muted small text-uppercase fw-semibold" style="letter-spacing: 0.05em;">Send Payment To Account:</span>
                                                 <div class="d-flex align-items-center gap-2 mt-1">
                                                     <span class="fs-4 fw-bold text-dark font-monospace">@JmtCafeConfig.PhoneDisplay</span>
-                                                    <button type="button" class="btn btn-outline-primary btn-sm rounded-pill px-3" onclick="copyMerchantNumber(this)">
+                                                    <button type="button" id="copyMerchantBtn" class="btn btn-outline-dark btn-sm rounded-pill px-3 fw-semibold" onclick="copyMerchantNumber(this)">
                                                         <i class="bi bi-clipboard me-1"></i> Copy
                                                     </button>
                                                 </div>
-                                                <small class="text-muted">Account Name: <strong>JMT CAFE</strong></small>
+                                                <small class="text-muted">Account Name: <strong class="text-dark">JMT CAFE</strong></small>
                                             </div>
 
                                             <div class="mb-3">
@@ -182,8 +189,8 @@
                                                     GCash Transaction Reference Number
                                                 </label>
                                                 <div class="input-group">
-                                                    <span class="input-group-text bg-white text-muted"><i class="bi bi-receipt"></i></span>
-                                                    <input asp-for="GCashReferenceNumber" class="form-control font-monospace" placeholder="e.g. 98328104821" required />
+                                                    <span class="input-group-text bg-light text-muted border-end-0"><i class="bi bi-receipt"></i></span>
+                                                    <input asp-for="GCashReferenceNumber" class="form-control font-monospace border-start-0" placeholder="e.g. 98328104821" required />
                                                 </div>
                                                 <small class="text-muted d-block mt-1">
                                                     Pre-filled with your session token. You may update this with the 13-digit Reference No. from your GCash SMS or receipt.
@@ -194,12 +201,11 @@
 
                                         <!-- QR Code Scan Box -->
                                         <div class="col-md-5 text-center">
-                                            <div class="p-3 bg-white rounded-4 border shadow-sm d-inline-block">
-                                                <div class="p-2 bg-light rounded-3 mb-2" style="width: 140px; height: 140px; margin: 0 auto; display: flex; align-items: center; justify-content: center; border: 2px dashed #007dfe;">
-                                                    <div class="text-center">
-                                                        <i class="bi bi-qr-code text-primary" style="font-size: 4rem;"></i>
-                                                        <div class="small fw-bold text-primary" style="font-size: 0.65rem;">SCAN TO PAY</div>
-                                                    </div>
+                                            <div class="p-3 gcash-qr-box d-inline-block shadow-sm">
+                                                <div class="p-2 rounded-3 mb-2 d-flex flex-column align-items-center justify-content-center" 
+                                                     style="width: 140px; height: 140px; margin: 0 auto; background: #FFFDF9;">
+                                                    <i class="bi bi-qr-code text-dark" style="font-size: 4rem;"></i>
+                                                    <div class="small fw-bold text-warning" style="font-size: 0.65rem; letter-spacing: 0.05em;">SCAN TO PAY</div>
                                                 </div>
                                                 <small class="text-secondary d-block fw-semibold" style="font-size: 0.75rem;">
                                                     Scan with GCash App
@@ -214,9 +220,10 @@
                         <!-- Courier / Barista Notes -->
                         <div class="col-12 mt-3">
                             <label asp-for="OrderNotes" class="form-label small fw-bold text-secondary">Special Instructions or Landmark (Optional)</label>
-                            <textarea asp-for="OrderNotes" class="form-control" rows="2" placeholder="e.g. Please ring doorbell at the front gate; leave with reception at IT Park Tower; grind beans for French press..."></textarea>
+                            <textarea asp-for="OrderNotes" class="form-control rounded-3" rows="2" placeholder="e.g. Please ring doorbell at the front gate; grind beans for French press..."></textarea>
                         </div>
 
+                        <!-- 10% Accent CTA Button -->
                         <div class="col-12 mt-4">
                             <button type="submit" class="btn btn-gold btn-lg w-100 py-3 fw-bold shadow">
                                 <i class="bi bi-shield-lock-fill me-2"></i> Confirm Order & Dispatch
@@ -227,10 +234,13 @@
             </div>
         </div>
 
-        <!-- Sticky Order Receipt Column -->
+        <!-- Sticky Order Receipt Column (30% Structure / Summary) -->
         <div class="col-lg-5">
-            <div class="card border-0 shadow-lg rounded-4 p-4 bg-white sticky-top" style="top: 90px;">
-                <h4 class="brand-font fw-bold mb-3">Order Summary (@cart?.TotalItemsCount items)</h4>
+            <div class="card border-0 shadow-lg rounded-4 p-4 bg-white sticky-top" style="top: 90px; border: 1px solid rgba(41, 24, 14, 0.08);">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h4 class="brand-font fw-bold mb-0 text-dark">Order Summary</h4>
+                    <span class="badge badge-espresso rounded-pill px-3 py-1">@cart?.TotalItemsCount item@(cart?.TotalItemsCount > 1 ? "s" : "")</span>
+                </div>
 
                 @if (cart != null)
                 {
@@ -239,7 +249,7 @@
                         {
                             <div class="d-flex align-items-center justify-content-between py-2 border-bottom">
                                 <div class="d-flex align-items-center gap-3">
-                                    <img src="@item.ImageUrl" alt="@item.ProductName" class="rounded-3" style="width: 52px; height: 52px; object-fit: cover;" />
+                                    <img src="@item.ImageUrl" alt="@item.ProductName" class="rounded-3 shadow-xs" style="width: 52px; height: 52px; object-fit: cover; border: 1px solid rgba(41, 24, 14, 0.1);" />
                                     <div>
                                         <div class="fw-bold text-dark small">@item.ProductName</div>
                                         <div class="text-muted small">
@@ -251,7 +261,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="fw-bold text-success small">
+                                <div class="fw-bold text-dark small">
                                     ₱@item.TotalPrice.ToString("N2")
                                 </div>
                             </div>
@@ -288,20 +298,22 @@
                         }
                     </div>
 
-                    <hr />
+                    <hr class="my-3" />
 
                     <div class="d-flex justify-content-between align-items-center mb-4">
-                        <span class="fw-bold fs-5">Total Due</span>
-                        <span class="fw-bold fs-4 text-success">₱@cart.GrandTotal.ToString("N2")</span>
+                        <span class="fw-bold fs-5 text-dark">Total Due</span>
+                        <span class="fw-bold fs-3 text-warning font-monospace" style="color: #b86e08 !important;">₱@cart.GrandTotal.ToString("N2")</span>
                     </div>
                 }
 
-                <div class="p-3 bg-light rounded-4 small text-muted border">
+                <div class="p-3 rounded-4 small text-secondary" style="background: #FFFDF9; border: 1px solid rgba(212, 163, 115, 0.25);">
                     <div class="d-flex gap-2 align-items-start">
                         <i class="bi bi-shield-check text-success fs-5"></i>
                         <div>
-                            <strong>Guaranteed Freshness</strong>
-                            <p class="mb-0 mt-1">Dishes, burgers, and beverages are prepared fresh to order at JMT CAFE in Purok 5 Tabon, Dalaguete.</p>
+                            <strong class="text-dark">Guaranteed Freshness & No RTS</strong>
+                            <p class="mb-0 mt-1" style="line-height: 1.5;">
+                                Dishes, burgers, and beverages are prepared fresh to order at JMT CAFE in Purok 5 Tabon, Dalaguete. Pre-paid GCash guarantees immediate priority queueing.
+                            </p>
                         </div>
                     </div>
                 </div>
@@ -331,16 +343,17 @@
         }
 
         function copyMerchantNumber(btn) {
-            navigator.clipboard.writeText('@JmtCafeConfig.PhoneDisplay').then(() => {
+            const phone = '@JmtCafeConfig.PhoneDisplay';
+            navigator.clipboard.writeText(phone).then(() => {
                 const originalHtml = btn.innerHTML;
                 btn.innerHTML = '<i class="bi bi-check2 me-1"></i> Copied!';
-                btn.classList.replace('btn-outline-primary', 'btn-success');
+                btn.classList.replace('btn-outline-dark', 'btn-success');
                 if (window.showToast) {
-                    window.showToast("GCash Number Copied", "0917-882-1940 copied to clipboard.");
+                    window.showToast("GCash Number Copied", phone + " copied to clipboard.");
                 }
                 setTimeout(() => {
                     btn.innerHTML = originalHtml;
-                    btn.classList.replace('btn-success', 'btn-outline-primary');
+                    btn.classList.replace('btn-success', 'btn-outline-dark');
                 }, 2000);
             });
         }

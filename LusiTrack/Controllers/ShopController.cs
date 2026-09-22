@@ -35,6 +35,7 @@ public class ShopController : Controller
         ViewBag.CategoryCounts = categoryCounts;
         ViewBag.CategoryDefinitions = JmtCafeConfig.CategoryDefinitions;
         ViewBag.AllProductsCount = allProducts.Count;
+        ViewBag.AllProducts = allProducts;
 
         return View(products);
     }

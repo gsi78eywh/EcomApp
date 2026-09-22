@@ -12,7 +12,7 @@ public class OrderStatusEntry
 public class DeliveryCourierInfo
 {
     public string Name { get; set; } = "Junrey \"Kuya Jun\" D.";
-    public string Phone { get; set; } = "+63 917 882 1940";
+    public string Phone { get; set; } = "+63 906 014 7674";
     public string VehicleModel { get; set; } = "Honda Click 125i (Silver/Black)";
     public string PlateNumber { get; set; } = "7G-8821";
     public double Rating { get; set; } = 4.95;

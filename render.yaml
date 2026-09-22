@@ -1,0 +1,18 @@
+services:
+  - type: web
+    name: jmtcafe-lusitrack
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    plan: free
+    region: singapore
+    healthCheckPath: /
+    envVars:
+      - key: ASPNETCORE_ENVIRONMENT
+        value: Production
+      - key: SiteSettings__BaseUrl
+        sync: false
+        value: https://jmtcafe-lusitrack.onrender.com
+      - key: Admin__Passcode
+        sync: false
+        value: JMT2026
