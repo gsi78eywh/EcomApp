@@ -18,28 +18,8 @@ public class CheckoutController : Controller
     [HttpGet]
     public IActionResult Index()
     {
-        var cart = _cartService.GetCart();
-        if (!cart.Items.Any())
-        {
-            TempData["ErrorMessage"] = "Your tray is empty. Please select menu items before checking out!";
-            return RedirectToAction("Index", "Shop");
-        }
-
-        ViewBag.Cart = cart;
-        var model = new OrderModel
-        {
-            Items = cart.Items,
-            Subtotal = cart.Subtotal,
-            DeliveryFee = cart.ShippingFee,
-            DiscountAmount = cart.DiscountAmount,
-            TotalAmount = cart.GrandTotal,
-            FulfillmentType = cart.IsPickup ? "Pickup" : "Delivery",
-            Address = cart.IsPickup ? "Pickup at JMT CAFE Counter, Purok 5 Tabon, Dalaguete" : "Purok 5 Tabon, Dalaguete, Cebu",
-            City = "Dalaguete",
-            PostalCode = "6022"
-        };
-
-        return View(model);
+        TempData["SuccessMessage"] = "JMT CAFE is a digital viewing showcase. For orders, reservations, and delivery inquiries, please message our official Facebook page or call 0906 014 7674!";
+        return RedirectToAction("Index", "Shop");
     }
 
     [HttpPost]

@@ -18,8 +18,8 @@ public class CartController : Controller
     [HttpGet]
     public IActionResult Index()
     {
-        var cart = _cartService.GetCart();
-        return View(cart);
+        TempData["SuccessMessage"] = "JMT CAFE is a digital viewing showcase. For orders, reservations, and delivery inquiries, please message our official Facebook page or call 0906 014 7674!";
+        return RedirectToAction("Index", "Shop");
     }
 
     [HttpPost]

@@ -89,7 +89,7 @@
         <p class="text-muted max-w-600 mx-auto" style="max-width: 680px; line-height: 1.7;">
             Explore our crispy chicken meals with signature drinks, flame-grilled burger combos, golden French fries, Oreo and fruit shakes, handcrafted barista espresso, and sparkling fruit refreshers. Dine on our breezy open-air rooftop deck with free Wi-Fi!
         </p>
-        
+
         <!-- Dual Container Quick-Jump Switcher Bar -->
         <div class="d-flex flex-wrap justify-content-center gap-2 mt-3">
             <a href="#facebookCompiledFeedContainer" class="btn btn-primary rounded-pill px-3 py-2 fw-bold shadow-xs small d-inline-flex align-items-center gap-2" style="background: #1877F2; border-color: #1877F2;">
@@ -108,6 +108,43 @@
                 <i class="bi bi-images text-warning fs-6"></i>
                 <span>Wall Posters (21)</span>
             </a>
+        </div>
+    </div>
+
+    <!-- Official Digital Viewing Showcase Notice Banner -->
+    <div class="card border-0 rounded-4 p-3 p-md-4 mb-4 shadow-sm" 
+         style="background: linear-gradient(135deg, #180E07 0%, #2A170C 100%); border: 1.5px solid #D4A373 !important;">
+        <div class="row align-items-center g-3">
+            <div class="col-lg-8">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="rounded-circle d-flex align-items-center justify-content-center text-warning flex-shrink-0" 
+                         style="background: rgba(212, 163, 115, 0.2); border: 1.5px solid #D4A373; width: 48px; height: 48px;">
+                        <i class="bi bi-eye-fill fs-4"></i>
+                    </div>
+                    <div>
+                        <div class="d-flex align-items-center gap-2 flex-wrap mb-1">
+                            <h5 class="brand-font fw-bold text-white mb-0">Official Digital Viewing Menu</h5>
+                            <span class="badge bg-warning text-dark fw-bold rounded-pill px-2 py-0" style="font-size: 0.7rem;">View-Only Showcase</span>
+                        </div>
+                        <p class="small text-white-50 mb-0" style="line-height: 1.6;">
+                            Our website showcases genuine menu items, real photos, and accurate prices. <strong>We do not process payments or orders through this website.</strong> All orders, advance food prep, and deliveries are coordinated directly via our official Facebook page or phone!
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 text-lg-end d-flex flex-wrap justify-content-lg-end gap-2">
+                <a href="@JmtCafeConfig.FacebookPageUrl" target="_blank" rel="noopener noreferrer" 
+                   class="btn btn-primary rounded-pill fw-bold px-3 py-2 shadow-sm d-inline-flex align-items-center gap-2" 
+                   style="background: #1877F2; border-color: #1877F2;">
+                    <i class="bi bi-facebook fs-6"></i>
+                    <span>Message on FB</span>
+                </a>
+                <a href="@JmtCafeConfig.PhoneTelLink" 
+                   class="btn btn-outline-warning rounded-pill fw-semibold px-3 py-2 d-inline-flex align-items-center gap-2">
+                    <i class="bi bi-telephone-fill text-warning"></i>
+                    <span>@JmtCafeConfig.PhoneDisplay</span>
+                </a>
+            </div>
         </div>
     </div>
 
@@ -336,18 +373,18 @@
                                 }
                             </div>
 
-                            <!-- Facebook Action / Reaction Row + Quick Add to Tray -->
+                            <!-- Facebook Action / Reaction Row + Quick Inquire on FB -->
                             <div class="fb-action-row">
                                 <button type="button" class="fb-interaction-btn" onclick="toggleFbPostLike(this)" title="Like this dish post">
                                     <i class="bi bi-hand-thumbs-up"></i>
                                     <span class="like-label">Like</span>
                                     <span class="like-num">(@((p.Id * 7 % 37) + 18))</span>
                                 </button>
-                                <button type="button" class="fb-interaction-btn border-left text-warning" 
-                                        onclick='addToTray(event, { id: @p.Id, name: "@p.Name.Replace("\"", "\\\"")", price: @p.Price, imageUrl: "@p.ImageUrl", category: "@p.Category" })'
-                                        title="Add to order tray">
-                                    <i class="bi bi-plus-circle-fill"></i>
-                                    <span>+ Add to Tray</span>
+                                <button type="button" class="fb-interaction-btn border-left text-primary" 
+                                        onclick='openJmtInquiryModal({ id: @p.Id, name: "@p.Name.Replace("\"", "\\\"")", price: @p.Price, imageUrl: "@p.ImageUrl", category: "@p.Category", description: "@p.Description.Replace("\"", "\\\"")" })'
+                                        title="View dish details and inquire on Facebook">
+                                    <i class="bi bi-facebook text-primary"></i>
+                                    <span>Inquire on FB</span>
                                 </button>
                             </div>
                         </div>
@@ -560,14 +597,14 @@
                                             }
                                         </div>
 
-                                        <!-- Card Footer Action Row with + Add to Tray -->
+                                        <!-- Card Footer Action Row with Inquire / Details -->
                                         <div class="jmt-card-footer-action">
-                                            <button type="button" class="btn btn-sm btn-outline-warning text-dark fw-bold rounded-pill px-3 shadow-xs"
-                                                    onclick='addToTray(event, { id: @item.Id, name: "@item.Name.Replace("\"", "\\\"")", price: @item.Price, imageUrl: "@item.ImageUrl", category: "@item.Category" })'
-                                                    title="Add to order tray">
-                                                <i class="bi bi-plus-circle-fill text-warning me-1"></i>Add
+                                            <button type="button" class="btn btn-sm btn-outline-dark fw-semibold rounded-pill px-3 shadow-xs"
+                                                    onclick='openJmtInquiryModal({ id: @item.Id, name: "@item.Name.Replace("\"", "\\\"")", price: @item.Price, imageUrl: "@item.ImageUrl", category: "@item.Category", description: "@item.Description.Replace("\"", "\\\"")" })'
+                                                    title="View details and inquire on Facebook">
+                                                <i class="bi bi-info-circle text-warning me-1"></i>Inquire
                                             </button>
-                                            <span class="text-warning fw-bold small">Details &rarr;</span>
+                                            <span class="text-warning fw-bold small">View &rarr;</span>
                                         </div>
                                     </div>
                                 </div>
@@ -717,12 +754,12 @@
                                 </div>
 
                                 <div class="jmt-card-footer-action">
-                                    <button type="button" class="btn btn-sm btn-outline-warning text-dark fw-bold rounded-pill px-3 shadow-xs"
-                                            onclick='addToTray(event, { id: @item.Id, name: "@item.Name.Replace("\"", "\\\"")", price: @item.Price, imageUrl: "@item.ImageUrl", category: "@item.Category" })'
-                                            title="Add to order tray">
-                                        <i class="bi bi-plus-circle-fill text-warning me-1"></i>Add
+                                    <button type="button" class="btn btn-sm btn-outline-dark fw-semibold rounded-pill px-3 shadow-xs"
+                                            onclick='openJmtInquiryModal({ id: @item.Id, name: "@item.Name.Replace("\"", "\\\"")", price: @item.Price, imageUrl: "@item.ImageUrl", category: "@item.Category", description: "@item.Description.Replace("\"", "\\\"")" })'
+                                            title="View details and inquire on Facebook">
+                                        <i class="bi bi-info-circle text-warning me-1"></i>Inquire
                                     </button>
-                                    <span class="text-warning fw-bold small">Details &rarr;</span>
+                                    <span class="text-warning fw-bold small">View &rarr;</span>
                                 </div>
                             </div>
                         </div>
@@ -771,7 +808,7 @@
                             <i class="bi bi-gift-fill me-1"></i>FREE on orders ₱1,000+
                         </div>
                         <button type="button" class="btn btn-warning btn-sm rounded-pill fw-bold text-dark px-4 shadow-sm w-100" onclick="orderWithDelivery()">
-                            <i class="bi bi-bag-check-fill me-1"></i>Inquire for Delivery
+                            <i class="bi bi-facebook me-1"></i>Inquire for Delivery
                         </button>
                     </div>
                 </div>
@@ -1015,65 +1052,8 @@
 </div>
 
 <!-- ======================================================================== -->
-<!-- INTERACTIVE FEATURE 5: FLOATING ORDER TRAY & OFFCANVAS DRAWER           -->
+<!-- INTERACTIVE TOAST NOTIFICATION CONTAINER                                 -->
 <!-- ======================================================================== -->
-<div class="floating-tray-bar shadow-lg" onclick="toggleTrayDrawer(true)">
-    <i class="bi bi-bag-check-fill text-warning fs-5"></i>
-    <span class="fw-bold d-none d-sm-inline">My Order Tray</span>
-    <span class="tray-count-pill" id="floatingTrayCount">0</span>
-    <span class="fw-bold text-warning" id="floatingTrayTotal">₱0</span>
-</div>
-
-<div class="jmt-tray-backdrop" id="jmtTrayBackdrop" onclick="toggleTrayDrawer(false)"></div>
-
-<div class="jmt-tray-drawer" id="jmtTrayDrawer">
-    <div class="tray-header">
-        <div class="d-flex align-items-center gap-2">
-            <i class="bi bi-basket3-fill text-warning fs-5"></i>
-            <h5 class="brand-font fw-bold text-white mb-0">Your Order Tray</h5>
-            <span class="badge bg-warning text-dark rounded-pill px-2 py-0 small fw-bold" id="drawerTrayCount">0</span>
-        </div>
-        <button type="button" class="btn-close btn-close-white" onclick="toggleTrayDrawer(false)" aria-label="Close Tray"></button>
-    </div>
-    
-    <div class="tray-body" id="trayItemsList">
-        <div class="text-center py-5 text-muted" id="emptyTrayMessage">
-            <i class="bi bi-bag text-warning display-4 mb-2 d-block"></i>
-            <h6 class="fw-bold text-dark">Your Tray is Empty</h6>
-            <p class="small text-muted mb-3">Browse our delicious burgers, shakes, and meals, then tap <strong>+ Add</strong> to build your order!</p>
-        </div>
-    </div>
-    
-    <div class="tray-footer" id="trayFooterControls" style="display: none;">
-        <div class="d-flex justify-content-between align-items-center mb-1 small text-muted">
-            <span>Items Subtotal:</span>
-            <span class="fw-bold text-dark" id="traySubtotalDisplay">₱0</span>
-        </div>
-        <div class="d-flex justify-content-between align-items-center mb-2 small text-muted">
-            <span>Estimated Local Delivery:</span>
-            <span class="fw-bold text-success" id="trayDeliveryDisplay">₱50</span>
-        </div>
-        <div class="d-flex justify-content-between align-items-center mb-3 pt-2 border-top">
-            <span class="fw-bold text-dark">Estimated Total:</span>
-            <span class="display-6 fs-4 fw-bold text-warning" id="trayFinalTotalDisplay">₱0</span>
-        </div>
-        
-        <div class="d-grid gap-2">
-            <button type="button" class="btn btn-primary rounded-pill py-2 fw-bold d-flex align-items-center justify-content-center gap-2" 
-                    style="background: #1877F2; border-color: #1877F2;" onclick="sendOrderToMessenger()">
-                <i class="bi bi-facebook fs-5"></i>
-                <span>Send Order via Facebook Messenger</span>
-            </button>
-            <a href="/checkout" class="btn btn-warning rounded-pill py-2 fw-bold text-dark d-flex align-items-center justify-content-center gap-2 shadow-sm">
-                <i class="bi bi-credit-card-2-front-fill"></i>
-                <span>Proceed to GCash Checkout</span>
-            </a>
-            <button type="button" class="btn btn-link text-muted btn-sm p-0 text-decoration-none" onclick="clearTray()">
-                <i class="bi bi-trash3 me-1"></i>Clear Order Tray
-            </button>
-        </div>
-    </div>
-</div>
 
 <!-- ======================================================================== -->
 <!-- INTERACTIVE FEATURE 6: TOAST NOTIFICATION CONTAINER                     -->
@@ -1108,7 +1088,6 @@
         document.addEventListener('DOMContentLoaded', () => {
             initLiveStatus();
             initFavorites();
-            initTray();
 
             const sections = document.querySelectorAll('.menu-category-section');
             if (!sections.length) return;
@@ -1311,195 +1290,14 @@
 
             document.getElementById('estFeeDisplay').innerText = `₱${currentDeliveryFee}`;
             document.getElementById('estTimeDisplay').innerHTML = `<i class="bi bi-clock me-1 text-warning"></i>Estimated Travel: ${timeStr}`;
-
-            // Also update drawer if open
-            const drawerDelivery = document.getElementById('trayDeliveryDisplay');
-            if (drawerDelivery) drawerDelivery.innerText = `₱${currentDeliveryFee}`;
-            recalculateTrayTotals();
         }
 
         function orderWithDelivery() {
             calculateDeliveryFee();
-            toggleTrayDrawer(true);
-            showToast(`Delivery set to ${currentSelectedLocation} (₱${currentDeliveryFee})`, 'bi-bicycle');
-        }
-
-        // ====================================================================
-        // Interactive Feature 5: Floating Order Tray & Slide-in Drawer
-        // ====================================================================
-        let trayItems = [];
-
-        function initTray() {
-            try {
-                trayItems = JSON.parse(localStorage.getItem('jmt_tray') || '[]');
-            } catch (e) {
-                trayItems = [];
-            }
-            renderTray();
-        }
-
-        function saveTray() {
-            try {
-                localStorage.setItem('jmt_tray', JSON.stringify(trayItems));
-            } catch (e) {}
-            renderTray();
-        }
-
-        function addToTray(event, item) {
-            if (event) {
-                event.stopPropagation();
-                event.preventDefault();
-            }
-
-            const existing = trayItems.find(i => i.id === item.id);
-            if (existing) {
-                existing.qty += 1;
-            } else {
-                trayItems.push({
-                    id: item.id,
-                    name: item.name,
-                    price: item.price,
-                    imageUrl: item.imageUrl || '/images/jmt/jmt_logo.png',
-                    category: item.category,
-                    qty: 1
-                });
-            }
-
-            saveTray();
-            showToast(`Added 1x ${item.name} to Tray!`, 'bi-bag-check-fill');
-        }
-
-        function updateTrayQty(id, delta) {
-            const item = trayItems.find(i => i.id === id);
-            if (!item) return;
-
-            item.qty += delta;
-            if (item.qty <= 0) {
-                trayItems = trayItems.filter(i => i.id !== id);
-            }
-            saveTray();
-        }
-
-        function clearTray() {
-            trayItems = [];
-            saveTray();
-            showToast('Order Tray cleared', 'bi-trash3');
-        }
-
-        function toggleTrayDrawer(open) {
-            const drawer = document.getElementById('jmtTrayDrawer');
-            const backdrop = document.getElementById('jmtTrayBackdrop');
-            if (open) {
-                drawer.classList.add('open');
-                backdrop.classList.add('open');
-            } else {
-                drawer.classList.remove('open');
-                backdrop.classList.remove('open');
-            }
-        }
-
-        function renderTray() {
-            const listEl = document.getElementById('trayItemsList');
-            const footerEl = document.getElementById('trayFooterControls');
-            const countBadges = [document.getElementById('floatingTrayCount'), document.getElementById('drawerTrayCount')];
-            const emptyEl = document.getElementById('emptyTrayMessage');
-
-            const totalQty = trayItems.reduce((acc, i) => acc + i.qty, 0);
-            countBadges.forEach(b => { if (b) b.innerText = totalQty; });
-
-            if (trayItems.length === 0) {
-                if (listEl) {
-                    listEl.innerHTML = `
-                        <div class="text-center py-5 text-muted" id="emptyTrayMessage">
-                            <i class="bi bi-bag text-warning display-4 mb-2 d-block"></i>
-                            <h6 class="fw-bold text-dark">Your Tray is Empty</h6>
-                            <p class="small text-muted mb-3">Browse our delicious burgers, shakes, and meals, then tap <strong>+ Add</strong> to build your order!</p>
-                        </div>
-                    `;
-                }
-                if (footerEl) footerEl.style.display = 'none';
-                const floatingTotal = document.getElementById('floatingTrayTotal');
-                if (floatingTotal) floatingTotal.innerText = '₱0';
-                return;
-            }
-
-            if (footerEl) footerEl.style.display = 'block';
-
-            let html = '';
-            trayItems.forEach(item => {
-                html += `
-                    <div class="tray-item-row">
-                        <img src="${item.imageUrl}" alt="${item.name}" class="tray-item-img" onerror="this.src='/images/jmt/jmt_logo.png'" />
-                        <div class="flex-grow-1" style="min-width: 0;">
-                            <div class="fw-bold small text-dark text-truncate">${item.name}</div>
-                            <div class="text-warning fw-semibold small">₱${item.price.toLocaleString()}</div>
-                        </div>
-                        <div class="d-flex align-items-center gap-2">
-                            <button type="button" class="tray-stepper-btn" onclick="updateTrayQty(${item.id}, -1)">-</button>
-                            <span class="fw-bold small text-dark px-1">${item.qty}</span>
-                            <button type="button" class="tray-stepper-btn" onclick="updateTrayQty(${item.id}, 1)">+</button>
-                        </div>
-                    </div>
-                `;
-            });
-
-            if (listEl) listEl.innerHTML = html;
-            recalculateTrayTotals();
-        }
-
-        function recalculateTrayTotals() {
-            const subtotal = trayItems.reduce((acc, i) => acc + (i.price * i.qty), 0);
-            const delivery = (subtotal >= 1000 || subtotal === 0) ? 0 : currentDeliveryFee;
-            const grandTotal = subtotal + delivery;
-
-            const subDisplay = document.getElementById('traySubtotalDisplay');
-            const delDisplay = document.getElementById('trayDeliveryDisplay');
-            const totalDisplay = document.getElementById('trayFinalTotalDisplay');
-            const floatingTotal = document.getElementById('floatingTrayTotal');
-
-            if (subDisplay) subDisplay.innerText = `₱${subtotal.toLocaleString()}`;
-            if (delDisplay) {
-                if (subtotal >= 1000) {
-                    delDisplay.innerText = `FREE (₱1k+ Order)`;
-                    delDisplay.className = 'fw-bold text-success';
-                } else {
-                    delDisplay.innerText = `₱${delivery}`;
-                    delDisplay.className = 'fw-bold text-dark';
-                }
-            }
-            if (totalDisplay) totalDisplay.innerText = `₱${grandTotal.toLocaleString()}`;
-            if (floatingTotal) floatingTotal.innerText = `₱${grandTotal.toLocaleString()}`;
-        }
-
-        function sendOrderToMessenger() {
-            if (trayItems.length === 0) {
-                showToast('Please add items to your tray first!', 'bi-info-circle');
-                return;
-            }
-
-            const subtotal = trayItems.reduce((acc, i) => acc + (i.price * i.qty), 0);
-            const delivery = (subtotal >= 1000) ? 0 : currentDeliveryFee;
-            const grandTotal = subtotal + delivery;
-
-            let orderText = `*JMT CAFE ORDER INQUIRY*\n`;
-            orderText += `Location: ${currentSelectedLocation}\n\n`;
-            trayItems.forEach(i => {
-                orderText += `• ${i.qty}x ${i.name} (₱${(i.price * i.qty).toLocaleString()})\n`;
-            });
-            orderText += `\nSubtotal: ₱${subtotal.toLocaleString()}`;
-            orderText += `\nDelivery: ${delivery === 0 ? 'FREE' : '₱' + delivery}`;
-            orderText += `\nTotal: ₱${grandTotal.toLocaleString()}\n`;
-            orderText += `\nPlease confirm preparation and delivery! Salamat JMT!`;
-
-            // Copy to clipboard for convenience
-            if (navigator.clipboard && navigator.clipboard.writeText) {
-                navigator.clipboard.writeText(orderText);
-                showToast('Order copied to clipboard! Opening Facebook Messenger...', 'bi-clipboard-check');
-            }
-
+            showToast(`Opening Facebook to inquire for delivery to ${currentSelectedLocation}...`, 'bi-bicycle');
             setTimeout(() => {
                 window.open('https://www.facebook.com/profile.php?id=61566969959363', '_blank');
-            }, 800);
+            }, 500);
         }
 
         // ====================================================================
