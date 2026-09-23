@@ -6,7 +6,7 @@
 **/obj
 **/node_modules
 **/.angular
-**/dist
+**/my-angular-app/dist
 **/*.user
 **/*.suo
 **/*.log
