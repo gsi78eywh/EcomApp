@@ -100,7 +100,7 @@ app.Use(async (context, next) =>
         "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://fonts.googleapis.com https://unpkg.com; " +
         "font-src 'self' https://fonts.gstatic.com https://cdn.jsdelivr.net data:; " +
         "img-src 'self' data: blob: https: https://*.tile.openstreetmap.org https://maps.gstatic.com https://*.google.com https://*.googleapis.com https://images.unsplash.com; " +
-        "connect-src 'self' https://*.tile.openstreetmap.org; " +
+        "connect-src 'self' https://cdn.jsdelivr.net https://unpkg.com https://fonts.googleapis.com https://fonts.gstatic.com https://*.tile.openstreetmap.org; " +
         "frame-src 'self' https://www.google.com https://maps.google.com; " +
         "object-src 'none'; " +
         "base-uri 'self';";

@@ -391,6 +391,40 @@
                 document.querySelectorAll('.reveal-on-scroll').forEach(el => el.classList.add('is-revealed'));
             }
         });
+
+        // 4. Client-Side Integrity & DevTools Tamper Recovery Guard
+        (function() {
+            // Console Security & Education Banner
+            console.log(
+                "%c🛡️ JMT CAFE SECURE SYSTEM",
+                "color: #e58b05; font-size: 18px; font-weight: bold; background: #150b06; padding: 6px 14px; border-radius: 8px; border: 1px solid #d4a373;"
+            );
+            console.log(
+                "%cNotice: Inspecting or modifying HTML in Chrome DevTools only changes your local browser tab session. The server codebase and production application remain 100% secure and intact. If elements disappear, click Restore or press Ctrl+R / F5.",
+                "color: #8c7e75; font-size: 12px; font-weight: 600; line-height: 1.5;"
+            );
+
+            // Active DOM Tamper & Blank Screen Shield
+            const domGuard = new MutationObserver(() => {
+                const mainEl = document.querySelector('main');
+                const headerEl = document.querySelector('header');
+                
+                // If main body or critical containers are removed or hidden in DevTools
+                if (!mainEl || !headerEl || (mainEl && mainEl.children.length === 0) || (mainEl && window.getComputedStyle(mainEl).display === 'none')) {
+                    let recoverBanner = document.getElementById('jmtTamperRecoveryBanner');
+                    if (!recoverBanner) {
+                        recoverBanner = document.createElement('div');
+                        recoverBanner.id = 'jmtTamperRecoveryBanner';
+                        recoverBanner.style.cssText = 'position:fixed;top:18px;left:50%;transform:translateX(-50%);z-index:999999;background:rgba(21,11,6,0.96);backdrop-filter:blur(16px);color:#ffffff;border:2px solid #e58b05;border-radius:50px;padding:12px 28px;box-shadow:0 12px 40px rgba(0,0,0,0.6);font-family:system-ui,-apple-system,sans-serif;display:flex;align-items:center;gap:16px;font-size:14px;';
+                        recoverBanner.innerHTML = '<span style="display:flex;align-items:center;gap:8px;"><span style="color:#e58b05;font-size:18px;">⚠️</span> <strong>Elements were deleted or hidden in DevTools.</strong> Your server code is safe.</span>' +
+                            '<button onclick="window.location.reload()" style="background:#e58b05;color:#150b06;border:none;border-radius:20px;padding:8px 20px;font-weight:bold;cursor:pointer;font-size:13px;box-shadow:0 4px 12px rgba(229,139,5,0.4);transition:transform 0.2s;">Restore Website Display</button>';
+                        document.body.appendChild(recoverBanner);
+                    }
+                }
+            });
+
+            domGuard.observe(document.documentElement, { childList: true, subtree: true, attributes: true, attributeFilter: ['style', 'class'] });
+        })();
     </script>
 
     @await RenderSectionAsync("Scripts", required: false)
